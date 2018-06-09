@@ -4,8 +4,6 @@ import alunoRepository from "./app/repositories/alunoRepository";
 import { Container } from "typedi";
 import Database from "./app/repositories/database";
 
-
-
 const app = createExpressServer({
     controllers: []
 });

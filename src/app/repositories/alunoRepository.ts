@@ -5,6 +5,10 @@ import Database from "./database";
 
 
 export default class AlunoRepository {
+
+
+    static queryNomeIdade: string = "SELECT nomeAlun, idade FROM ALUNO";
+
     constructor(private database: Database) {
 
     }
@@ -15,8 +19,7 @@ export default class AlunoRepository {
         return rows;
     }
 
-    public async getNomeIdade() : Promise<INomeIdadeAluno[]> {
-        const rows: INomeIdadeAluno[] = await this.database.query<INomeIdadeAluno>('select nomeAlun, idade from ALUNO');
-        return rows;
+    public async getNomeIdade(): Promise<INomeIdadeAluno[]> {
+        return await this.database.query<INomeIdadeAluno>(AlunoRepository.queryNomeIdade);
     }
 }
