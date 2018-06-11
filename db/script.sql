@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS Album (
   id INTEGER,
   nome CHAR(30) NOT NULL,
 
-  idPublicadora INTEGER, 
+  idPublicadora INTEGER NOT NULL, 
   
   PRIMARY KEY (id),
   FOREIGN KEY (idPublicadora) REFERENCES Publicadora(id)
@@ -88,12 +88,11 @@ CREATE TABLE IF NOT EXISTS Genero (
 CREATE TABLE IF NOT EXISTS Musica (
   id INTEGER, 
   nome CHAR(30) NOT NULL, 
-  dataAval DATE NOT NULL, 
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL,
 
   idGenero INTEGER NOT NULL,
-  idAdministrador INTEGER NOT NULL,
+  idAdministrador INTEGER,
 
   PRIMARY KEY (id),
   FOREIGN KEY (idGenero) REFERENCES Genero(id),
@@ -116,7 +115,8 @@ CREATE TABLE IF NOT EXISTS MusicaAprovada (
 CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
   id INTEGER, 
   nome CHAR(30) NOT NULL, 
-  dataAval DATE NOT NULL, 
+  dataAval DATE NOT NULL,
+  observacao CHAR(200) NOT NULL,
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL, 
   
@@ -126,7 +126,6 @@ CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
 CREATE TABLE IF NOT EXISTS MusicaNaoAvaliada (
   id INTEGER, 
   nome CHAR(30) NOT NULL, 
-  dataAval DATE NOT NULL, 
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL, 
   
