@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { createExpressServer } from "routing-controllers";
-import alunoRepository from "./app/repositories/alunoRepository";
+import alunoRepository from "./app/repositories/UsuarioRepository";
 import { Container } from "typedi";
-import Database from "./app/repositories/database";
+import Database from "./app/repositories/Database";
 
 const app = createExpressServer({
     controllers: []
