@@ -1,0 +1,80 @@
+.sidebar {
+  background-color: rgb(34, 34, 34);
+  position: fixed;
+  height: 100%;
+  float: left;
+  color: rgb(156, 156, 156);
+}
+html,
+body {
+  height: 100%;
+}
+
+#nonFooter {
+  min-height: 100%;
+  position: relative;
+  /* Firefox */
+  min-height: -moz-calc(100% - 30px);
+  /* WebKit */
+  min-height: -webkit-calc(100% - 30px);
+  /* Opera */
+  min-height: -o-calc(100% - 30px);
+  /* Standard */
+  min-height: calc(100% - 30px);
+  padding-bottom: 100px;
+}
+
+#footer {
+  height: 30px;
+  margin: 0;
+  clear: both;
+  width: 100%;
+  position: fixed;
+}
+
+.main-content {
+  background-color: rgb(43, 43, 43);
+  color: beige;
+}
+.sidebar ul li {
+  list-style: none;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  transition: all ease-in-out 0.1s;
+  -moz-transition: alle ease-in-out 0.1s;
+  -webkit-transition: all ease-in-out 0.1s;
+}
+.sidebar ul li:hover {
+  color: rgb(196, 196, 196);
+  padding-left: 25px;
+  cursor: pointer;
+}
+.content-holder {
+  position: relative !important;
+  overflow-y: scroll;
+  /* margin-top: -60px; */
+}
+
+.sidebar ul {
+  padding-left: 0;
+}
+.player {
+  height: 100px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+#holder {
+  min-height: 100%;
+  position: relative;
+}
+
+#content-holder {
+  min-height: 100%;
+  position: relative;
+}
+#corpo {
+  padding-bottom: 100px;
+}
