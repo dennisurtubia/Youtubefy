@@ -13,9 +13,6 @@ CREATE TABLE IF NOT EXISTS Usuario (
 
 CREATE TABLE IF NOT EXISTS Publicadora (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  email CHAR(30) NOT NULL, 
-  senha CHAR(200) NOT NULL, 
   cnpj CHAR(18) NOT NULL, 
   
   PRIMARY KEY (id)
@@ -23,9 +20,6 @@ CREATE TABLE IF NOT EXISTS Publicadora (
 
 CREATE TABLE IF NOT EXISTS Ouvinte (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  email CHAR(30) NOT NULL, 
-  senha CHAR(200) NOT NULL, 
   cpf CHAR(14) NOT NULL, 
  
   PRIMARY KEY (id)
@@ -33,9 +27,6 @@ CREATE TABLE IF NOT EXISTS Ouvinte (
 
 CREATE TABLE IF NOT EXISTS Administrador (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  email CHAR(30) NOT NULL, 
-  senha CHAR(200) NOT NULL, 
   cpf CHAR(14) NOT NULL, 
   
   PRIMARY KEY (id)
@@ -92,11 +83,9 @@ CREATE TABLE IF NOT EXISTS Musica (
   explicito BOOLEAN NOT NULL,
 
   idGenero INTEGER NOT NULL,
-  idAdministrador INTEGER,
 
   PRIMARY KEY (id),
-  FOREIGN KEY (idGenero) REFERENCES Genero(id),
-  FOREIGN KEY (idAdministrador) REFERENCES Administrador(id)
+  FOREIGN KEY (idGenero) REFERENCES Genero(id)
 );
 
 CREATE TABLE IF NOT EXISTS MusicaAprovada (
@@ -107,9 +96,11 @@ CREATE TABLE IF NOT EXISTS MusicaAprovada (
   explicito BOOLEAN NOT NULL, 
 
   idAlbum INTEGER,
+  idAdministrador INTEGER,
   
   PRIMARY KEY (id),
-  FOREIGN KEY (idAlbum) REFERENCES Album(id)
+  FOREIGN KEY (idAlbum) REFERENCES Album(id),
+  FOREIGN KEY (idAdministrador) REFERENCES Administrador(id)
 );
 
 CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
@@ -119,8 +110,11 @@ CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
   observacao CHAR(200) NOT NULL,
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL, 
+
+  idAdministrador INTEGER,
   
   PRIMARY KEY (id)
+  FOREIGN KEY (idAdministrador) REFERENCES Administrador(id)
 );
 
 CREATE TABLE IF NOT EXISTS MusicaNaoAvaliada (
@@ -129,7 +123,7 @@ CREATE TABLE IF NOT EXISTS MusicaNaoAvaliada (
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL, 
   
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
 );
 
 CREATE TABLE IF NOT EXISTS OuvinteSeguePlaylistPublica (
