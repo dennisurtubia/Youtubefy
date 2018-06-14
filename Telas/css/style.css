@@ -9,6 +9,7 @@ h1,h2,h3,h4,h5,h6 {
   height: 100%;
   float: left;
   overflow-x: hidden;
+  padding-right: 0px !important;
   z-index: 1000;
   color: rgb(156, 156, 156);
 }
@@ -17,7 +18,14 @@ body {
   height: 100%;
   font-family: 'Montserrat', sans-serif;
 }
-
+.sidebarMenu {
+  overflow: scroll;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+.bold {
+  font-weight: 800;
+}
 #nonFooter {
   min-height: 100%;
   position: relative;
@@ -345,4 +353,53 @@ input[type="range"]:focus::-ms-fill-lower {
 }
 input[type="range"]:focus::-ms-fill-upper {
   background: #367ebd;
+}
+/*
+  Card Music
+*/
+.cardMusic {
+  padding:10px;
+}
+.cardMusic img{
+  width: 100%;
+}
+
+.cardMusic p {
+  padding-top: 0px;
+}
+.cardMusic .bold {
+  padding-top:5px;
+  margin-bottom: 0px !important;
+}
+.cardMusic p:last-of-type{
+  font-size: 15px;
+  margin-bottom:0;
+}
+
+.itemsContainer {
+  float:left;
+  position:relative
+}
+.itemsContainer:hover .play{display:block}
+.play{
+  position : absolute;
+  display:none;
+  top:calc(50% - 20px);
+  left: 43%;
+  text-align: center;
+  margin:0 auto;
+  font-size: 30px;
+  z-index:100
+} 
+
+
+
+/*
+  PAGINA DE LOGIN
+*/
+.grayBG {
+  
+}
+.loginForm {
+  margin-top: calc(50% - 80px);
 }
