@@ -50,15 +50,13 @@ CREATE TABLE IF NOT EXISTS Playlist (
 );
 
 CREATE TABLE IF NOT EXISTS PlaylistPrivada (
-  id INTEGER, 
-  nome CHAR(30) NOT NULL,
+  id INTEGER,
 
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS PlaylistPublica (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
 
   idAdministrador INTEGER NOT NULL,
 
@@ -90,11 +88,8 @@ CREATE TABLE IF NOT EXISTS Musica (
 
 CREATE TABLE IF NOT EXISTS MusicaAprovada (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  dataAval DATE NOT NULL, 
-  duracao INTEGER NOT NULL, 
-  explicito BOOLEAN NOT NULL, 
-
+  dataAprov DATE NOT NULL,
+  
   idAlbum INTEGER,
   idAdministrador INTEGER,
   
@@ -105,11 +100,8 @@ CREATE TABLE IF NOT EXISTS MusicaAprovada (
 
 CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  dataAval DATE NOT NULL,
+  dataReprov DATE NOT NULL,
   observacao CHAR(200) NOT NULL,
-  duracao INTEGER NOT NULL, 
-  explicito BOOLEAN NOT NULL, 
 
   idAdministrador INTEGER,
   
@@ -119,9 +111,6 @@ CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
 
 CREATE TABLE IF NOT EXISTS MusicaNaoAvaliada (
   id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  duracao INTEGER NOT NULL, 
-  explicito BOOLEAN NOT NULL, 
   
   PRIMARY KEY (id),
 );
