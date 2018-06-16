@@ -3,12 +3,11 @@ CREATE DATABASE IF NOT EXISTS ProjectBD;
 USE ProjectBD;
 
 CREATE TABLE IF NOT EXISTS Usuario (
-  id INTEGER, 
-  nome CHAR(30) NOT NULL, 
-  email CHAR(30) NOT NULL, 
-  senha CHAR(200) NOT NULL, 
-  
-  PRIMARY KEY (id)
+    id INTEGER AUTO_INCREMENT,
+    nome CHAR(30) NOT NULL,
+    email CHAR(30) NOT NULL,
+    senha CHAR(200) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Publicadora (
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS Administrador (
 );
 
 CREATE TABLE IF NOT EXISTS Album (
-  id INTEGER,
+  id INTEGER auto_increment,
   nome CHAR(30) NOT NULL,
 
   idPublicadora INTEGER NOT NULL, 
@@ -43,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Album (
 );
 
 CREATE TABLE IF NOT EXISTS Playlist (
-  id INTEGER, 
+  id INTEGER auto_increment, 
   nome CHAR(30) NOT NULL,
 
   PRIMARY KEY (id)
@@ -65,7 +64,7 @@ CREATE TABLE IF NOT EXISTS PlaylistPublica (
 );
 
 CREATE TABLE IF NOT EXISTS Genero (
-  id INTEGER, 
+  id INTEGER auto_increment, 
   nome CHAR(30) NOT NULL,
 
   idAdministrador INTEGER NOT NULL,
@@ -75,7 +74,7 @@ CREATE TABLE IF NOT EXISTS Genero (
 );
 
 CREATE TABLE IF NOT EXISTS Musica (
-  id INTEGER, 
+  id INTEGER auto_increment, 
   nome CHAR(30) NOT NULL, 
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL,
@@ -105,14 +104,14 @@ CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
 
   idAdministrador INTEGER,
   
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
   FOREIGN KEY (idAdministrador) REFERENCES Administrador(id)
 );
 
 CREATE TABLE IF NOT EXISTS MusicaNaoAvaliada (
   id INTEGER, 
   
-  PRIMARY KEY (id),
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS OuvinteSeguePlaylistPublica (
@@ -151,3 +150,12 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
   FOREIGN KEY(idPlaylist) REFERENCES Playlist(id), 
   FOREIGN KEY(idMusicaAprovada) REFERENCES MusicaAprovada(id)
 );
+
+SELECT o.id
+        FROM Ouvinte o 
+        INNER JOIN Usuario u 
+        ON o.id = u.id
+        HAVING o.id = 1;
+        
+insert into Administrador values (1, '1111111111');
+insert into Usuario values (1, "El Administrador", "a@a.com", "isso não estará aqui futuramente" );
