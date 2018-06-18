@@ -18,40 +18,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const util_1 = require("util");
+const Genero_1 = __importDefault(require("../models/Genero"));
+const AdminRepository_1 = __importDefault(require("../repositories/AdminRepository"));
 const GeneroRepository_1 = __importDefault(require("../repositories/GeneroRepository"));
-// Trabalhando com json
-// Prefixo da api: /genero
 let GeneroController = class GeneroController {
-    // Retorna todos os gêneros
-    // Recebe o token do administrador dos headers (usando dependency injection do Typescript)
     async getAll(token) {
-        // Todo [jorge]: transferir validação do token para um middleware
-        // Verifica se o token é uma string e se não está vazia
-        // Isso não tem nenhuma segurança, mas por enquanto não tem problema
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
-        // Chama o generoRepository.getAll();
         return this.generoRepository.getAll();
     }
-    // Insere um genero
-    // Recebe o token pelos headers e o nome do genero pelo body
     async insertOne(token, nome) {
-        // Mesma coisa de cima
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
         if (!util_1.isString(nome) || nome.length <= 0)
             return { "erro": "ERRO_BODY" };
-        // Todo [jorge]: Por enquanto o token é apenas o id do administrador (tipo number)
-        // Caso seja implementado autenticação futuramente, o token será uma string jwt
-        // Será necessário futuramente:
-        // 1. Validar jwt e extrair id do administrador
-        return await this.generoRepository.insert(nome, Number.parseInt(token));
+        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+        const genero = new Genero_1.default(0, nome);
+        genero.administrador = admin;
+        return await this.generoRepository.add(genero);
     }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", GeneroRepository_1.default)
 ], GeneroController.prototype, "generoRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", AdminRepository_1.default)
+], GeneroController.prototype, "adminRepository", void 0);
 __decorate([
     routing_controllers_1.Get("/"),
     __param(0, routing_controllers_1.HeaderParam("token")),

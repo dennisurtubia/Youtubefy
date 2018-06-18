@@ -1,16 +1,16 @@
 import { Inject, Service } from "typedi";
-import Genero from "../models/Genero";
+import MusicaAprovada from "../models/Musica";
 import Database from "./Database";
 import IRepository from "./IRepository";
 
-type Entity = Genero;
+type Entity = MusicaAprovada;
 
 @Service()
 export default class GeneroRepository implements IRepository<Entity> {
 
     @Inject()
     database!: Database;
-    
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
             SELECT g.id, g.nome, g.administrador

@@ -1,6 +1,6 @@
-import { Connection, createConnection } from 'mysql2/promise';
+import { Connection, createConnection, FieldPacket, OkPacket } from 'mysql2/promise';
 import "reflect-metadata";
-import { Container, Service } from "typedi";
+import { Service } from "typedi";
 
 @Service()
 export default class Database {
@@ -15,16 +15,34 @@ export default class Database {
         });
     }
 
-    public async query<T>(str: string, args: any): Promise<T[]> {
+    public async queryOne<T>(str: string, args: any): Promise<T | null> {
 
         if (this.connection == null) {
             await this.init();
         }
 
         const [rows] = await this.connection.execute(str, args).catch(e => { throw e });
-        return rows;
+        if ((rows as T[]).length > 0) {
+            return (rows as T[])[0] as T;
+        }
+        return null;
+    }
+
+    public async queryAll<T>(str: string, args: any): Promise<T[]> {
+
+        if (this.connection == null) {
+            await this.init();
+        }
+
+        const [rows] = await this.connection.execute(str, args).catch(e => { throw e });
+        return rows as T[];
+    }
+
+    public async query(str: string, args: any): Promise<number> {
+        if (this.connection == null) {
+            await this.init();
+        }
+        const result: [OkPacket, FieldPacket[]] = await this.connection.execute<OkPacket>(str, args).catch(e => { throw e });
+        return result["0"].insertId;
     }
 }
-
-// Só para parar os warnings
-Container.get(Database);

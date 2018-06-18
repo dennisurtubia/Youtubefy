@@ -14,7 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
-class GeneroRepository {
+let GeneroRepository = class GeneroRepository {
+    async getById(id) {
+        throw new Error("Method not implemented.");
+    }
     async getAll() {
         const query = `
         SELECT g.id, g.nome
@@ -22,17 +25,26 @@ class GeneroRepository {
         `;
         return await this.database.query(query, []);
     }
-    async insert(nome, idAdministrador) {
+    async add(object) {
         const query = `
         INSERT INTO Genero
         VALUES (0, ?, ?)
         `;
-        return await this.database.query(query, [nome, idAdministrador]);
+        await this.database.query(query, [object.nome, object.administrador.id]);
     }
-}
+    async update(id, object) {
+        throw new Error("Method not implemented.");
+    }
+    async delete(id) {
+        throw new Error("Method not implemented.");
+    }
+};
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", Database_1.default)
 ], GeneroRepository.prototype, "database", void 0);
+GeneroRepository = __decorate([
+    typedi_1.Service()
+], GeneroRepository);
 exports.default = GeneroRepository;
 //# sourceMappingURL=GeneroRepository.js.map
