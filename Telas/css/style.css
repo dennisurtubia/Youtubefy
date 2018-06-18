@@ -361,6 +361,7 @@ input[type="range"]:focus::-ms-fill-upper {
 .cardMusic {
   padding:10px;
   cursor: pointer;
+  color: white;
 }
 .cardMusic img{
   width: 100%;
@@ -499,4 +500,33 @@ padding: 10px 20px 20px 20px;
 }
 .admin * button {
   margin-top: -7px;
+}
+
+/* 
+  PUBLISHER
+*/
+.publisher * h2 {
+  color: white;
+}
+.albumHolder {
+  background-color:  rgb(34, 34, 34);
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 20px;
+}
+.bg-dark {
+  background-color:rgb(34, 34, 34)!important;
+}
+.publisher * input, .publisher * button {
+  border-radius: 100px;
+}
+.publisher * input, .publisher * input:focus{
+  background-color: rgb(34, 34, 34);
+  border: 0;
+  padding: 8px;
+  padding-left: 20px;
+  
+}
+.formSearch {
+  margin-top: 20px;
 }
