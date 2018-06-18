@@ -17,6 +17,7 @@ html,
 body {
   height: 100%;
   font-family: 'Montserrat', sans-serif;
+  background-color: rgb(43, 43, 43)!important;
 }
 .sidebarMenu {
   overflow: scroll;
@@ -359,6 +360,7 @@ input[type="range"]:focus::-ms-fill-upper {
 */
 .cardMusic {
   padding:10px;
+  cursor: pointer;
 }
 .cardMusic img{
   width: 100%;
@@ -380,7 +382,7 @@ input[type="range"]:focus::-ms-fill-upper {
   float:left;
   position:relative
 }
-.itemsContainer:hover .play{display:block}
+.cardMusic:hover .itemsContainer .play{display:block}
 .play{
   position : absolute;
   display:none;
@@ -404,7 +406,10 @@ input[type="range"]:focus::-ms-fill-upper {
   
 }
 .loginForm {
-
+  margin-top: calc(50% - 80px);
+}
+.registroForm {
+  margin-top: calc(50% - 120px);
 }
 
 .backgroundImg {
@@ -422,4 +427,76 @@ input[type="range"]:focus::-ms-fill-upper {
   background-color: rgba(244,244,244,0.8);
 padding: 10px 20px 20px 20px;
   border-radius: 5px;
+}
+
+/*
+  TOPCOVER
+*/
+.topCover {
+  height: 150px;
+  overflow: hidden;
+  
+}
+.topCover h1 {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.imgTopCover {
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  filter: blur(5px);
+  transform: scale(1.1);
+  height: 150px;
+  position: relative;
+}
+.titleTopCover {
+  position: absolute;
+  bottom:0;
+  padding-left: 10px;
+  background: rgba(0,0,0,0);
+  background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(43,43,43,1) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(0,0,0,0)), color-stop(100%, rgba(43,43,43,1)));
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(43,43,43,1) 100%);
+  background: -o-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(43,43,43,1) 100%);
+  background: -ms-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(43,43,43,1) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(43,43,43,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#2b2b2b', GradientType=0 );
+  width: 100%;
+
+}
+.titleTopCover .row:last-child {
+  text-align: right;
+}
+.titleTopCover p {
+  margin-bottom: 0;
+}
+.saveSet {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ffffff;
+  border-radius: 100px;
+  transition: all ease-in-out 0.1s !important;
+}
+.saveSet:hover {
+  background-color: #ffffff;
+  cursor: pointer;
+  color: #0d0d0d;
+}
+.table-dark {
+  background-color: rgb(43, 43, 43)!important;
+  margin-top: 15px;
+}
+
+
+/*
+  ADMIN
+*/
+.admin * td {
+  padding-top: 19px !important;
+}
+.admin * button {
+  margin-top: -7px;
 }
