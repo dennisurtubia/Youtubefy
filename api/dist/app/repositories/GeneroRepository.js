@@ -16,27 +16,41 @@ const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let GeneroRepository = class GeneroRepository {
     async getById(id) {
-        throw new Error("Method not implemented.");
+        const query = `
+            SELECT g.id, g.nome, g.administrador
+            FROM Genero g
+            WHERE g.id = ?
+        `;
+        return await this.database.queryOne(query, [id]);
     }
     async getAll() {
         const query = `
-        SELECT g.id, g.nome
-        FROM Genero g
+            SELECT g.id, g.nome, g.administrador
+            FROM Genero g
         `;
-        return await this.database.query(query, []);
+        return await this.database.queryAll(query, []);
     }
     async add(object) {
-        const query = `
-        INSERT INTO Genero
-        VALUES (0, ?, ?)
+        const query1 = `
+            INSERT INTO Genero
+            VALUES (0, ?, ?)
         `;
-        await this.database.query(query, [object.nome, object.administrador.id]);
+        await this.database.query(query1, [object.nome, object.administrador.id]);
     }
     async update(id, object) {
-        throw new Error("Method not implemented.");
+        const query1 = `
+            UPDATE Genero g
+            SET g.nome = ?, g.administrador = ?
+            WHERE g.id = ?
+        `;
+        await this.database.query(query1, [object.nome, object.administrador.id, id]);
     }
     async delete(id) {
-        throw new Error("Method not implemented.");
+        const query = `
+            DELETE FROM Genero g
+            WHERE g.id = ?
+        `;
+        await this.database.query(query, [id]);
     }
 };
 __decorate([

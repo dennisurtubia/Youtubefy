@@ -18,18 +18,33 @@ let Database = class Database {
             database: "ProjectBD"
         });
     }
-    async query(str, args) {
+    async queryOne(str, args) {
+        if (this.connection == null) {
+            await this.init();
+        }
+        const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
+        if (rows.length > 0) {
+            return rows[0];
+        }
+        return null;
+    }
+    async queryAll(str, args) {
         if (this.connection == null) {
             await this.init();
         }
         const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
         return rows;
     }
+    async query(str, args) {
+        if (this.connection == null) {
+            await this.init();
+        }
+        const result = await this.connection.execute(str, args).catch(e => { throw e; });
+        return result["0"].insertId;
+    }
 };
 Database = __decorate([
     typedi_1.Service()
 ], Database);
 exports.default = Database;
-// Só para parar os warnings
-typedi_1.Container.get(Database);
 //# sourceMappingURL=Database.js.map

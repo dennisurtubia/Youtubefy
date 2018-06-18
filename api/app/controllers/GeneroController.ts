@@ -42,3 +42,4 @@ export default class GeneroController {
         return await this.generoRepository.add(genero);
     }
 }
+// jwt 

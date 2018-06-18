@@ -35,6 +35,7 @@ export default class Database {
         }
 
         const [rows] = await this.connection.execute(str, args).catch(e => { throw e });
+    
         return rows as T[];
     }
 

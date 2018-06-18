@@ -1,42 +1,58 @@
-import { Get, HeaderParam, JsonController } from "routing-controllers";
+import { IsNotEmpty, IsString } from "class-validator";
+import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
-import AdminRepository from "../repositories/AdminRepository";
+import { isString } from "util";
 import Administrador from "../models/Administrador";
+import AdminRepository from "../repositories/AdminRepository";
+
+class InsertRequest {
+
+    @IsString()
+    @IsNotEmpty()
+    cpf: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    nome: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    email: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    senha: string = "";
+}
 
 @JsonController("/admin")
 export default class AdminController {
 
-
     @Inject()
     private adminRepository!: AdminRepository;
 
-
     @Get("/")
     async getAll(@HeaderParam("token") token: string) {
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
 
-        const admin = new Administrador(2, "cpf aque", "otario", "otario@gmail.com", "1234");
-        await this.adminRepository.add(admin);
-        // const admin = await this.adminRepository.getById(1);
-        // if (admin === null)
-        //     return { "erro": "ADMIN_INVALIDO" };
-         return { "admin": admin }
+        return { "admins": await this.adminRepository.getAll() };
     }
 
-    // @Post("/")
-    // async insertOne(@HeaderParam("token") token: string, @BodyParam("nome") nome: string) {
 
-    //     if (!isString(token) || token.length <= 0)
-    //         return { "erro": "TOKEN_INVALIDO" };
+    @Post("/")
+    /**
+    * @api {get} /user/:id
+    */
+    async insertOne(
+        @HeaderParam("token") token: string,
+        @Body({ validate: true }) req: InsertRequest
+    ) {
 
-    //     if (!isString(nome) || nome.length <= 0)
-    //         return { "erro": "ERRO_BODY" };
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
 
-    //     const admin = await this.adminRepository.getById(Number.parseInt(token));
-    //     if (admin === null)
-    //         return { "erro": "ADMIN_INVALIDO" };
-
-    //     const genero = new Genero(0, nome);
-    //     genero.administrador = admin;
-    //     return await this.generoRepository.add(genero);
-    // }
+        const admin = new Administrador(0, req.cpf, req.nome, req.email, req.senha);
+        await this.adminRepository.add(admin);
+        return { "sucesso": true };
+    }
 }

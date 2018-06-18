@@ -1,20 +1,11 @@
 import Administrador from "./Administrador";
-import { Genero } from "./Genero";
-
-enum StatusMusica {
-    Aprovada = 1,
-    NaoAprovada,
-    NaoAvaliada
-}
+import Genero from "./Genero";
 
 export default class Musica {
     private _id: number = 0;
     private _nome: string = "";
-    private _status: number = StatusMusica.NaoAvaliada;
-    private _data_avaliacao!: Date;
     private _duracao: number = 0;
     private _explicito: boolean = false;
-    private _administrador!: Administrador;
     private _genero!: Genero;
 
     constructor(id: number, nome: string, duracao: number, explicito: boolean) {
@@ -38,20 +29,6 @@ export default class Musica {
         this._nome = value;
     }
 
-    public get status(): number {
-        return this._status;
-    }
-    public set status(value: number) {
-        this._status = value;
-    }
-
-    public get data_avaliacao(): Date {
-        return this._data_avaliacao;
-    }
-    public set data_avaliacao(value: Date) {
-        this._data_avaliacao = value;
-    }
-
     public get duracao(): number {
         return this._duracao;
     }
@@ -64,14 +41,6 @@ export default class Musica {
     }
     public set explicito(value: boolean) {
         this._explicito = value;
-    }
-
-    public get administrador(): Administrador {
-        return this._administrador;
-    }
-
-    public set administrador(value: Administrador) {
-        this._administrador = value;
     }
 
     public get genero(): Genero {

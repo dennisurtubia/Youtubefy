@@ -17,42 +17,53 @@ const Database_1 = __importDefault(require("./Database"));
 let AdminRepository = class AdminRepository {
     async getById(id) {
         const query = `
-        SELECT a.id, a.cpf, u.nome, u.email, u.senha
-        FROM Administrador a INNER JOIN Usuario u
-        ON u.id = a.id
-        AND a.id = ?
+            SELECT a.id, a.cpf, u.nome, u.email, u.senha
+            FROM Administrador a INNER JOIN Usuario u
+            ON u.id = a.id
+            AND a.id = ?
         `;
-        const results = await this.database.query(query, [id]);
-        if (results.length <= 0)
-            return null;
-        return results[0];
+        return await this.database.queryOne(query, [id]);
     }
     async getAll() {
         const query = `
-        SELECT a.id, a.cpf, u.nome, u.email, u.senha
-        FROM Administrador a INNER JOIN Usuario u
-        ON u.id = a.id
+            SELECT a.id, a.cpf, u.nome, u.email, u.senha
+            FROM Administrador a INNER JOIN Usuario u
+            ON u.id = a.id
         `;
-        const results = await this.database.query(query, []);
-        return results;
+        return await this.database.queryAll(query, []);
     }
     async add(object) {
         const query1 = `
             INSERT INTO Usuario
             VALUES (0, ?, ?, ?)
         `;
-        const resultSet = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
         const query2 = `
-        INSERT INTO Administrador
-        VALUES (?, ?)
+            INSERT INTO Administrador
+            VALUES (?, ?)
         `;
-        await this.database.query(query2, [resultSet.insertId, object.cpf]);
+        await this.database.query(query2, [insertId, object.cpf]);
     }
     async update(id, object) {
-        throw new Error("Method not implemented.");
+        const query1 = `
+            UPDATE Administrador a
+            SET a.cpf = ?
+            WHERE a.id = ?
+        `;
+        await this.database.query(query1, [object.cpf, id]);
+        const query2 = `
+            UPDATE Usuario u
+            SET u.nome = ?, u.email = ?, u.senha = ?
+            WHERE u.id = ?
+        `;
+        await this.database.query(query2, [object.nome, object.email, object.senha, id]);
     }
     async delete(id) {
-        throw new Error("Method not implemented.");
+        const query = `
+            DELETE FROM Administrador a
+            WHERE a.id = ?
+        `;
+        await this.database.query(query, [id]);
     }
 };
 __decorate([

@@ -66,4 +66,5 @@ GeneroController = __decorate([
     routing_controllers_1.JsonController("/genero")
 ], GeneroController);
 exports.default = GeneroController;
+// jwt 
 //# sourceMappingURL=GeneroController.js.map
