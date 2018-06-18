@@ -1,0 +1,28 @@
+Caso de uso: Fazer login
+1. O ator Ouvinte acessa a pagina inicial
+2. Sistema mostra os campos de email e senha
+3. O ator Ouvinte preenche seus dados e efetua o login
+4. Sistema valida os dados
+
+Exceção 2a: Ouvinte não cadastrado
+2a.1 O ator Ouvinte clica no botão de registro
+2a.2 Sistema mostra os campos de registro
+2a.3 O ator Ouvinte preenche seus dados e efetua o registro
+Retorna ao passo 2
+
+Exceção 4a: Email não existe
+4a.1 Sistema informa que o email não existe no sistema
+Retorna ao passo 2
+
+Exceção 4b: Email/senha incorretos
+4b.1 Sistema informa que o email/senha estão incorretos
+Retorna ao passo 2
+
+Exceção 2a.3: Email já cadastrado
+2a.3.1 Sistema informa que o email já está cadastrado
+Retorna ao passo 2a.2
+
+------------------------
+Caso de uso: <<CRUD>> Gerenciar gênero
+1. O ator Administrador entra no menu de gêneros
+2. O sistema lista todos os gêneros cadastrados e para 
