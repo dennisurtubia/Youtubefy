@@ -1,10 +1,8 @@
-import Album from "./Album";
-import Musica from "./Musica";
 import Administrador from "./Administrador";
+import Musica from "./Musica";
 
 export default class MusicaAprovada extends Musica {
 
-    private _album!: Album;
     private _data_avaliacao!: Date;
     private _administrador!: Administrador;
 
@@ -12,24 +10,17 @@ export default class MusicaAprovada extends Musica {
         super(id, nome, duracao, explicito);
     }
 
-    public get album(): Album {
-        return this._album;
-    }
-    public set album(value: Album) {
-        this._album = value;
-    }
-
-    public get data_avaliacao_1(): Date {
+    public get data_avaliacao(): Date {
         return this._data_avaliacao;
     }
-    public set data_avaliacao_1(value: Date) {
+    public set data_avaliacao(value: Date) {
         this._data_avaliacao = value;
     }
 
-    public get administrador_1(): Administrador {
+    public get administrador(): Administrador {
         return this._administrador;
     }
-    public set administrador_1(value: Administrador) {
+    public set administrador(value: Administrador) {
         this._administrador = value;
     }
 }

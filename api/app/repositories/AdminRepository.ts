@@ -32,7 +32,7 @@ export default class AdminRepository implements IRepository<Entity> {
         return await this.database.queryAll<Entity>(query, [])
     }
 
-    async add(object: Entity): Promise<void> {
+    async add(object: Entity): Promise<number> {
 
         const query1 = `
             INSERT INTO Usuario
@@ -46,7 +46,7 @@ export default class AdminRepository implements IRepository<Entity> {
             VALUES (?, ?)
         `;
 
-        await this.database.query(query2, [insertId, object.cpf]);
+        return await this.database.query(query2, [insertId, object.cpf]);
     }
 
     async update(id: number, object: Entity): Promise<void> {

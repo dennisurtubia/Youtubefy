@@ -4,6 +4,11 @@ import { Inject } from "typedi";
 import AlbumRepository from "../repositories/AlbumRepository";
 import { isString } from "util";
 import Album from "../models/Album";
+import PublicadoraRepository from "../repositories/PublicadoraRepository";
+import Musica from "../models/Musica";
+import MusicaNaoAvaliada from "../models/MusicaNaoAvaliada";
+import GeneroRepository from "../repositories/GeneroRepository";
+import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 
 
 class InsertMusica {
@@ -16,6 +21,9 @@ class InsertMusica {
 
     @IsBoolean()
     explicto: boolean = false;
+
+    @IsNumber()
+    genero: number = 0;
 }
 
 class InsertRequest {
@@ -47,6 +55,15 @@ export default class AlbumController {
     @Inject()
     private albumRepository!: AlbumRepository;
 
+    @Inject()
+    private publicadoraRepository!: PublicadoraRepository;
+
+    @Inject()
+    private generoRepository!: GeneroRepository;
+
+    @Inject()
+    private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
+
 
     /**
      * 
@@ -74,32 +91,65 @@ export default class AlbumController {
      *       "idPublicadora": 12344321,
      *       "musicas": [ 
      *                      {
-     *                          "Corsinha Amarelo",
+     *                          "nome": "Corsinha Amarelo",
      *                          "duracao": 240,
-     *                          "explicito": true
+     *                          "explicito": true,
+     *                          "genero": 1
      *                      }, 
      *                      {
-     *                          "Comprar alimento",
+     *                          "nome": "Comprar alimento",
      *                          "duracao": 240,
-     *                          "explicito": false
+     *                          "explicito": false,
+     *                          "genero": 24
      *                      }, 
      *                  ]
      *    }
+     * @apiSuccessExample {json} Resposta bem sucessida:
+     *    {
+     *        "musicasAdicionadas": [1],
+     *        "musicasNaoAdicionadas": [24]
+     *    }
+     * @apiErrorExample {json} Resposta com erro:
+     *   {
+     *        "erro": "TOKEN_INVALIDO"
+     *   } 
+     *
      */
     @Post("/")
-    async submitMusic(
+    async submitAlbum(
         @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest) {
-
 
         if (!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
 
-        
-            const album = new Album(0, req.capa, req.nome, req.nomeArtista, req.descricao, req.idPublicadora);
+        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
 
-        await this.albumRepository.add()
+        const album = new Album(0, req.capa, req.nome, req.nomeArtista, req.descricao, publicadora);
+        album.id = await this.albumRepository.add(album);
 
+        let musicasAdicionadas = [];
+        let musicasNaoAdicionadas = [];
+
+        for (let it of req.musicas) {
+
+            let genero = await this.generoRepository.getById(it.genero);
+            if (genero !== null) {
+                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicto);
+                musica.album = album;
+                musica.genero = genero;
+                musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
+                musicasAdicionadas.push(it.nome);
+            } else {
+                musicasNaoAdicionadas.push(it.nome);
+            }
+        }
+
+        return {
+            "musicasAdicionadas": musicasAdicionadas,
+            "musicasNaoAdicionadas": musicasNaoAdicionadas
+        };
     }
-
 }

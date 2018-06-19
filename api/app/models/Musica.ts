@@ -1,4 +1,4 @@
-import Administrador from "./Administrador";
+import Album from "./Album";
 import Genero from "./Genero";
 
 export default class Musica {
@@ -7,6 +7,7 @@ export default class Musica {
     private _duracao: number = 0;
     private _explicito: boolean = false;
     private _genero!: Genero;
+    private _album!: Album;
 
     constructor(id: number, nome: string, duracao: number, explicito: boolean) {
         this._id = id;
@@ -49,5 +50,12 @@ export default class Musica {
 
     public set genero(value: Genero) {
         this._genero = value;
+    }
+
+    public get album(): Album {
+        return this._album;
+    }
+    public set album(value: Album) {
+        this._album = value;
     }
 }

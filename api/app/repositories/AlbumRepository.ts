@@ -30,14 +30,14 @@ export default class AlbumRepository implements IRepository<Entity> {
         return await this.database.queryAll<Entity>(query, [])
     }
 
-    async add(object: Entity): Promise<void> {
+    async add(object: Entity): Promise<number> {
 
         const query = `
             INSERT INTO Album
             VALUES (0, ?, ?, ?, ?, ?)
         `;
 
-        await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
+        return await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
     }
 
     async update(id: number, object: Entity): Promise<void> {

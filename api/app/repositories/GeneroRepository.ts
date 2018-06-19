@@ -31,14 +31,14 @@ export default class GeneroRepository implements IRepository<Entity> {
         return await this.database.queryAll<Entity>(query, [])
     }
 
-    async add(object: Entity): Promise<void> {
+    async add(object: Entity): Promise<number> {
 
         const query1 = `
             INSERT INTO Genero
             VALUES (0, ?, ?)
         `;
 
-        await this.database.query(query1, [object.nome, object.administrador.id]);
+        return await this.database.query(query1, [object.nome, object.administrador.id]);
     }
 
     async update(id: number, object: Entity): Promise<void> {

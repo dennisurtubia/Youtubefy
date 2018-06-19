@@ -31,7 +31,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
         return await this.database.queryAll<Entity>(query, [])
     }
 
-    async add(object: Entity): Promise<void> {
+    async add(object: Entity): Promise<number> {
 
         const query1 = `
             INSERT INTO Musica
@@ -45,7 +45,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
             VALUES (?);
         `;
 
-        await this.database.query(query2, [insertId]);
+        return await this.database.query(query2, [insertId]);
     }
 
     async update(id: number, object: MusicaNaoAvaliada): Promise<void> {

@@ -82,20 +82,20 @@ CREATE TABLE IF NOT EXISTS Musica (
   explicito BOOLEAN NOT NULL,
 
   idGenero INTEGER NOT NULL,
+  idAlbum INTEGER,
 
   PRIMARY KEY (id),
-  FOREIGN KEY (idGenero) REFERENCES Genero(id)
+  FOREIGN KEY (idGenero) REFERENCES Genero(id),
+  FOREIGN KEY (idAlbum) REFERENCES Album(id)
 );
 
 CREATE TABLE IF NOT EXISTS MusicaAprovada (
   id INTEGER, 
   dataAprov DATE NOT NULL,
   
-  idAlbum INTEGER,
   idAdministrador INTEGER,
   
   PRIMARY KEY (id),
-  FOREIGN KEY (idAlbum) REFERENCES Album(id),
   FOREIGN KEY (idAdministrador) REFERENCES Administrador(id)
 );
 
