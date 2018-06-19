@@ -48,8 +48,8 @@ let GeneroRepository = class GeneroRepository {
     }
     async delete(id) {
         const query = `
-            DELETE FROM Genero g
-            WHERE g.id = ?
+            DELETE FROM Genero
+            WHERE id = ?
         `;
         await this.database.query(query, [id]);
     }

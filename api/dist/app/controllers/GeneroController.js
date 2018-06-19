@@ -49,7 +49,42 @@ __decorate([
 let GeneroController = class GeneroController {
     /**
      *
-     * @api {get} /genero Listar gêneros
+     * @api {get} /genero/:id Informações do gênero
+     * @apiName InfoGenero
+     * @apiGroup Genero
+     *
+     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+     * @apiHeaderExample {json} Exemplo Header:
+     *    {
+     *       "token": "1234"
+     *    }
+     * @apiParam  {number} id ID do gênero
+     * @apiSuccessExample {json} Resposta bem sucessida:
+     *    {
+     *       "nome": "Ação"
+     *    }
+     * @apiErrorExample {json} Resposta com erro:
+     *   {
+     *        "erro": "TOKEN_INVALIDO"
+     *   }
+     *
+     */
+    async get(token, id) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        if (!util_1.isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+        const genero = await this.generoRepository.getById(id);
+        if (genero === null)
+            return { "erro": "GENERO_INVALIDO" };
+        return { "nome": genero.nome };
+    }
+    /**
+     *
+     * @api {get} /genero Listar todos os gêneros
      * @apiName ListarGeneros
      * @apiGroup Genero
      *
@@ -198,7 +233,7 @@ let GeneroController = class GeneroController {
     async delete(token, id) {
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
-        if (!util_1.isNumber(token))
+        if (!util_1.isNumber(id))
             return { "erro": "ID_INVALIDO" };
         const admin = await this.adminRepository.getById(Number.parseInt(token));
         if (admin === null)
@@ -218,6 +253,14 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", AdminRepository_1.default)
 ], GeneroController.prototype, "adminRepository", void 0);
+__decorate([
+    routing_controllers_1.Get("/:id"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], GeneroController.prototype, "get", null);
 __decorate([
     routing_controllers_1.Get("/"),
     __param(0, routing_controllers_1.HeaderParam("token")),

@@ -64,6 +64,11 @@ let AdminRepository = class AdminRepository {
             WHERE a.id = ?
         `;
         await this.database.query(query, [id]);
+        const query2 = `
+            DELETE FROM Usuario u
+            WHERE a.id = ?
+        `;
+        await this.database.query(query2, [id]);
     }
 };
 __decorate([

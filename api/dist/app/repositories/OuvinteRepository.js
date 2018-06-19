@@ -18,23 +18,57 @@ let OuvinteRepository = class OuvinteRepository {
     async getById(id) {
         const query = `
         SELECT a.id, a.cpf, u.nome, u.email, u.senha
-        FROM Administrador a INNER JOIN Usuario u
+        FROM Ouvinte a INNER JOIN Usuario u
         ON u.id = a.id
         AND a.id = ?
         `;
         return await this.database.queryOne(query, [id]);
     }
     async getAll() {
-        throw new Error("Method not implemented.");
+        const query = `
+            SELECT a.id, a.cpf, u.nome, u.email, u.senha
+            FROM Ouvinte a INNER JOIN Usuario u
+            ON u.id = a.id
+        `;
+        return await this.database.queryAll(query, []);
     }
     async add(object) {
-        throw new Error("Method not implemented.");
+        const query1 = `
+            INSERT INTO Usuario
+            VALUES (0, ?, ?, ?)
+        `;
+        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        const query2 = `
+            INSERT INTO Ouvinte
+            VALUES (?, ?)
+        `;
+        return await this.database.query(query2, [insertId, object.cpf]);
     }
     async update(id, object) {
-        throw new Error("Method not implemented.");
+        const query1 = `
+            UPDATE Ouvinte a
+            SET a.cpf = ?
+            WHERE a.id = ?
+        `;
+        await this.database.query(query1, [object.cpf, id]);
+        const query2 = `
+            UPDATE Usuario u
+            SET u.nome = ?, u.email = ?, u.senha = ?
+            WHERE u.id = ?
+        `;
+        await this.database.query(query2, [object.nome, object.email, object.senha, id]);
     }
     async delete(id) {
-        throw new Error("Method not implemented.");
+        const query = `
+            DELETE FROM Ouvinte 
+            WHERE a.id = ?
+        `;
+        await this.database.query(query, [id]);
+        const query2 = `
+            DELETE FROM Usuario u
+            WHERE a.id = ?
+        `;
+        await this.database.query(query2, [id]);
     }
 };
 __decorate([

@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Post, Put } from "routing-controllers";
+import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import { isNumber, isString } from "util";
 import Genero from "../models/Genero";
@@ -35,40 +35,39 @@ export default class GeneroController {
      *    { 
      *       "token": "1234"  
      *    }
+     * @apiParam  {number} id ID do gênero
      * @apiSuccessExample {json} Resposta bem sucessida:
-     * {
-      *  "generos": [
-     *      {
-     *          "id": 1,
-     *          "nome": "Dennis"
-     *      },
-     *      {
-     *          "id": 2,
-     *          "nome": "Aventura"
-     *      }
-     *  ]
-     * }
+     *    {
+     *       "nome": "Ação"
+     *    }
      * @apiErrorExample {json} Resposta com erro:
      *   {
      *        "erro": "TOKEN_INVALIDO"
      *   } 
      *
      */
-    @Get("/")
+    @Get("/:id")
     async get(
-        @HeaderParam("token") token: string
+        @HeaderParam("token") token: string,
+        @Param("id") id: number
     ) {
 
         if (!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
 
+        if (!isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+
         const admin = await this.adminRepository.getById(Number.parseInt(token));
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
-        const generos = await this.generoRepository.getAll();
+        const genero: Genero | null = await this.generoRepository.getById(id);
 
-        return { "generos": generos.map(({ idAdministrador, ...attrs }) => attrs) };
+        if (genero === null)
+            return { "erro": "GENERO_INVALIDO" };
+
+        return { "nome": genero.nome };
     }
 
 
@@ -252,7 +251,7 @@ export default class GeneroController {
         if (!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
 
-        if (!isNumber(token))
+        if (!isNumber(id))
             return { "erro": "ID_INVALIDO" };
 
         const admin = await this.adminRepository.getById(Number.parseInt(token));

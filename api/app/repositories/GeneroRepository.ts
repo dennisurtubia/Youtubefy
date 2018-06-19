@@ -56,8 +56,8 @@ export default class GeneroRepository implements IRepository<Entity> {
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM Genero g
-            WHERE g.id = ?
+            DELETE FROM Genero
+            WHERE id = ?
         `;
 
         await this.database.query(query, [id]);
