@@ -1,57 +1,71 @@
-import { IsNotEmpty, IsString, IsNumber, IsBoolean } from "class-validator";
+import { IsEnum, IsNumber } from "class-validator";
 import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
 import { isString } from "util";
-import Administrador from "../models/Administrador";
-import AdminRepository from "../repositories/AdminRepository";
+import MusicaAprovada from "../models/MusicaAprovada";
+import MusicaNaoAprovada from "../models/MusicaNaoAprovada";
+import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
+import MusicaNaoAprovadaRepository from "../repositories/MusicaNaoAprovadaRepository";
+import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 
-class InsertRequest {
+enum Avaliacao {
+    Aprovado = "aprovado",
+    Reprovado = "reprovado"
+}
 
-    @IsString()
-    @IsNotEmpty()
-    nome: string = "";
+class AvaliarRequest {
 
     @IsNumber()
-    duracao: number = 0;
+    musica: number = 0;
 
-    @IsBoolean()
-    explicito: boolean = false;
+    @IsEnum(Avaliacao)
+    avaliacao: Avaliacao = Avaliacao.Reprovado;
 }
 
 @JsonController("/musica")
 export default class MusicaController {
 
     @Inject()
-    private adminRepository!: AdminRepository;
+    private musicaAprovadaRepository!: MusicaAprovadaRepository;
 
-    @Get("/")
-    async getAll(@HeaderParam("token") token: string) {
+    @Inject()
+    private musicaNaoAprovadaRepository!: MusicaNaoAprovadaRepository;
+
+    @Inject()
+    private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
+
+    @Get("/nao-avaliadas")
+    async getNaoAvaliadas(@HeaderParam("token") token: string) {
         if (!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
-
-        return { "admins": await this.adminRepository.getAll() };
+        return {
+            "naoAvaliadas": await this.musicaNaoAvaliadaRepository.getAll()
+        };
     }
 
-
-    @Post("/submit")
-    async submitMusic(
+    @Post("/avaliar")
+    async avaliar(
         @HeaderParam("token") token: string,
-        @Body({ validate: true }) req: InsertRequest) {
-
-    }
-
-
-    @Post("/")
-    async insertOne(
-        @HeaderParam("token") token: string,
-        @Body({ validate: true }) req: InsertRequest
+        @Body() req: AvaliarRequest
     ) {
 
         if (!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
 
-        const admin = new Administrador(0, req.cpf, req.nome, req.email, req.senha);
-        await this.adminRepository.add(admin);
+        const musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
+        if (musica === null)
+            return { "erro": "MUSICA_INVALIDA" };
+
+        await this.musicaNaoAvaliadaRepository.delete(musica.id);
+
+        if (req.avaliacao == Avaliacao.Aprovado) {
+            const musicaAprovada = new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito);
+            await this.musicaAprovadaRepository.add(musicaAprovada);
+        } else {
+            const musicaNaoAprovada = new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito);
+            await this.musicaNaoAprovadaRepository.add(musicaNaoAprovada);
+        }
+
         return { "sucesso": true };
     }
 }

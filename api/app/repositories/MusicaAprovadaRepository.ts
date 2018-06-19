@@ -1,21 +1,21 @@
 import { Inject, Service } from "typedi";
-import MusicaAprovada from "../models/Musica";
+import MusicaAprovada from "../models/MusicaAprovada";
 import Database from "./Database";
 import IRepository from "./IRepository";
 
 type Entity = MusicaAprovada;
 
 @Service()
-export default class GeneroRepository implements IRepository<Entity> {
+export default class MusicaAprovadaRepository implements IRepository<Entity> {
 
     @Inject()
     database!: Database;
 
     async getById(id: number): Promise<Entity | null> {
         const query = `
-            SELECT g.id, g.nome, g.administrador
-            FROM Genero g
-            WHERE g.id = ?
+            SELECT m.id, m.nome, m.duracao, m.explicito
+            FROM MusicaAprovada m
+            WHERE m.id = ?
         `;
 
         return await this.database.queryOne<Entity>(query, [id]);
@@ -24,40 +24,53 @@ export default class GeneroRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT g.id, g.nome, g.administrador
-            FROM Genero g
+            SELECT m.id, m.nome, m.duracao, m.explicito
+            FROM MusicaAprovada m
         `;
 
         return await this.database.queryAll<Entity>(query, [])
     }
 
-    async add(object: Entity): Promise<void> {
+    async add(object: Entity): Promise<number> {
 
         const query1 = `
-            INSERT INTO Genero
-            VALUES (0, ?, ?)
+            INSERT INTO Musica
+            VALUES (0, ?, ?, ?, ?)
         `;
 
-        await this.database.query(query1, [object.nome, object.administrador.id]);
+        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.genero.id]);
+
+        const query2 = `
+            INSERT INTO MusicaAprovada
+            VALUES (?);
+        `;
+
+        return await this.database.query(query2, [insertId]);
     }
 
-    async update(id: number, object: Entity): Promise<void> {
-
-        const query1 = `
-            UPDATE Genero g
-            SET g.nome = ?, g.administrador = ?
-            WHERE g.id = ?
+    async update(id: number, object: MusicaAprovada): Promise<void> {
+        const query = `
+            UPDATE MusicaAprovada m
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?
+            WHERE m.id = ?
         `;
 
-        await this.database.query(query1, [object.nome, object.administrador.id, id]);
+        await this.database.query(query, [object.nome, object.duracao, object.explicito, id]);
     }
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM Genero g
-            WHERE g.id = ?
+            DELETE FROM MusicaAprovada m
+            WHERE m.id = ?
         `;
 
         await this.database.query(query, [id]);
+
+        const query2 = `
+            DELETE FROM Musica m
+            WHERE m.id = ?
+        `;
+
+        await this.database.query(query2, [id]);
     }
 }

@@ -42,7 +42,7 @@ let AdminRepository = class AdminRepository {
             INSERT INTO Administrador
             VALUES (?, ?)
         `;
-        await this.database.query(query2, [insertId, object.cpf]);
+        return await this.database.query(query2, [insertId, object.cpf]);
     }
     async update(id, object) {
         const query1 = `

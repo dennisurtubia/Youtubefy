@@ -39,5 +39,5 @@ export default class Usuario {
         this._senha = value;
     }
 
-    
+
 }

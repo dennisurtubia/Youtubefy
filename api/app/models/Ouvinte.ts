@@ -1,4 +1,5 @@
-import Usuario from "./Usuario"
+import Usuario from "./Usuario";
+
 export default class Ouvinte extends Usuario {
     private _cpf: string = "";
 

@@ -49,7 +49,13 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
     }
 
     async update(id: number, object: MusicaNaoAvaliada): Promise<void> {
-        throw new Error("Method not implemented.");
+        const query = `
+            UPDATE MusicaNaoAvaliada m
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?
+            WHERE m.id = ?
+        `;
+
+        await this.database.query(query, [object.nome, object.duracao, object.explicito, id]);
     }
 
     async delete(id: number): Promise<void> {
@@ -59,5 +65,12 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
         `;
 
         await this.database.query(query, [id]);
+
+        const query2 = `
+            DELETE FROM Musica m
+            WHERE m.id = ?
+        `;
+
+        await this.database.query(query2, [id]);
     }
 }

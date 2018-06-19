@@ -2,20 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class PlaylistTemMusicaAprovada {
     constructor(playlist, musica) {
-        this._playlist = playlist;
-        this._musica = musica;
+        this._idPlaylist = 0;
+        this._idMusica = 0;
+        this._idPlaylist = playlist;
+        this._idMusica = musica;
     }
-    get playlist() {
-        return this._playlist;
+    get idPlaylist() {
+        return this._idPlaylist;
     }
-    set playlist(value) {
-        this._playlist = value;
+    set idPlaylist(value) {
+        this._idPlaylist = value;
     }
-    get musica() {
-        return this._musica;
+    get idMusica() {
+        return this._idMusica;
     }
-    set musica(value) {
-        this._musica = value;
+    set idMusica(value) {
+        this._idMusica = value;
     }
 }
 exports.default = PlaylistTemMusicaAprovada;

@@ -1,10 +1,9 @@
-import Administrador from "./Administrador";
 import Musica from "./Musica";
 
 export default class MusicaNaoAprovada extends Musica {
 
     private _dataAvaliacao!: Date;
-    private _administrador!: Administrador;
+    private _idAdministrador: number = 0;
 
     constructor(id: number, nome: string, duracao: number, explicito: boolean) {
         super(id, nome, duracao, explicito);
@@ -17,10 +16,10 @@ export default class MusicaNaoAprovada extends Musica {
         this._dataAvaliacao = value;
     }
 
-    public get administrador(): Administrador {
-        return this._administrador;
+    public get administrador(): number {
+        return this._idAdministrador;
     }
-    public set administrador(value: Administrador) {
-        this._administrador = value;
+    public set administrador(value: number) {
+        this._idAdministrador = value;
     }
 }

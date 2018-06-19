@@ -1,18 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var StatusMusica;
-(function (StatusMusica) {
-    StatusMusica[StatusMusica["Aprovada"] = 1] = "Aprovada";
-    StatusMusica[StatusMusica["NaoAprovada"] = 2] = "NaoAprovada";
-    StatusMusica[StatusMusica["NaoAvaliada"] = 3] = "NaoAvaliada";
-})(StatusMusica || (StatusMusica = {}));
 class Musica {
     constructor(id, nome, duracao, explicito) {
         this._id = 0;
         this._nome = "";
-        this._status = StatusMusica.NaoAvaliada;
         this._duracao = 0;
         this._explicito = false;
+        this._idGenero = 0;
+        this._idAlbum = 0;
         this._id = id;
         this._nome = nome;
         this._duracao = duracao;
@@ -30,18 +25,6 @@ class Musica {
     set nome(value) {
         this._nome = value;
     }
-    get status() {
-        return this._status;
-    }
-    set status(value) {
-        this._status = value;
-    }
-    get data_avaliacao() {
-        return this._data_avaliacao;
-    }
-    set data_avaliacao(value) {
-        this._data_avaliacao = value;
-    }
     get duracao() {
         return this._duracao;
     }
@@ -54,17 +37,17 @@ class Musica {
     set explicito(value) {
         this._explicito = value;
     }
-    get administrador() {
-        return this._administrador;
+    get idGenero() {
+        return this._idGenero;
     }
-    set administrador(value) {
-        this._administrador = value;
+    set idGenero(value) {
+        this._idGenero = value;
     }
-    get genero() {
-        return this._genero;
+    get idAlbum() {
+        return this._idAlbum;
     }
-    set genero(value) {
-        this._genero = value;
+    set idAlbum(value) {
+        this._idAlbum = value;
     }
 }
 exports.default = Musica;

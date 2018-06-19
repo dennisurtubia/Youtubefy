@@ -14,51 +14,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
-let GeneroRepository = class GeneroRepository {
+let MusicaAprovadaRepository = class MusicaAprovadaRepository {
     async getById(id) {
         const query = `
-            SELECT g.id, g.nome, g.administrador
-            FROM Genero g
-            WHERE g.id = ?
+            SELECT m.id, m.nome, m.duracao, m.explicito
+            FROM MusicaAprovada m
+            WHERE m.id = ?
         `;
         return await this.database.queryOne(query, [id]);
     }
     async getAll() {
         const query = `
-            SELECT g.id, g.nome, g.administrador
-            FROM Genero g
+            SELECT m.id, m.nome, m.duracao, m.explicito
+            FROM MusicaAprovada m
         `;
         return await this.database.queryAll(query, []);
     }
     async add(object) {
         const query1 = `
-            INSERT INTO Genero
-            VALUES (0, ?, ?)
+            INSERT INTO Musica
+            VALUES (0, ?, ?, ?, ?)
         `;
-        await this.database.query(query1, [object.nome, object.administrador.id]);
+        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.genero.id]);
+        const query2 = `
+            INSERT INTO MusicaAprovada
+            VALUES (?);
+        `;
+        return await this.database.query(query2, [insertId]);
     }
     async update(id, object) {
-        const query1 = `
-            UPDATE Genero g
-            SET g.nome = ?, g.administrador = ?
-            WHERE g.id = ?
+        const query = `
+            UPDATE MusicaAprovada m
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?
+            WHERE m.id = ?
         `;
-        await this.database.query(query1, [object.nome, object.administrador.id, id]);
+        await this.database.query(query, [object.nome, object.duracao, object.explicito, id]);
     }
     async delete(id) {
         const query = `
-            DELETE FROM Genero g
-            WHERE g.id = ?
+            DELETE FROM MusicaAprovada m
+            WHERE m.id = ?
         `;
         await this.database.query(query, [id]);
+        const query2 = `
+            DELETE FROM Musica m
+            WHERE m.id = ?
+        `;
+        await this.database.query(query2, [id]);
     }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", Database_1.default)
-], GeneroRepository.prototype, "database", void 0);
-GeneroRepository = __decorate([
+], MusicaAprovadaRepository.prototype, "database", void 0);
+MusicaAprovadaRepository = __decorate([
     typedi_1.Service()
-], GeneroRepository);
-exports.default = GeneroRepository;
+], MusicaAprovadaRepository);
+exports.default = MusicaAprovadaRepository;
 //# sourceMappingURL=MusicaAprovadaRepository.js.map

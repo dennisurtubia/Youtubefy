@@ -1,20 +1,19 @@
-import Publicadora from "./Publicadora";
-
 export default class Album {
     private _id: number = 0;
     private _capa: string = "";
     private _nome: string = "";
     private _nomeArtista: string = "";
     private _descricao: string = "";
-    private _publicadora!: Publicadora;
+    private _idPublicadora: number = 0;
 
-    constructor(id: number, capa: string = "", nome: string, nomeArtista: string, descricao: string = "", publicadora: Publicadora) {
+
+    constructor(id: number, capa: string = "", nome: string, nomeArtista: string, descricao: string = "", idPublicadora: number) {
         this._id = id;
         this._capa = capa;
         this._nome = nome;
         this._nomeArtista = nomeArtista;
         this._descricao = descricao;
-        this._publicadora = publicadora;
+        this._idPublicadora = idPublicadora;
     }
 
 
@@ -58,11 +57,10 @@ export default class Album {
         this._descricao = value;
     }
 
-    public get publicadora(): Publicadora {
-        return this._publicadora;
+    public get idPublicadora(): number {
+        return this._idPublicadora;
     }
-
-    public set publicadora(value: Publicadora) {
-        this._publicadora = value;
+    public set idPublicadora(value: number) {
+        this._idPublicadora = value;
     }
 }

@@ -1,9 +1,7 @@
-import Administrador from "./Administrador";
-
 export default class Genero {
     private _id: number = 0;
     private _nome: string = "";
-    private _administrador!: Administrador;
+    private _idAdministrador: number = 0;
 
     constructor(id: number, nome: string) {
         this._id = id;
@@ -24,10 +22,10 @@ export default class Genero {
         this._nome = value;
     }
 
-    public get administrador(): Administrador {
-        return this._administrador;
+    public get idAdministrador(): number {
+        return this._idAdministrador;
     }
-    public set administrador(value: Administrador) {
-        this._administrador = value;
+    public set idAdministrador(value: number) {
+        this._idAdministrador = value;
     }
 }

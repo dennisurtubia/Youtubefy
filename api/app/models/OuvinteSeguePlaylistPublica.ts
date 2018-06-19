@@ -1,26 +1,24 @@
-import Ouvinte from "./Ouvinte";
-import PlaylistPublica from "./PlaylistPublica";
-
 export default class OuvinteSeguePlaylistPublica {
-    private _ouvinte!: Ouvinte;
-    private _playlistPublica!: PlaylistPublica;
+    private _idOuvinte: number = 0;
+    private _idPlaylistPublica: number = 0;
 
-    constructor(ouvinte: Ouvinte, PlaylistPublica: PlaylistPublica) {
-        this._ouvinte = ouvinte;
-        this._playlistPublica = PlaylistPublica;
-    }
-
-    public get ouvinte(): Ouvinte {
-        return this._ouvinte;
-    }
-    public set ouvinte(value: Ouvinte) {
-        this._ouvinte = value;
+    constructor(ouvinte: number, playlistPublica: number) {
+        this._idOuvinte = ouvinte;
+        this._idPlaylistPublica = playlistPublica;
     }
 
-    public get playlistPrivada(): PlaylistPublica {
-        return this._playlistPublica;
+    public get idOuvinte(): number {
+        return this._idOuvinte;
     }
-    public set playlistPrivada(value: PlaylistPublica) {
-        this._playlistPublica = value;
+    public set idOuvinte(value: number) {
+        this._idOuvinte = value;
+    }
+
+    public get idPlaylistPrivada(): number {
+        return this._idPlaylistPublica;
+    }
+
+    public set idPlaylistPrivada(value: number) {
+        this._idPlaylistPublica = value;
     }
 }

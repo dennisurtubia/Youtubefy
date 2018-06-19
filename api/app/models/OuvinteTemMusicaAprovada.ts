@@ -1,26 +1,23 @@
-import Ouvinte from "./Ouvinte";
-import MusicaAprovada from "./MusicaAprovada";
-
 export default class OuvinteTemMusicaAprovada {
-    private _ouvinte!: Ouvinte;
-    private _musica!: MusicaAprovada;
+    private _idOuvinte: number = 0;
+    private _idMusica: number = 0;
 
-    constructor(ouvinte: Ouvinte, musica: MusicaAprovada) {
-        this._ouvinte = ouvinte;
-        this._musica = musica;
-    }
-
-    public get ouvinte(): Ouvinte {
-        return this._ouvinte;
-    }
-    public set ouvinte(value: Ouvinte) {
-        this._ouvinte = value;
+    constructor(ouvinte: number, musica: number) {
+        this._idOuvinte = ouvinte;
+        this._idMusica = musica;
     }
 
-    public get musica(): MusicaAprovada {
-        return this._musica;
+    public get idOuvinte(): number {
+        return this._idOuvinte;
     }
-    public set musica(value: MusicaAprovada) {
-        this._musica = value;
+    public set idOuvinte(value: number) {
+        this._idOuvinte = value;
+    }
+
+    public get idMusica(): number {
+        return this._idMusica;
+    }
+    public set idMusica(value: number) {
+        this._idMusica = value;
     }
 }

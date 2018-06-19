@@ -4,6 +4,7 @@ class Genero {
     constructor(id, nome) {
         this._id = 0;
         this._nome = "";
+        this._idAdministrador = 0;
         this._id = id;
         this._nome = nome;
     }
@@ -19,11 +20,11 @@ class Genero {
     set nome(value) {
         this._nome = value;
     }
-    get administrador() {
-        return this._administrador;
+    get idAdministrador() {
+        return this._idAdministrador;
     }
-    set administrador(value) {
-        this._administrador = value;
+    set idAdministrador(value) {
+        this._idAdministrador = value;
     }
 }
 exports.default = Genero;

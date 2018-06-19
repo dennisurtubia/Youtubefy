@@ -1,27 +1,23 @@
-import Playlist from "./Playlist";
-import MusicaAprovada from "./MusicaAprovada";
-
-
 export default class PlaylistTemMusicaAprovada {
-    private _playlist!: Playlist;
-    private _musica!: MusicaAprovada;
+    private _idPlaylist: number = 0;
+    private _idMusica: number = 0;
 
-    constructor(playlist: Playlist, musica: MusicaAprovada) {
-        this._playlist = playlist;
-        this._musica = musica;
-    }
-
-    public get playlist(): Playlist {
-        return this._playlist;
-    }
-    public set playlist(value: Playlist) {
-        this._playlist = value;
+    constructor(playlist: number, musica: number) {
+        this._idPlaylist = playlist;
+        this._idMusica = musica;
     }
 
-    public get musica(): MusicaAprovada {
-        return this._musica;
+    public get idPlaylist(): number {
+        return this._idPlaylist;
     }
-    public set musica(value: MusicaAprovada) {
-        this._musica = value;
+    public set idPlaylist(value: number) {
+        this._idPlaylist = value;
+    }
+
+    public get idMusica(): number {
+        return this._idMusica;
+    }
+    public set idMusica(value: number) {
+        this._idMusica = value;
     }
 }

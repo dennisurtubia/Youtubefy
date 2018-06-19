@@ -1,13 +1,10 @@
-import Album from "./Album";
-import Genero from "./Genero";
-
 export default class Musica {
     private _id: number = 0;
     private _nome: string = "";
     private _duracao: number = 0;
     private _explicito: boolean = false;
-    private _genero!: Genero;
-    private _album!: Album;
+    private _idGenero: number = 0;
+    private _idAlbum: number = 0;
 
     constructor(id: number, nome: string, duracao: number, explicito: boolean) {
         this._id = id;
@@ -44,18 +41,18 @@ export default class Musica {
         this._explicito = value;
     }
 
-    public get genero(): Genero {
-        return this._genero;
+    public get idGenero(): number {
+        return this._idGenero;
     }
 
-    public set genero(value: Genero) {
-        this._genero = value;
+    public set idGenero(value: number) {
+        this._idGenero = value;
     }
 
-    public get album(): Album {
-        return this._album;
+    public get idAlbum(): number {
+        return this._idAlbum;
     }
-    public set album(value: Album) {
-        this._album = value;
+    public set idAlbum(value: number) {
+        this._idAlbum = value;
     }
 }
