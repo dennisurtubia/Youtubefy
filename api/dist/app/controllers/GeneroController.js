@@ -85,7 +85,7 @@ let GeneroController = class GeneroController {
             return { "erro": "ADMIN_INVALIDO" };
         const generos = await this.generoRepository.getAll();
         return { "generos": generos.map((_a) => {
-                var { administrador } = _a, attrs = __rest(_a, ["administrador"]);
+                var { idAdministrador } = _a, attrs = __rest(_a, ["idAdministrador"]);
                 return attrs;
             }) };
     }
@@ -124,7 +124,7 @@ let GeneroController = class GeneroController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const genero = new Genero_1.default(0, nome);
-        genero.administrador = admin;
+        genero.idAdministrador = admin.id;
         await this.generoRepository.add(genero);
         return { "sucesso": true };
     }
@@ -165,7 +165,6 @@ let GeneroController = class GeneroController {
         const genero = await this.generoRepository.getById(req.id);
         if (genero === null)
             return { "erro": "GENERO_INVALIDO" };
-        console.log("===========" + genero.administrador.nome);
         genero.nome = req.nome;
         await this.generoRepository.update(req.id, genero);
         return { "sucesso": true };

@@ -17,7 +17,7 @@ const Database_1 = __importDefault(require("./Database"));
 let GeneroRepository = class GeneroRepository {
     async getById(id) {
         const query = `
-            SELECT g.id, g.nome, g.idAdministrador as administrador
+            SELECT g.id, g.nome, g.idAdministrador
             FROM Genero g
             WHERE g.id = ?
         `;
@@ -25,7 +25,7 @@ let GeneroRepository = class GeneroRepository {
     }
     async getAll() {
         const query = `
-            SELECT g.id, g.nome, g.idAdministrador as administrador
+            SELECT g.id, g.nome, g.idAdministrador
             FROM Genero g
         `;
         return await this.database.queryAll(query, []);
@@ -35,7 +35,7 @@ let GeneroRepository = class GeneroRepository {
             INSERT INTO Genero
             VALUES (0, ?, ?)
         `;
-        return await this.database.query(query1, [object.nome, object.administrador]);
+        return await this.database.query(query1, [object.nome, object.idAdministrador]);
     }
     async update(id, object) {
         const query1 = `
@@ -44,7 +44,7 @@ let GeneroRepository = class GeneroRepository {
             WHERE g.id = ?
         `;
         console.log(object.nome);
-        await this.database.query(query1, [object.nome, object.administrador.id, id]);
+        await this.database.query(query1, [object.nome, object.idAdministrador, id]);
     }
     async delete(id) {
         const query = `

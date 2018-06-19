@@ -26,7 +26,55 @@ export default class GeneroController {
 
     /**
      * 
-     * @api {get} /genero Listar gêneros
+     * @api {get} /genero/:id Informações do gênero
+     * @apiName InfoGenero
+     * @apiGroup Genero
+     * 
+     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+     * @apiHeaderExample {json} Exemplo Header:
+     *    { 
+     *       "token": "1234"  
+     *    }
+     * @apiSuccessExample {json} Resposta bem sucessida:
+     * {
+      *  "generos": [
+     *      {
+     *          "id": 1,
+     *          "nome": "Dennis"
+     *      },
+     *      {
+     *          "id": 2,
+     *          "nome": "Aventura"
+     *      }
+     *  ]
+     * }
+     * @apiErrorExample {json} Resposta com erro:
+     *   {
+     *        "erro": "TOKEN_INVALIDO"
+     *   } 
+     *
+     */
+    @Get("/")
+    async get(
+        @HeaderParam("token") token: string
+    ) {
+
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+
+        const generos = await this.generoRepository.getAll();
+
+        return { "generos": generos.map(({ idAdministrador, ...attrs }) => attrs) };
+    }
+
+
+    /**
+     * 
+     * @api {get} /genero Listar todos os gêneros
      * @apiName ListarGeneros
      * @apiGroup Genero
      * 
@@ -68,7 +116,7 @@ export default class GeneroController {
 
         const generos = await this.generoRepository.getAll();
 
-        return { "generos": generos.map(({ administrador, ...attrs }) => attrs) };
+        return { "generos": generos.map(({ idAdministrador, ...attrs }) => attrs) };
     }
 
     /**
@@ -114,7 +162,7 @@ export default class GeneroController {
             return { "erro": "ADMIN_INVALIDO" };
 
         const genero = new Genero(0, nome);
-        genero.administrador = admin;
+        genero.idAdministrador = admin.id;
         await this.generoRepository.add(genero);
 
         return { "sucesso": true };
@@ -163,9 +211,6 @@ export default class GeneroController {
         const genero = await this.generoRepository.getById(req.id);
         if (genero === null)
             return { "erro": "GENERO_INVALIDO" };
-
-        console.log("===========" + genero.administrador.nome);
-        
 
         genero.nome = req.nome;
         await this.generoRepository.update(req.id, genero);

@@ -14,7 +14,7 @@ export default class GeneroRepository implements IRepository<Entity> {
     async getById(id: number): Promise<Entity | null> {
 
         const query = `
-            SELECT g.id, g.nome, g.idAdministrador as administrador
+            SELECT g.id, g.nome, g.idAdministrador
             FROM Genero g
             WHERE g.id = ?
         `;
@@ -25,7 +25,7 @@ export default class GeneroRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT g.id, g.nome, g.idAdministrador as administrador
+            SELECT g.id, g.nome, g.idAdministrador
             FROM Genero g
         `;
 
@@ -39,7 +39,7 @@ export default class GeneroRepository implements IRepository<Entity> {
             VALUES (0, ?, ?)
         `;
 
-        return await this.database.query(query1, [object.nome, object.administrador]);
+        return await this.database.query(query1, [object.nome, object.idAdministrador]);
     }
 
     async update(id: number, object: Entity): Promise<void> {
@@ -51,7 +51,7 @@ export default class GeneroRepository implements IRepository<Entity> {
         `;
         console.log(object.nome);
         
-        await this.database.query(query1, [object.nome, object.administrador.id, id]);
+        await this.database.query(query1, [object.nome, object.idAdministrador, id]);
     }
 
     async delete(id: number): Promise<void> {
