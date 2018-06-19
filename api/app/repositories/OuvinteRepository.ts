@@ -14,26 +14,71 @@ export default class OuvinteRepository implements IRepository<Entity> {
     async getById(id: number): Promise<Entity | null> {
         const query = `
         SELECT a.id, a.cpf, u.nome, u.email, u.senha
-        FROM Administrador a INNER JOIN Usuario u
+        FROM Ouvinte a INNER JOIN Usuario u
         ON u.id = a.id
         AND a.id = ?
         `;
 
         return await this.database.queryOne<Entity>(query, [id]);
     }
+    async getAll(): Promise<Entity[]> {
+        const query = `
+            SELECT a.id, a.cpf, u.nome, u.email, u.senha
+            FROM Ouvinte a INNER JOIN Usuario u
+            ON u.id = a.id
+        `;
 
+        return await this.database.queryAll<Entity>(query, [])
+    }
 
-    async getAll(): Promise<Ouvinte[]> {
-        throw new Error("Method not implemented.");
+    async add(object: Entity): Promise<number> {
+
+        const query1 = `
+            INSERT INTO Usuario
+            VALUES (0, ?, ?, ?)
+        `;
+
+        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+
+        const query2 = `
+            INSERT INTO Ouvinte
+            VALUES (?, ?)
+        `;
+
+        return await this.database.query(query2, [insertId, object.cpf]);
     }
-    async add(object: Ouvinte): Promise<void> {
-        throw new Error("Method not implemented.");
+
+    async update(id: number, object: Entity): Promise<void> {
+
+        const query1 = `
+            UPDATE Ouvinte a
+            SET a.cpf = ?
+            WHERE a.id = ?
+        `;
+
+        await this.database.query(query1, [object.cpf, id]);
+
+        const query2 = `
+            UPDATE Usuario u
+            SET u.nome = ?, u.email = ?, u.senha = ?
+            WHERE u.id = ?
+        `;
+
+        await this.database.query(query2, [object.nome, object.email, object.senha, id]);
     }
-    async update(id: number, object: Ouvinte): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
+
     async delete(id: number): Promise<void> {
-        throw new Error("Method not implemented.");
+        const query = `
+            DELETE FROM Ouvinte 
+            WHERE a.id = ?
+        `;
+        await this.database.query(query, [id]);
+
+        const query2 = `
+            DELETE FROM Usuario u
+            WHERE a.id = ?
+        `;
+        await this.database.query(query2, [id]);
     }
 }
 
