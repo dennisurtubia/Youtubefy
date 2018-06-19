@@ -1,7 +1,7 @@
 {
-    "name": "example",
+    "name": "#DeathToSpotify",
     "version": "0.1.0",
-    "description": "apiDoc basic example",
-    "title": "Custom apiDoc browser title",
-    "url": "https://api.github.com/v1"
+    "description": "Documentação para o willdobill",
+    "title": "Docs",
+    "url": "https://utfmusic.me/v1"
 }

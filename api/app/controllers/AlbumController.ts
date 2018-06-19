@@ -38,6 +38,20 @@ export default class AlbumController {
      * @apiParam  {String} nomeArtista Nome do artista
      * @apiParam  {String} descricao Descrição
      * @apiParam  {Number} idPublicadora Id da publicadora
+     * @apiParam  {Number[]} musicas IDs das músicas
+     * @apiHeaderExample {json} Exemplo Header:
+     *    {
+     *       "token": "1234"       
+     *    }
+     * @apiParamExample  {json} Exemplo:
+     *    {
+     *       "capa": "https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg",
+     *       "nome": "Vou cutucar seu",
+     *       "nomeArtista": "dennis dj",
+     *       "descricao": "vem q eu vou te",
+     *       "idPublicadora": 12344321,
+     *       "musicas": [1,2,3,4,5]
+     *    }
      */
     async submitMusic(
         @HeaderParam("token") token: string,

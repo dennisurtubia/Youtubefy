@@ -16,7 +16,14 @@ define({ "api": [
             "description": "<p>Token da Publicadora (por enquanto é o id)</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Exemplo Header:",
+          "content": "{\n   \"token\": \"1234\"       \n}",
+          "type": "json"
+        }
+      ]
     },
     "parameter": {
       "fields": {
@@ -55,68 +62,26 @@ define({ "api": [
             "optional": false,
             "field": "idPublicadora",
             "description": "<p>Id da publicadora</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number[]",
+            "optional": false,
+            "field": "musicas",
+            "description": "<p>IDs das músicas</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Exemplo:",
+          "content": "{\n   \"capa\": \"https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg\",\n   \"nome\": \"Vou cutucar seu\",\n   \"nomeArtista\": \"dennis dj\",\n   \"descricao\": \"vem q eu vou te\",\n   \"idPublicadora\": 12344321,\n   \"musicas\": [1,2,3,4,5]\n}",
+          "type": "json"
+        }
+      ]
     },
     "version": "0.0.0",
-    "filename": "./api/app/controllers/AlbumController.ts",
+    "filename": "./app/controllers/AlbumController.ts",
     "groupTitle": "Album"
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "./api/apidoc/main.js",
-    "group": "_home_fjorg_Projects_ProjectBD_api_apidoc_main_js",
-    "groupTitle": "_home_fjorg_Projects_ProjectBD_api_apidoc_main_js",
-    "name": ""
-  },
-  {
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "optional": false,
-            "field": "varname1",
-            "description": "<p>No type.</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "varname2",
-            "description": "<p>With type.</p>"
-          }
-        ]
-      }
-    },
-    "type": "",
-    "url": "",
-    "version": "0.0.0",
-    "filename": "./docs/api/main.js",
-    "group": "_home_fjorg_Projects_ProjectBD_docs_api_main_js",
-    "groupTitle": "_home_fjorg_Projects_ProjectBD_docs_api_main_js",
-    "name": ""
   }
 ] });

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc --watch | nodemon --inspect ./dist/app.js --watch dist",
-    "docs": "apidoc api/app/controllers/ -e api/node_modules/  -o docs/api/"
+    "docgen": "apidoc app/controllers/ -e node_modules/  -o ../docs/api/"
   },
   "keywords": [],
   "author": "",
