@@ -1,12 +1,12 @@
-import { IsNotEmpty, IsString, IsNumber, IsBoolean } from "class-validator";
-import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
+import { IsArray, IsNotEmpty, IsNumber, IsString, IsBoolean, ValidateNested } from "class-validator";
+import { Body, HeaderParam, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
+import AlbumRepository from "../repositories/AlbumRepository";
 import { isString } from "util";
-import Administrador from "../models/Administrador";
-import AdminRepository from "../repositories/AdminRepository";
+import Album from "../models/Album";
 
-class InsertRequest {
 
+class InsertMusica {
     @IsString()
     @IsNotEmpty()
     nome: string = "";
@@ -15,17 +15,39 @@ class InsertRequest {
     duracao: number = 0;
 
     @IsBoolean()
-    explicito: boolean = false;
+    explicto: boolean = false;
+}
+
+class InsertRequest {
+    @IsString()
+    capa: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    nome: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    nomeArtista: string = "";
+
+    @IsString()
+    descricao: string = "";
+
+    @IsNumber()
+    idPublicadora: number = 0;
+
+    @IsArray()
+    @ValidateNested()
+    musicas!: InsertMusica[];
 }
 
 @JsonController("/album")
 export default class AlbumController {
 
     @Inject()
-    private adminRepository!: AdminRepository;
+    private albumRepository!: AlbumRepository;
 
 
-    @Post("/")
     /**
      * 
      * @api {post} /album Submeter album  
@@ -38,7 +60,7 @@ export default class AlbumController {
      * @apiParam  {String} nomeArtista Nome do artista
      * @apiParam  {String} descricao Descrição
      * @apiParam  {Number} idPublicadora Id da publicadora
-     * @apiParam  {Number[]} musicas IDs das músicas
+     * @apiParam  {object[]} musicas Musicas
      * @apiHeaderExample {json} Exemplo Header:
      *    {
      *       "token": "1234"       
@@ -50,12 +72,33 @@ export default class AlbumController {
      *       "nomeArtista": "dennis dj",
      *       "descricao": "vem q eu vou te",
      *       "idPublicadora": 12344321,
-     *       "musicas": [1,2,3,4,5]
+     *       "musicas": [ 
+     *                      {
+     *                          "Corsinha Amarelo",
+     *                          "duracao": 240,
+     *                          "explicito": true
+     *                      }, 
+     *                      {
+     *                          "Comprar alimento",
+     *                          "duracao": 240,
+     *                          "explicito": false
+     *                      }, 
+     *                  ]
      *    }
      */
+    @Post("/")
     async submitMusic(
         @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest) {
+
+
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        
+            const album = new Album(0, req.capa, req.nome, req.nomeArtista, req.descricao, req.idPublicadora);
+
+        await this.albumRepository.add()
 
     }
 

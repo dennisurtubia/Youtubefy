@@ -65,17 +65,17 @@ define({ "api": [
           },
           {
             "group": "Parameter",
-            "type": "Number[]",
+            "type": "object[]",
             "optional": false,
             "field": "musicas",
-            "description": "<p>IDs das músicas</p>"
+            "description": "<p>Musicas</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Exemplo:",
-          "content": "{\n   \"capa\": \"https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg\",\n   \"nome\": \"Vou cutucar seu\",\n   \"nomeArtista\": \"dennis dj\",\n   \"descricao\": \"vem q eu vou te\",\n   \"idPublicadora\": 12344321,\n   \"musicas\": [1,2,3,4,5]\n}",
+          "content": "{\n   \"capa\": \"https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg\",\n   \"nome\": \"Vou cutucar seu\",\n   \"nomeArtista\": \"dennis dj\",\n   \"descricao\": \"vem q eu vou te\",\n   \"idPublicadora\": 12344321,\n   \"musicas\": [ \n                  {\n                      \"Corsinha Amarelo\",\n                      \"duracao\": 240,\n                      \"explicito\": true\n                  }, \n                  {\n                      \"Comprar alimento\",\n                      \"duracao\": 240,\n                      \"explicito\": false\n                  }, \n              ]\n}",
           "type": "json"
         }
       ]
