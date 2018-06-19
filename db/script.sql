@@ -32,13 +32,15 @@ CREATE TABLE IF NOT EXISTS Administrador (
 );
 
 CREATE TABLE IF NOT EXISTS Album (
-  id INTEGER auto_increment,
-  nome CHAR(30) NOT NULL,
-
-  idPublicadora INTEGER NOT NULL, 
-  
-  PRIMARY KEY (id),
-  FOREIGN KEY (idPublicadora) REFERENCES Publicadora(id)
+    id INTEGER AUTO_INCREMENT,
+    capa CHAR(200),
+    nome CHAR(30) NOT NULL,
+    nomeArtista CHAR(100) NOT NULL,
+    descricao CHAR(200),
+    idPublicadora INTEGER NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (idPublicadora)
+        REFERENCES Publicadora (id)
 );
 
 CREATE TABLE IF NOT EXISTS Playlist (
@@ -159,3 +161,4 @@ SELECT o.id
         
 insert into Administrador values (1, '1111111111');
 insert into Usuario values (1, "El Administrador", "a@a.com", "isso não estará aqui futuramente" );
+select * from Usuario;

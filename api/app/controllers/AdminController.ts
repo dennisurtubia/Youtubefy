@@ -40,9 +40,6 @@ export default class AdminController {
 
 
     @Post("/")
-    /**
-    * @api {get} /user/:id
-    */
     async insertOne(
         @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest

@@ -24,37 +24,25 @@ export default class AlbumController {
     @Inject()
     private adminRepository!: AdminRepository;
 
-    @Get("/")
-    async getAll(@HeaderParam("token") token: string) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        return { "admins": await this.adminRepository.getAll() };
-    }
-
 
     @Post("/")
+    /**
+     * 
+     * @api {post} /album Submeter album  
+     * @apiName SubmitAlbum
+     * @apiGroup Album
+     * 
+     * @apiHeader {String} token Token da Publicadora (por enquanto é o id)
+     * @apiParam  {String} capa URL da capa
+     * @apiParam  {String} nome Nome
+     * @apiParam  {String} nomeArtista Nome do artista
+     * @apiParam  {String} descricao Descrição
+     * @apiParam  {Number} idPublicadora Id da publicadora
+     */
     async submitMusic(
         @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest) {
 
     }
 
-
-    @Post("/")
-    /**
-    * @api {get} /user/:id
-    */
-    async insertOne(
-        @HeaderParam("token") token: string,
-        @Body({ validate: true }) req: InsertRequest
-    ) {
-
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        const admin = new Administrador(0, req.cpf, req.nome, req.email, req.senha);
-        await this.adminRepository.add(admin);
-        return { "sucesso": true };
-    }
 }
