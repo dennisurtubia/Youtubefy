@@ -133,19 +133,14 @@ export default class AdminController {
 
     /**
     * 
-    * @api {post} /admin Inserir administrador
-    * @apiName InserirAdmin
+    * @api {post} /admin Cadastrar administrador
+    * @apiName CadastrarAdmin
     * @apiGroup Admin
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
     * @apiParam  {String} nome Nome
     * @apiParam  {String} email Email
     * @apiParam  {String} senha Senha
     * @apiParam  {String} cpf CPF
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"       
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "nome": "Doravante",
@@ -157,9 +152,13 @@ export default class AdminController {
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Email já existe:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "EMAIL_EXISTENTE"
+    *   } 
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "CAMPOS_INVALIDOS"
     *   } 
     *
     */
@@ -177,6 +176,12 @@ export default class AdminController {
 
         return { "sucesso": true };
     }
+
+    
+
+
+
+
 
     /**
     * 
