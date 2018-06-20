@@ -60,6 +60,32 @@ export default class PublicadoraController {
         return { "publicadoras": await this.publicadoraRepository.getAll() };     
     }
 
+    @Get("/:id")
+    async getById(
+        @HeaderParam("token") token: string,
+        @Param("id") id:number
+    ) {
+        if(!isString("token") || token.length <= 0)
+            return {"erro": "TOKEN_INVALIDO"};
+        
+        if(!isNumber(id))
+            return {"erro": "TOKEN_INVALIDO"};
+        
+        const publicadora = await this.publicadoraRepository.getById(id);
+        if(publicadora === null)
+            return {"erro": "PUBLICADORA_INVALIDA"};   
+
+        return {
+            "publicadora":
+                {
+                    "id": publicadora.id,
+                    "nome": publicadora.nome,
+                    "email": publicadora.email,
+                    "cnpj": publicadora.cnpj
+                }
+        };
+    }
+
     @Post("/")
     async insertOne(
         @HeaderParam("token") token: string,

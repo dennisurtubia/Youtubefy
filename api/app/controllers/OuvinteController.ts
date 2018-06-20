@@ -47,6 +47,33 @@ export default class OuvinteController {
         return { "ouvintes": await this.ouvinteRepository.getAll() };
     }
 
+    @Get("/:id")
+    async getById(
+        @HeaderParam("token") token: string,
+        @Param("id") id: number
+    ) {
+
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        if (!isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+
+        const ouvinte = await this.ouvinteRepository.getById(id);
+        if(ouvinte === null)
+            return {"erro": "OUVINTE_INVALIDO" };
+
+        return {
+            "ouvinte":
+            {
+                "id": ouvinte.id,
+                "nome": ouvinte.nome,
+                "email": ouvinte.email,
+                "cpf": ouvinte.cpf
+            }    
+        };
+    }
+
     @Post("/")
     async insertOne(
         @HeaderParam("token") token: string,
