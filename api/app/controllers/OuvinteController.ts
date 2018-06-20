@@ -1,9 +1,18 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
-import { isString } from "util";
+import { isNumber, isString } from "util";
 import Ouvinte from "../models/Ouvinte"
 import OuvinteRepository from "../repositories/OuvinteRepository"
+
+class UpdateRequest {
+    @IsNumber()
+    id: number = 0;
+
+    @IsString()
+    @IsNotEmpty()
+    nome: string = "";
+}
 
 class InsertRequest {
 
@@ -49,6 +58,42 @@ export default class OuvinteController {
         const ouvinte = new Ouvinte(0, req.cpf, req.nome, req.email, req.senha)
         await this.ouvinteRepository.add(ouvinte);
         return { "sucesso": true };
+    }
+
+    @Put("/")
+    async update(
+        @HeaderParam("token") token: string,
+        @Body({validate: true}) req: UpdateRequest
+
+    ){
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        const ouvinte = await this.ouvinteRepository.getById(req.id);
+        if(ouvinte === null)
+            return {"erro": "OUVINTE_INVALIDO"};
+        
+        await this.ouvinteRepository.update(req.id, ouvinte);
+        return {"sucesso": true};
+
+    }
+    @Delete("/")
+    async delete(
+        @HeaderParam("token") token: string,
+        @BodyParam("id") id: number
+    ) {
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        if (!isNumber(token))
+            return { "erro": "ID_INVALIDO" };
+
+        const ouvinte = await this.ouvinteRepository.getById(id);
+        if(ouvinte === null)
+            return {"erro": "OUVINTE_INVALIDO"};
+            
+        await this.ouvinteRepository.delete(id);
+        return {"sucesso": true};
     }
     
 }

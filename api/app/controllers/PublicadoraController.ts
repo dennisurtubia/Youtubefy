@@ -6,12 +6,25 @@ import Publicadora from "../models/Publicadora"
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
 class UpdateRequest {
-    @IsNumber()
-    id: number = 0;
+    @IsString()
+    @IsNotEmpty()
+    cnpj: string = "";
 
     @IsString()
     @IsNotEmpty()
     nome: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    email: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    senha: string = "";
+
+    @IsNumber()
+    @IsNotEmpty()
+    id: number = 0;
 }
 
 class InsertRequest {
@@ -44,7 +57,7 @@ export default class PublicadoraController {
         if(!isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO"};
 
-        return { "Publicadoras": await this.publicadoraRepository.getAll() };     
+        return { "publicadoras": await this.publicadoraRepository.getAll() };     
     }
 
     @Post("/")

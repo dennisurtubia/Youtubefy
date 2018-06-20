@@ -37,7 +37,7 @@ export default class AlbumRepository implements IRepository<Entity> {
             VALUES (0, ?, ?, ?, ?, ?)
         `;
 
-        return await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
+        return await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
     }
 
     async update(id: number, object: Entity): Promise<void> {
@@ -48,7 +48,7 @@ export default class AlbumRepository implements IRepository<Entity> {
             WHERE a.id = ?
         `;
 
-        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
+        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
     }
 
     async delete(id: number): Promise<void> {
