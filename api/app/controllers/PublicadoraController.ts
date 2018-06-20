@@ -1,9 +1,18 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
-import { isString } from "util";
+import { isNumber, isString } from "util";
 import Publicadora from "../models/Publicadora"
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
+
+class UpdateRequest {
+    @IsNumber()
+    id: number = 0;
+
+    @IsString()
+    @IsNotEmpty()
+    nome: string = "";
+}
 
 class InsertRequest {
 
