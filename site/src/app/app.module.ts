@@ -12,6 +12,7 @@ import { AdminComponent } from './admin/admin.component';
 import { PlayerComponent } from './player/player.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { AlbumComponent } from './album/album.component';
+import { CardMusicComponent } from './card-music/card-music.component';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -33,7 +34,8 @@ const appRoutes: Routes = [
     AdminComponent,
     PlayerComponent,
     PlaylistComponent,
-    AlbumComponent
+    AlbumComponent,
+    CardMusicComponent
   ],
   imports: [BrowserModule, RouterModule.forRoot(appRoutes)],
   providers: [],

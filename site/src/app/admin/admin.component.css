@@ -1,0 +1,6 @@
+.admin * td {
+  padding-top: 19px !important;
+}
+.admin * button {
+  margin-top: -7px;
+}
