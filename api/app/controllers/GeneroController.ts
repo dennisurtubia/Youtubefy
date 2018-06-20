@@ -25,27 +25,28 @@ export default class GeneroController {
     private adminRepository!: AdminRepository;
 
     /**
-     * 
-     * @api {get} /genero/:id Informações do gênero
-     * @apiName InfoGenero
-     * @apiGroup Genero
-     * 
-     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-     * @apiHeaderExample {json} Exemplo Header:
-     *    { 
-     *       "token": "1234"  
-     *    }
-     * @apiParam  {number} id ID do gênero
-     * @apiSuccessExample {json} Resposta bem sucessida:
-     *    {
-     *       "nome": "Ação"
-     *    }
-     * @apiErrorExample {json} Resposta com erro:
-     *   {
-     *        "erro": "TOKEN_INVALIDO"
-     *   } 
-     *
-     */
+    * 
+    * @api {get} /genero/:id Informações do gênero
+    * @apiName InfoGenero
+    * @apiGroup Genero
+    * 
+    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiHeaderExample {json} Exemplo Header:
+    *   { 
+    *       "token": "1234"  
+    *   }
+    * @apiParam  {number} id ID
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": 1,
+    *       "nome": "Ação"
+    *   }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *       "erro": "TOKEN_INVALIDO"
+    *   } 
+    *
+    */
     @Get("/:id")
     async get(
         @HeaderParam("token") token: string,
@@ -67,40 +68,47 @@ export default class GeneroController {
         if (genero === null)
             return { "erro": "GENERO_INVALIDO" };
 
-        return { "nome": genero.nome };
+        return {
+            "genero":
+            {
+                "id": genero.id,
+                "nome": genero.nome
+            }
+        };
     }
 
 
     /**
-     * 
-     * @api {get} /genero Listar todos os gêneros
-     * @apiName ListarGeneros
-     * @apiGroup Genero
-     * 
-     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-     * @apiHeaderExample {json} Exemplo Header:
-     *    { 
-     *       "token": "1234"  
-     *    }
-     * @apiSuccessExample {json} Resposta bem sucessida:
-     * {
-      *  "generos": [
-     *      {
-     *          "id": 1,
-     *          "nome": "Dennis"
-     *      },
-     *      {
-     *          "id": 2,
-     *          "nome": "Aventura"
-     *      }
-     *  ]
-     * }
-     * @apiErrorExample {json} Resposta com erro:
-     *   {
-     *        "erro": "TOKEN_INVALIDO"
-     *   } 
-     *
-     */
+    * 
+    * @api {get} /genero Listar todos os gêneros
+    * @apiName ListarGeneros
+    * @apiGroup Genero
+    * 
+    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiHeaderExample {json} Exemplo Header:
+    *   { 
+    *       "token": "1234"  
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "generos": 
+    *           [
+    *               {
+    *                   "id": 1,
+    *                   "nome": "Ação"
+    *               },
+    *               {
+    *                   "id": 2,
+    *                   "nome": "Aventura"
+    *               }
+    *           ]
+    *   }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *       "erro": "TOKEN_INVALIDO"
+    *   } 
+    *
+    */
     @Get("/")
     async getAll(
         @HeaderParam("token") token: string
@@ -119,31 +127,31 @@ export default class GeneroController {
     }
 
     /**
-     * 
-     * @api {post} /genero Inserir gênero
-     * @apiName InserirGenero
-     * @apiGroup Genero
-     * 
-     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-     * @apiParam  {String} nome Nome do gênero
-     * @apiHeaderExample {json} Exemplo Header:
-     *    {
-     *       "token": "1234"       
-     *    }
-     * @apiParamExample  {json} Exemplo:
-     *    {
-     *        "nome": "Ação"
-     *    }
-     * @apiSuccessExample {json} Resposta bem sucessida:
-     *    {
-     *        "sucesso": true
-     *    }
-     * @apiErrorExample {json} Resposta com erro:
-     *   {
-     *        "erro": "ADMIN_INVALIDO"
-     *   } 
-     *
-     */
+    * 
+    * @api {post} /genero Inserir gênero
+    * @apiName InserirGenero
+    * @apiGroup Genero
+    * 
+    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} nome Nome
+    * @apiHeaderExample {json} Exemplo Header:
+    *   {
+    *       "token": "1234"       
+    *   }
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Ação"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    *
+    */
     @Post("/")
     async insert(
         @HeaderParam("token") token: string,
@@ -174,24 +182,24 @@ export default class GeneroController {
     * @apiGroup Genero
     * 
     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiParam  {number} id ID do gênero
-    * @apiParam  {String} nome Novo nome do gênero
+    * @apiParam  {number} id ID
+    * @apiParam  {String} nome Novo nome
     * @apiHeaderExample {json} Exemplo Header:
-    *    {
+    *   {
     *       "token": "1234"       
-    *    }
+    *   }
     * @apiParamExample  {json} Exemplo:
-    *    {
-    *        "id": 1,
-    *        "nome": "Novo nome"
-    *    }
+    *   {
+    *       "id": 1,
+    *       "nome": "Novo nome"
+    *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
+    *   {
+    *       "sucesso": true
+    *   }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *        "erro": "GENERO_INVALIDO"
+    *       "erro": "GENERO_INVALIDO"
     *   } 
     *
     */
@@ -224,22 +232,22 @@ export default class GeneroController {
     * @apiGroup Genero
     * 
     * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiParam  {number} id ID do gênero
+    * @apiParam  {number} id ID
     * @apiHeaderExample {json} Exemplo Header:
-    *    {
+    *   {
     *       "token": "1234"       
-    *    }
+    *   }
     * @apiParamExample  {json} Exemplo:
-    *    {
-    *        "id": 1
-    *    }
+    *   {
+    *       "id": 1
+    *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
+    *   {
+    *       "sucesso": true
+    *   }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *        "erro": "GENERO_INVALIDO"
+    *       "erro": "GENERO_INVALIDO"
     *   } 
     *
     */
