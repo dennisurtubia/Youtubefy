@@ -21,6 +21,40 @@ const typedi_1 = require("typedi");
 const util_1 = require("util");
 const Publicadora_1 = __importDefault(require("../models/Publicadora"));
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
+class UpdateRequest {
+    constructor() {
+        this.cnpj = "";
+        this.nome = "";
+        this.email = "";
+        this.senha = "";
+        this.id = 0;
+    }
+}
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateRequest.prototype, "cnpj", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateRequest.prototype, "nome", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateRequest.prototype, "email", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateRequest.prototype, "senha", void 0);
+__decorate([
+    class_validator_1.IsNumber(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", Number)
+], UpdateRequest.prototype, "id", void 0);
 class InsertRequest {
     constructor() {
         this.cnpj = "";
@@ -53,13 +87,34 @@ let PublicadoraController = class PublicadoraController {
     async getAll(token) {
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
-        return { "Publicadoras": await this.publicadoraRepository.getAll() };
+        return { "publicadoras": await this.publicadoraRepository.getAll() };
     }
     async insertOne(token, req) {
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
         const publicadora = new Publicadora_1.default(0, req.cnpj, req.nome, req.email, req.senha);
         await this.publicadoraRepository.add(publicadora);
+        return { "sucesso": true };
+    }
+    async update(token, req) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        publicadora.cnpj = req.cnpj;
+        await this.publicadoraRepository.update(req.id, publicadora);
+        return { "sucesso": true };
+    }
+    async delete(token, id) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        if (!util_1.isNumber(token))
+            return { "erro": "ID_INVALIDO" };
+        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        await this.publicadoraRepository.delete(id);
         return { "sucesso": true };
     }
 };
@@ -82,6 +137,22 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "insertOne", null);
+__decorate([
+    routing_controllers_1.Put("/"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UpdateRequest]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Delete("/"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.BodyParam("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "delete", null);
 PublicadoraController = __decorate([
     routing_controllers_1.JsonController("/publicadora")
 ], PublicadoraController);

@@ -21,6 +21,21 @@ const typedi_1 = require("typedi");
 const util_1 = require("util");
 const Ouvinte_1 = __importDefault(require("../models/Ouvinte"));
 const OuvinteRepository_1 = __importDefault(require("../repositories/OuvinteRepository"));
+class UpdateRequest {
+    constructor() {
+        this.id = 0;
+        this.nome = "";
+    }
+}
+__decorate([
+    class_validator_1.IsNumber(),
+    __metadata("design:type", Number)
+], UpdateRequest.prototype, "id", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], UpdateRequest.prototype, "nome", void 0);
 class InsertRequest {
     constructor() {
         this.cpf = "";
@@ -62,6 +77,26 @@ let OuvinteController = class OuvinteController {
         await this.ouvinteRepository.add(ouvinte);
         return { "sucesso": true };
     }
+    async update(token, req) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        const ouvinte = await this.ouvinteRepository.getById(req.id);
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+        await this.ouvinteRepository.update(req.id, ouvinte);
+        return { "sucesso": true };
+    }
+    async delete(token, id) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        if (!util_1.isNumber(token))
+            return { "erro": "ID_INVALIDO" };
+        const ouvinte = await this.ouvinteRepository.getById(id);
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+        await this.ouvinteRepository.delete(id);
+        return { "sucesso": true };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -82,6 +117,22 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], OuvinteController.prototype, "insertOne", null);
+__decorate([
+    routing_controllers_1.Put("/"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UpdateRequest]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Delete("/"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.BodyParam("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "delete", null);
 OuvinteController = __decorate([
     routing_controllers_1.JsonController("/ouvinte")
 ], OuvinteController);

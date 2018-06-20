@@ -35,7 +35,7 @@ let AlbumRepository = class AlbumRepository {
             INSERT INTO Album
             VALUES (0, ?, ?, ?, ?, ?)
         `;
-        return await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
+        return await this.database.query(query, [object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
     }
     async update(id, object) {
         const query1 = `
@@ -43,7 +43,7 @@ let AlbumRepository = class AlbumRepository {
             SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?, a.idPublicadora = ?
             WHERE a.id = ?
         `;
-        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.publicadora.id]);
+        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
     }
     async delete(id) {
         const query = `

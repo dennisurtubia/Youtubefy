@@ -1,0 +1,22 @@
+Funcionalidades implementadas:
+
+- CRUD simples Administrador
+- CRUD simples Gênero
+- CRUD simples Ouvinte
+- CRUD simples Controller
+- Listar e avaliar músicas
+- Submeter álbum
+
+Para testar:
+1. Instalar dependências
+    
+    - Instalar Node e npm
+    - git clone https://github.com/fjorg/ProjectBD
+    - cd ProjectBD/api
+    - npm install
+
+2. Editar arquivo app/repositories/Database.ts com as credenciais do banco de dados
+3. Executar arquivo db/script.sql para criar as tabelas
+4. npm start
+5. Usar algum software para fazer requisições (Postman, curl)
+6. Documentação das APIs se encontram em docs/api/index.html
