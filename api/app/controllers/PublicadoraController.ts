@@ -49,5 +49,44 @@ export default class PublicadoraController {
         const publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, req.senha)
         await this.publicadoraRepository.add(publicadora);
         return {"sucesso": true};
-    }        
+    }   
+    
+    @Put("/")
+    async update(
+        @HeaderParam("token") token: string,
+        @Body({ validate: true }) req: UpdateRequest
+    ) {
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        publicadora.cnpj = req.cnpj;
+
+        await this.publicadoraRepository.update(req.id, publicadora);
+
+        return { "sucesso": true };
+    }
+
+    @Delete("/")
+    async delete(
+        @HeaderParam("token") token: string,
+        @BodyParam("id") id: number
+    ) {
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
+        if (!isNumber(token))
+            return { "erro": "ID_INVALIDO" };
+
+        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        await this.publicadoraRepository.delete(id);
+
+        return { "sucesso": true };
+    }
 }
