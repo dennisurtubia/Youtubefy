@@ -11,6 +11,17 @@ export default class OuvinteRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
+    async getByEmail(email: string): Promise<Entity | null> {
+        const query = `
+            SELECT u.id, o.cpf, u.nome, u.email, u.senha
+            FROM Ouvinte o INNER JOIN Usuario u
+            ON u.id = o.id
+            AND u.email = ?
+        `;
+
+        return await this.database.queryOne<Entity>(query, [email]);
+    }
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
         SELECT a.id, a.cpf, u.nome, u.email, u.senha
@@ -39,6 +50,8 @@ export default class OuvinteRepository implements IRepository<Entity> {
         `;
 
         const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        if (insertId === -1)
+            return -1;
 
         const query2 = `
             INSERT INTO Ouvinte

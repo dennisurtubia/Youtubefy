@@ -18,13 +18,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const class_validator_1 = require("class-validator");
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-const util_1 = require("util");
 const Album_1 = __importDefault(require("../models/Album"));
 const MusicaNaoAvaliada_1 = __importDefault(require("../models/MusicaNaoAvaliada"));
 const AlbumRepository_1 = __importDefault(require("../repositories/AlbumRepository"));
 const GeneroRepository_1 = __importDefault(require("../repositories/GeneroRepository"));
 const MusicaNaoAvaliadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAvaliadaRepository"));
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
+// TODO:
+/*
+    Listar, atualizar, remover álbuns. CRUD simples
+    Listar músicas do álbum. 1:n
+*/
 class InsertMusica {
     constructor() {
         this.nome = "";
@@ -56,7 +60,6 @@ class InsertRequest {
         this.nome = "";
         this.nomeArtista = "";
         this.descricao = "";
-        this.idPublicadora = 0;
     }
 }
 __decorate([
@@ -78,10 +81,6 @@ __decorate([
     __metadata("design:type", String)
 ], InsertRequest.prototype, "descricao", void 0);
 __decorate([
-    class_validator_1.IsNumber(),
-    __metadata("design:type", Number)
-], InsertRequest.prototype, "idPublicadora", void 0);
-__decorate([
     class_validator_1.IsArray(),
     class_validator_1.ValidateNested(),
     __metadata("design:type", Array)
@@ -93,24 +92,20 @@ let AlbumController = class AlbumController {
     * @apiName SubmitAlbum
     * @apiGroup Album
     *
-    * @apiHeader {String} token Token da Publicadora (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/album?token=deadbeef
     * @apiParam  {String} capa URL da capa
     * @apiParam  {String} nome Nome
     * @apiParam  {String} nomeArtista Nome do artista
     * @apiParam  {String} descricao Descrição
-    * @apiParam  {Number} idPublicadora Id da publicadora
     * @apiParam  {object[]} musicas Musicas
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "capa": "https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg",
     *       "nome": "Nome do álbum",
     *       "nomeArtista": "xxxtentacion",
     *       "descricao": "Album legal",
-    *       "idPublicadora": 1,
     *       "musicas":
     *           [
     *               {
@@ -134,14 +129,12 @@ let AlbumController = class AlbumController {
     *   }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "PUBLICADORA_INVALIDA"
     *   }
     *
     */
-    async submitAlbum(token, req) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+    async submitAlbum(email, req) {
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
         const album = new Album_1.default(0, req.capa, req.nome, req.nomeArtista, req.descricao, publicadora.id);
@@ -184,8 +177,9 @@ __decorate([
     __metadata("design:type", MusicaNaoAvaliadaRepository_1.default)
 ], AlbumController.prototype, "musicaNaoAvaliadaRepository", void 0);
 __decorate([
+    routing_controllers_1.Authorized("PUBLICADORA"),
     routing_controllers_1.Post("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, InsertRequest]),
