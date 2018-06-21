@@ -34,31 +34,43 @@ export class HomeComponent implements OnInit {
     this.playlists = [
       {
         id: "1",
+        img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
         name: "Teste 01",
         date: "01/01/2001"
       },
       {
         id: "2",
+        img:
+          "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Arctic_Monkeys_-_AM.png/220px-Arctic_Monkeys_-_AM.png",
         name: "Teste 02",
         date: "01/01/2001"
       },
       {
         id: "3",
-        name: "Teste 0444",
+        img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
+        name: "Teste 03",
         date: "01/01/2001"
       },
       {
         id: "4",
+        img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
         name: "Teste 04",
         date: "01/01/2001"
       },
       {
         id: "5",
+        img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
         name: "Teste 05",
         date: "01/01/2001"
       },
       {
         id: "6",
+        img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
         name: "Teste 06",
         date: "01/01/2001"
       }
