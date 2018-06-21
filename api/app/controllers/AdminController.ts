@@ -1,7 +1,7 @@
 import { compare, hash } from "bcrypt";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { sign } from "jsonwebtoken";
-import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Post, Put } from "routing-controllers";
+import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Administrador from "../models/Administrador";
 import AdminRepository from "../repositories/AdminRepository";
@@ -13,7 +13,6 @@ import AdminRepository from "../repositories/AdminRepository";
     Listar playlists administradas pelo admin. 1:n
     Listar músicas avaliadas pelo admin. 1:n
 */
-
 
 class InsertRequest {
 
@@ -92,54 +91,6 @@ export default class AdminController {
             }
         }
     }
-
-    // FAZ SENTIDO TER ESSA FUNÇÃO?
-    // /*
-    // * 
-    // * api_ {get} /admin Listar todos os administradores
-    // * @apiName ListarAdmins
-    // * @apiGroup Admin
-    // * 
-    // * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    // * @apiHeaderExample {json} Exemplo Header:
-    // *   { 
-    // *       "token": "1234"  
-    // *   }
-    // * @apiSuccessExample {json} Resposta bem sucessida:
-    // *   {
-    // *       "admins": 
-    // *       [
-    // *           {
-    // *               "id": "1",
-    // *               "nome": "Doravante",
-    // *               "email": "a@a.com",
-    // *               "cpf": "11111111111"
-    // *           },
-    // *           {
-    // *               "id": "2",
-    // *               "nome": "Sebastião",
-    // *               "email": "b@a.com",
-    // *               "cpf": "11111111111"
-    // *           }
-    // *       ]
-    // *   }
-    // * @apiErrorExample {json} Resposta com erro:
-    // *   {
-    // *       "erro": "TOKEN_INVALIDO"
-    // *   } 
-    // *
-    // */
-    // @Get("/")
-    // async getAll(
-    //     @HeaderParam("token") token: string
-    // ) {
-
-    //     if (!isString(token) || token.length <= 0)
-    //         return { "erro": "TOKEN_INVALIDO" };
-
-    //     const admins = await this.adminRepository.getAll();
-    //     return { "admins": admins.map(({ senha, ...attrs }) => attrs) };
-    // }
 
 
     /**
@@ -277,40 +228,6 @@ export default class AdminController {
         admin.senha = await hash(req.senha, 1024);
         admin.cpf = req.cpf;
         await this.adminRepository.update(admin.id, admin);
-
-        return { "sucesso": true };
-    }
-
-    /**
-    * 
-    * @api {delete} /admin Remover administrador
-    * @apiName RemoverAdmin
-    * @apiGroup Admin
-    * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
-    *   } 
-    *
-    */
-    @Authorized("ADMIN")
-    @Delete("/")
-    async delete(
-        @CurrentUser({ required: true }) email: string
-    ) {
-
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
-
-        await this.adminRepository.delete(admin.id);
 
         return { "sucesso": true };
     }

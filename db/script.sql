@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS ProjectBD;
 CREATE DATABASE IF NOT EXISTS ProjectBD;
 USE ProjectBD;
 
+
 CREATE TABLE IF NOT EXISTS Usuario (
     id INTEGER AUTO_INCREMENT,
     nome CHAR(30) NOT NULL,
@@ -153,4 +154,4 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
   FOREIGN KEY(idMusicaAprovada) REFERENCES MusicaAprovada(id)
 );
 
-select * from Genero;
+

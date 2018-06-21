@@ -109,51 +109,6 @@ let AdminController = class AdminController {
             }
         };
     }
-    // FAZ SENTIDO TER ESSA FUNÇÃO?
-    // /*
-    // * 
-    // * api_ {get} /admin Listar todos os administradores
-    // * @apiName ListarAdmins
-    // * @apiGroup Admin
-    // * 
-    // * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    // * @apiHeaderExample {json} Exemplo Header:
-    // *   { 
-    // *       "token": "1234"  
-    // *   }
-    // * @apiSuccessExample {json} Resposta bem sucessida:
-    // *   {
-    // *       "admins": 
-    // *       [
-    // *           {
-    // *               "id": "1",
-    // *               "nome": "Doravante",
-    // *               "email": "a@a.com",
-    // *               "cpf": "11111111111"
-    // *           },
-    // *           {
-    // *               "id": "2",
-    // *               "nome": "Sebastião",
-    // *               "email": "b@a.com",
-    // *               "cpf": "11111111111"
-    // *           }
-    // *       ]
-    // *   }
-    // * @apiErrorExample {json} Resposta com erro:
-    // *   {
-    // *       "erro": "TOKEN_INVALIDO"
-    // *   } 
-    // *
-    // */
-    // @Get("/")
-    // async getAll(
-    //     @HeaderParam("token") token: string
-    // ) {
-    //     if (!isString(token) || token.length <= 0)
-    //         return { "erro": "TOKEN_INVALIDO" };
-    //     const admins = await this.adminRepository.getAll();
-    //     return { "admins": admins.map(({ senha, ...attrs }) => attrs) };
-    // }
     /**
     *
     * @api {post} /admin/signup Cadastrar administrador
@@ -268,32 +223,6 @@ let AdminController = class AdminController {
         await this.adminRepository.update(admin.id, admin);
         return { "sucesso": true };
     }
-    /**
-    *
-    * @api {delete} /admin Remover administrador
-    * @apiName RemoverAdmin
-    * @apiGroup Admin
-    *
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
-    *   }
-    *
-    */
-    async delete(email) {
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
-        await this.adminRepository.delete(admin.id);
-        return { "sucesso": true };
-    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -330,14 +259,6 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "update", null);
-__decorate([
-    routing_controllers_1.Authorized("ADMIN"),
-    routing_controllers_1.Delete("/"),
-    __param(0, routing_controllers_1.CurrentUser({ required: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "delete", null);
 AdminController = __decorate([
     routing_controllers_1.JsonController("/admin")
 ], AdminController);

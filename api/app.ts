@@ -9,12 +9,13 @@ import AdminRepository from "./app/repositories/AdminRepository";
 import OuvinteRepository from "./app/repositories/OuvinteRepository";
 import PublicadoraRepository from "./app/repositories/PublicadoraRepository";
 import MusicaController from "./app/controllers/MusicaController";
+import AlbumController from "./app/controllers/AlbumController";
 
 useContainer(Container);
 
 const app = createExpressServer({
     controllers: [GeneroController, AdminController, PublicadoraController,
-        MusicaController],
+        MusicaController, AlbumController],
     authorizationChecker: async (action: Action, roles: string[]) => {
 
         const token = action.request.query.token;

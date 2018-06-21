@@ -79,6 +79,33 @@ let MusicaController = class MusicaController {
     }
     /**
     *
+    * @api {get} /musica/aprovadas Listar músicas aprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    */
+    async getAprovadas(email) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+        const musicas = await this.musicaAprovadaRepository.getAll();
+        return {
+            "aprovadas": musicas
+        };
+    }
+    /**
+    *
     * @api {post} /musica/avaliar Aprovar/Reprovar música
     * @apiName AvaliarMusica
     * @apiGroup Musica
@@ -177,6 +204,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], MusicaController.prototype, "getNaoAvaliadas", null);
+__decorate([
+    routing_controllers_1.Authorized("ADMIN"),
+    routing_controllers_1.Get("/aprovadas"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MusicaController.prototype, "getAprovadas", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Post("/avaliar"),
