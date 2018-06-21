@@ -14,6 +14,8 @@ import { PlaylistComponent } from "./playlist/playlist.component";
 import { AlbumComponent } from "./album/album.component";
 import { CardMusicComponent } from "./card-music/card-music.component";
 import { MyMusicComponent } from "./my-music/my-music.component";
+import { GlobalsComponent } from "./globals/globals.component";
+import { Ng2Webstorage } from "ngx-webstorage";
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -39,9 +41,10 @@ const appRoutes: Routes = [
     PlaylistComponent,
     AlbumComponent,
     CardMusicComponent,
-    MyMusicComponent
+    MyMusicComponent,
+    GlobalsComponent
   ],
-  imports: [BrowserModule, RouterModule.forRoot(appRoutes)],
+  imports: [BrowserModule, RouterModule.forRoot(appRoutes), Ng2Webstorage],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -68,7 +68,7 @@ body {
   -webkit-transition: all ease-in-out 0.1s;
 }
 .sidebar ul li:hover {
-  color: rgb(196, 196, 196);
+  color: rgb(210, 210, 210);
   padding-left: 5px;
   cursor: pointer;
 }

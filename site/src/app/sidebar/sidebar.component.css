@@ -1,0 +1,6 @@
+.active {
+  color: rgb(210, 210, 210);
+}
+.active:hover {
+  padding-left: 0 !important;
+}

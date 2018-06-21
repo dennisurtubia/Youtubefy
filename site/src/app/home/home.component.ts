@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 
 @Component({
   selector: "app-home",
@@ -10,7 +11,16 @@ export class HomeComponent implements OnInit {
   items: any[];
   current: any[];
   page: number;
-  constructor() {
+  constructor(
+    private localSt: LocalStorageService,
+    private sessionSt: SessionStorageService
+  ) {
+    if (this.localSt.retrieve("page") === null) {
+      this.localSt.store("page", "1");
+      this.page = 1;
+    } else {
+      this.page = this.localSt.retrieve("page");
+    }
     this.current = [
       {
         img:
@@ -21,26 +31,32 @@ export class HomeComponent implements OnInit {
     ];
     this.playlists = [
       {
+        id: "1";
         name: "Teste 01",
         date: "01/01/2001"
       },
       {
+        id: "2";
         name: "Teste 02",
         date: "01/01/2001"
       },
       {
-        name: "Teste 03",
+        id: "3";
+        name: "Teste 0444",
         date: "01/01/2001"
       },
       {
+        id: "4";
         name: "Teste 04",
         date: "01/01/2001"
       },
       {
+        id: "5";
         name: "Teste 05",
         date: "01/01/2001"
       },
       {
+        id: "6";
         name: "Teste 06",
         date: "01/01/2001"
       }
@@ -102,8 +118,9 @@ export class HomeComponent implements OnInit {
       }
     ];
   }
-  changePage(pageNumber) {
+  changePage(pageNumber: number) {
     this.page = pageNumber;
   }
+  
   ngOnInit() {}
 }
