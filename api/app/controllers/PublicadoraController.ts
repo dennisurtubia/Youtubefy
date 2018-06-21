@@ -112,14 +112,14 @@ export default class PublicadoraController {
         @Body({ validate: true }) req: InsertRequest
     ) {
 
-        let admin = await this.publicadoraRepository.getByEmail(req.email);
-        if (admin !== null)
+        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
+        if (publicadora !== null)
             return { "erro": "EMAIL_EXISTENTE" };
 
         const hashSenha = await hash(req.senha, 1024);
-        admin = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
+        publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
 
-        const insertId = await this.publicadoraRepository.add(admin);
+        const insertId = await this.publicadoraRepository.add(publicadora);
         if (insertId === -1)
             return { "erro": "ERRO_BD" };
 
