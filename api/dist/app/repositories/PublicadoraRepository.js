@@ -15,6 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let PublicadoraRepository = class PublicadoraRepository {
+    async getByEmail(email) {
+        const query = `
+            SELECT u.id, p.cnpj, u.nome, u.email, u.senha
+            FROM Publicadora p INNER JOIN Usuario u
+            ON u.id = p.id
+            AND u.email = ?
+        `;
+        return await this.database.queryOne(query, [email]);
+    }
     async getById(id) {
         const query = `
             SELECT a.id, a.cnpj, u.nome, u.email, u.senha
@@ -38,6 +47,8 @@ let PublicadoraRepository = class PublicadoraRepository {
             VALUES (0, ?, ?, ?)
         `;
         const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        if (insertId === -1)
+            return -1;
         const query2 = `
             INSERT INTO Publicadora
             VALUES (?, ?)
@@ -48,7 +59,7 @@ let PublicadoraRepository = class PublicadoraRepository {
         const query1 = `
             UPDATE Publicadora a
             SET a.cpnj = ?
-            WHERE a.id
+            WHERE a.id = ?
         `;
         await this.database.query(query1, [object.cnpj, id]);
         const query2 = `

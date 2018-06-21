@@ -83,11 +83,35 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "senha", void 0);
+// TODO:
+/*
+    Adicionar jwt
+    Documentar
+    Listar albuns da publicadora. 1:n
+
+*/
 let PublicadoraController = class PublicadoraController {
     async getAll(token) {
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
         return { "publicadoras": await this.publicadoraRepository.getAll() };
+    }
+    async getById(token, id) {
+        if (!util_1.isString("token") || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        if (!util_1.isNumber(id))
+            return { "erro": "TOKEN_INVALIDO" };
+        const publicadora = await this.publicadoraRepository.getById(id);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        return {
+            "publicadora": {
+                "id": publicadora.id,
+                "nome": publicadora.nome,
+                "email": publicadora.email,
+                "cnpj": publicadora.cnpj
+            }
+        };
     }
     async insertOne(token, req) {
         if (!util_1.isString(token) || token.length <= 0)
@@ -129,6 +153,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "getAll", null);
+__decorate([
+    routing_controllers_1.Get("/:id"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "getById", null);
 __decorate([
     routing_controllers_1.Post("/"),
     __param(0, routing_controllers_1.HeaderParam("token")),

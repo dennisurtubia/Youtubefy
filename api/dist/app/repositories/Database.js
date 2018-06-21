@@ -22,25 +22,40 @@ let Database = class Database {
         if (this.connection == null) {
             await this.init();
         }
-        const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
-        if (rows.length > 0) {
-            return rows[0];
+        try {
+            const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
+            if (rows.length > 0) {
+                return rows[0];
+            }
+            return null;
         }
-        return null;
+        catch (err) {
+            return null;
+        }
     }
     async queryAll(str, args) {
         if (this.connection == null) {
             await this.init();
         }
-        const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
-        return rows;
+        try {
+            const [rows] = await this.connection.execute(str, args).catch(e => { throw e; });
+            return rows;
+        }
+        catch (err) {
+            return [];
+        }
     }
     async query(str, args) {
         if (this.connection == null) {
             await this.init();
         }
-        const result = await this.connection.execute(str, args).catch(e => { throw e; });
-        return result["0"].insertId;
+        try {
+            const result = await this.connection.execute(str, args).catch(e => { throw e; });
+            return result["0"].insertId;
+        }
+        catch (err) {
+            return -1;
+        }
     }
 };
 Database = __decorate([

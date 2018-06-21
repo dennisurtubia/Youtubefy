@@ -26,3 +26,55 @@ Retorna ao passo 2a.2
 Caso de uso: <<CRUD>> Gerenciar gênero
 1. O ator Administrador entra no menu de gêneros
 2. O sistema lista todos os gêneros cadastrados e para 
+
+
+------------------------
+Caso de uso: Avaliar música
+1. O ator administrador faz login no sistema
+2. O sistema mostra o dashboard do administrador
+3. O ator administrador escolhe uma das 3 variantes:
+	3.1 Variante: Aprovar Músicas
+	3.2 Variante: Listar Músicas aprovadas
+	3.3 Variante: Listar Músicas não aprovadas
+
+Variante 3.1: Aprovar Músicas
+3.1.1. O ator Administrador clica na opção "Aguardando aprovação"
+3.1.2. O sistema mostra uma lista de músicas em aprovação juntamente com as opções de aprovar e reprovar
+3.1.3. O ator Administrador clica em Aprovar ou Reprovar 
+3.1.4. O sistema salva a música na devida lista, Aprovada ou Reprovada
+
+Variante 3.2: Listar Músicas aprovadas
+3.2.1. O ator Administrador clica na opção "Aprovadas"
+3.2.2. O sistema mostra uma lista de músicas aprovadas juntamente com a opção de reprovar música
+
+Variante 3.3: Listar Músicas não aprovadas
+3.3.1 O ator Administrador clica na opção "Reprovadas"
+3.3.2. O sistema mostra uma lista de músicas reprovadas juntamente com a opção de aprovar música
+
+------------------------
+Caso de uso: <<CRUD>> Gerenciar álbum
+1. O ator Publisher faz login no sistema
+2. O sistema mostra a dashboard do administrador
+3. O ator Publisher escolhe umas 3 das variantes
+	3.1 Variante: Submeter novo Álbum
+	3.2 Variante: Editar Álbum
+	3.3 Variante: Procurar Álbum
+
+3.1. Variante: Submeter novo Álbum
+3.1.1. O ator Publisher clica em "Submeter novo Álbum"
+3.1.2. O sistema abre um Modal com os campos necessários
+3.1.3. O ator Publisher preenche os campos, adiciona as músicas e submete o álbum
+3.1.4. O sistema salva o Álbum.
+
+3.2. Variante: Editar Álbum
+3.2.1. O ator Publisher clica sobre o Álbum desejado a ser editado
+3.2.2. O sistema abre um Modal com os campos necessários para editar as informações do álbum
+3.2.3. O ator Publisher preenche os campos para editar e submete as edições
+3.2.4. O sistema salva as edições
+ 
+3.3 Variante: Procurar Álbum
+3.3.1. O ator Publisher clica no campo "Pesquisar" e digita o nome do Álbum
+3.3.2. O sistema mostra os álbuns correspondentes à pesquisa
+
+------------------------
+

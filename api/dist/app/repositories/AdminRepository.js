@@ -15,6 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let AdminRepository = class AdminRepository {
+    async getByEmail(email) {
+        const query = `
+            SELECT a.id, a.cpf, u.nome, u.email, u.senha
+            FROM Administrador a INNER JOIN Usuario u
+            ON u.id = a.id
+            AND u.email = ?
+        `;
+        return await this.database.queryOne(query, [email]);
+    }
     async getById(id) {
         const query = `
             SELECT a.id, a.cpf, u.nome, u.email, u.senha
@@ -38,6 +47,8 @@ let AdminRepository = class AdminRepository {
             VALUES (0, ?, ?, ?)
         `;
         const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        if (insertId === -1)
+            return -1;
         const query2 = `
             INSERT INTO Administrador
             VALUES (?, ?)
@@ -60,13 +71,13 @@ let AdminRepository = class AdminRepository {
     }
     async delete(id) {
         const query = `
-            DELETE FROM Administrador a
-            WHERE a.id = ?
+            DELETE FROM Administrador
+            WHERE id = ?
         `;
         await this.database.query(query, [id]);
         const query2 = `
-            DELETE FROM Usuario u
-            WHERE a.id = ?
+            DELETE FROM Usuario
+            WHERE id = ?
         `;
         await this.database.query(query2, [id]);
     }

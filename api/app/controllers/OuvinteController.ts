@@ -33,6 +33,16 @@ class InsertRequest {
     senha: string = "";
 }
 
+// TODO: 
+/*
+    Adicionar jwt
+    Documentar
+    Listar, adicionar, remover músicas. n:n
+    Listar, adicionar, remover playlists privadas. n:n
+    Listar, seguir, deixar de seguir playlists públicas. n:n
+*/
+
+
 @JsonController("/ouvinte")
 export default class OuvinteController {
 

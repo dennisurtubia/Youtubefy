@@ -1,7 +1,6 @@
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
-import { Body, HeaderParam, JsonController, Post } from "routing-controllers";
+import { Authorized, Body, CurrentUser, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
-import { isString } from "util";
 import Album from "../models/Album";
 import MusicaNaoAvaliada from "../models/MusicaNaoAvaliada";
 import AlbumRepository from "../repositories/AlbumRepository";
@@ -9,6 +8,11 @@ import GeneroRepository from "../repositories/GeneroRepository";
 import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
+// TODO:
+/*
+    Listar, atualizar, remover álbuns. CRUD simples
+    Listar músicas do álbum. 1:n
+*/
 
 class InsertMusica {
     @IsString()
@@ -40,9 +44,6 @@ class InsertRequest {
     @IsString()
     descricao: string = "";
 
-    @IsNumber()
-    idPublicadora: number = 0;
-
     @IsArray()
     @ValidateNested()
     musicas!: InsertMusica[];
@@ -70,24 +71,20 @@ export default class AlbumController {
     * @apiName SubmitAlbum
     * @apiGroup Album
     * 
-    * @apiHeader {String} token Token da Publicadora (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/album?token=deadbeef
     * @apiParam  {String} capa URL da capa
     * @apiParam  {String} nome Nome
     * @apiParam  {String} nomeArtista Nome do artista
     * @apiParam  {String} descricao Descrição
-    * @apiParam  {Number} idPublicadora Id da publicadora
     * @apiParam  {object[]} musicas Musicas
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"       
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "capa": "https://pcache-pv-us1.badoocdn.com/p506/20486/2/1/4/1400806059/d1328272/t1508588594/c_8wBXuXaC94VXLn8hjatW9rorFe6zZV6LJGIETpAZlJo/1328272751/dfs_360/sz___size__.jpg",
     *       "nome": "Nome do álbum",
     *       "nomeArtista": "xxxtentacion",
     *       "descricao": "Album legal",
-    *       "idPublicadora": 1,
     *       "musicas": 
     *           [ 
     *               {
@@ -111,19 +108,18 @@ export default class AlbumController {
     *   }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "PUBLICADORA_INVALIDA"
     *   } 
     *
     */
+    @Authorized("PUBLICADORA")
     @Post("/")
     async submitAlbum(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @Body({ validate: true }) req: InsertRequest) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
 

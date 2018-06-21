@@ -1,9 +1,9 @@
 import { IsEnum, IsNumber } from "class-validator";
-import { Body, Get, HeaderParam, JsonController, Post } from "routing-controllers";
+import { Authorized, Body, CurrentUser, Get, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
-import { isString } from "util";
 import MusicaAprovada from "../models/MusicaAprovada";
 import MusicaNaoAprovada from "../models/MusicaNaoAprovada";
+import AdminRepository from "../repositories/AdminRepository";
 import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 import MusicaNaoAprovadaRepository from "../repositories/MusicaNaoAprovadaRepository";
 import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
@@ -22,8 +22,18 @@ class AvaliarRequest {
     avaliacao: Avaliacao = Avaliacao.Reprovado;
 }
 
+// TODO:
+/*
+    Documentar
+    Exluir, atualizar. CRUD simples
+
+*/
+
 @JsonController("/musica")
 export default class MusicaController {
+
+    @Inject()
+    private adminRepository!: AdminRepository;
 
     @Inject()
     private musicaAprovadaRepository!: MusicaAprovadaRepository;
@@ -34,23 +44,30 @@ export default class MusicaController {
     @Inject()
     private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
 
+    @Authorized("ADMIN")
     @Get("/nao-avaliadas")
-    async getNaoAvaliadas(@HeaderParam("token") token: string) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async getNaoAvaliadas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+
         return {
             "naoAvaliadas": await this.musicaNaoAvaliadaRepository.getAll()
         };
     }
 
+    @Authorized("ADMIN")
     @Post("/avaliar")
     async avaliar(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @Body() req: AvaliarRequest
     ) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
 
         const musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
         if (musica === null)

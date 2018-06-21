@@ -1,3 +1,56 @@
-<p>
-  home works!
-</p>
+<app-sidebar [current]="current" [playlists]="playlists"></app-sidebar>
+<div class="col-md-10 offset-md-2 main-content">
+  <div *ngIf="localSt.retrieve('page') === 4">
+    <app-my-music></app-my-music>
+  </div>
+  <div *ngIf="localSt.retrieve('page') === 3">
+    <app-playlist></app-playlist>
+  </div>
+  <div *ngIf="localSt.retrieve('page') === 2 ">
+    <app-album></app-album>
+  </div>
+  <div class="homePage" *ngIf="localSt.retrieve('page') === 1 ">
+    <h4>Musicas da sua última playlist</h4>
+    <div class="row ">
+      <div class="col-md-2 " *ngFor="let item of items ">
+        <app-card-music [img]="item.img " [author]="item.author " [title]="item.title "></app-card-music>
+      </div>
+    </div>
+    <h4>Suas playlists</h4>
+    <div class="row ">
+
+    </div>
+    <h4>Álbuns salvos</h4>
+    <div class="row ">
+
+    </div>
+  </div>
+
+  <div class="player ">
+    <audio controls>
+      <source src="https://phoenix-g5.sscdn.co/palcomp3/f/3/d/d/mcmm-e-dj-rd-so-quer-vrau-70241d42.mp3" type="audio/mpeg">
+    </audio>
+    <div class="col-md-6 offset-md-4 ">
+      <div class="row">
+        <input type="range" name="musiclength" id="">
+        <div class="col-md-4 offset-md-4 ">
+          <i class="fas fa-backward "></i>
+          <i class="fas fa-play "></i>
+          <i class="fas fa-forward "></i>
+        </div>
+        <div class="col-md-2 offset-md-2 volume ">
+
+          <!-- <div class="row ">
+                  <i class="fas fa-volume-up "></i>
+                  <input type="range " name="volume " id=" ">
+              </div> -->
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

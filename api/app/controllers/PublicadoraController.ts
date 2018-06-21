@@ -46,11 +46,20 @@ class InsertRequest {
     senha: string = "";
 }
 
+// TODO:
+/*
+    Adicionar jwt
+    Documentar
+    Listar albuns da publicadora. 1:n
+
+*/
+
 @JsonController("/publicadora")
 export default class PublicadoraController {
 
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
+    
     
     @Get("/")
     async getAll(@HeaderParam("token") token: string) {

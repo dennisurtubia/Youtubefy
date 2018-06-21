@@ -7,15 +7,20 @@ import { AppComponent } from "./app.component";
 import { LoginComponent } from "./login/login.component";
 import { SignupComponent } from "./signup/signup.component";
 import { HomeComponent } from "./home/home.component";
-import { PublisherComponent } from './publisher/publisher.component';
-import { AdminComponent } from './admin/admin.component';
-import { PlayerComponent } from './player/player.component';
-import { PlaylistComponent } from './playlist/playlist.component';
-import { AlbumComponent } from './album/album.component';
-import { CardMusicComponent } from './card-music/card-music.component';
+import { PublisherComponent } from "./publisher/publisher.component";
+import { AdminComponent } from "./admin/admin.component";
+import { PlayerComponent } from "./player/player.component";
+import { PlaylistComponent } from "./playlist/playlist.component";
+import { AlbumComponent } from "./album/album.component";
+import { CardMusicComponent } from "./card-music/card-music.component";
+import { MyMusicComponent } from "./my-music/my-music.component";
+import { GlobalsComponent } from "./globals/globals.component";
+import { Ng2Webstorage } from "ngx-webstorage";
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
+  { path: "publisher", component: PublisherComponent },
+  { path: "admin", component: AdminComponent },
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
   { path: "**", component: PageNotFoundComponent }
@@ -35,9 +40,11 @@ const appRoutes: Routes = [
     PlayerComponent,
     PlaylistComponent,
     AlbumComponent,
-    CardMusicComponent
+    CardMusicComponent,
+    MyMusicComponent,
+    GlobalsComponent
   ],
-  imports: [BrowserModule, RouterModule.forRoot(appRoutes)],
+  imports: [BrowserModule, RouterModule.forRoot(appRoutes), Ng2Webstorage],
   providers: [],
   bootstrap: [AppComponent]
 })
