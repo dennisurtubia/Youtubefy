@@ -1,8 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsEmail } from "class-validator";
 import { Body, Delete, Get, JsonController, Post, Put, Authorized, CurrentUser } from "routing-controllers";
 import { Inject } from "typedi";
 import Publicadora from "../models/Publicadora"
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
+import { hash, compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 
 class InsertRequest {
 
@@ -23,6 +25,16 @@ class InsertRequest {
     senha: string = "";
 }
 
+class LoginRequest {
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    email: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    senha: string = "";
+}
 // TODO:
 /*
     Adicionar jwt
@@ -57,17 +69,7 @@ export default class PublicadoraController {
                     "cnpj": publicadora.cnpj
                 }
         };
-    }
-
-    @Post("/")
-    async insertOne(
-        @Body({required: true}) req: InsertRequest
-    ) {
-        
-        const publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, req.senha)
-        await this.publicadoraRepository.add(publicadora);
-        return {"sucesso": true};
-    }   
+    }  
     
     @Authorized("PUBLICADORA")
     @Put("/")
@@ -85,6 +87,43 @@ export default class PublicadoraController {
         publicadora.senha = req.senha;
 
         return {"sucesso": true};
+    }
+
+    @Post("/signin")
+    async signin(
+        @Body({ validate: true }) req: LoginRequest
+    ) {
+
+        let admin = await this.publicadoraRepository.getByEmail(req.email);
+        if (admin === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const match = await compare(req.senha, admin.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const token = sign(admin.email, "supersecret");
+
+        return { "token": token };
+    }
+
+    @Post("/signup")
+    async insert(
+        @Body({ validate: true }) req: InsertRequest
+    ) {
+
+        let admin = await this.publicadoraRepository.getByEmail(req.email);
+        if (admin !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+
+        const hashSenha = await hash(req.senha, 1024);
+        admin = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
+
+        const insertId = await this.publicadoraRepository.add(admin);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+
+        return { "sucesso": true };
     }
 
     @Authorized("PUBLICADORA")
