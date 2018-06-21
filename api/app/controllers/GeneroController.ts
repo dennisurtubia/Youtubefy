@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
+import { Authorized, Body, BodyParam, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import { isNumber, isString } from "util";
 import Genero from "../models/Genero";
@@ -14,6 +14,11 @@ class UpdateRequest {
     @IsNotEmpty()
     nome: string = "";
 }
+
+// TODO:
+/*
+    Listar músicas pertencentes ao gênero. 1:n
+*/
 
 @JsonController("/genero")
 export default class GeneroController {
@@ -30,36 +35,40 @@ export default class GeneroController {
     * @apiName InfoGenero
     * @apiGroup Genero
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   { 
-    *       "token": "1234"  
-    *   }
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "id": 1,
     *       "nome": "Ação"
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} ID gênero inválido:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "ID_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Admin inváludo:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Gênero inváludo:
+    *   {
+    *       "erro": "GENERO_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Get("/:id")
     async get(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @Param("id") id: number
     ) {
-
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
         if (!isNumber(id))
             return { "erro": "ID_INVALIDO" };
 
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
@@ -84,11 +93,9 @@ export default class GeneroController {
     * @apiName ListarGeneros
     * @apiGroup Genero
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   { 
-    *       "token": "1234"  
-    *   }
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "generos": 
@@ -103,21 +110,19 @@ export default class GeneroController {
     *               }
     *           ]
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "ADMIN_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Get("/")
     async getAll(
-        @HeaderParam("token") token: string
+        @CurrentUser({ required: true }) email: string,
     ) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
@@ -132,12 +137,10 @@ export default class GeneroController {
     * @apiName InserirGenero
     * @apiGroup Genero
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {String} nome Nome
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"       
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "nome": "Ação"
@@ -146,25 +149,27 @@ export default class GeneroController {
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
     *   {
     *       "erro": "ADMIN_INVALIDO"
     *   } 
+    * @apiErrorExample {json} Nome inválido:
+    *   {
+    *       "erro": "NOME_INVALIDO"
+    *   } 
     *
     */
+    @Authorized("ADMIN")
     @Post("/")
     async insert(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @BodyParam("nome") nome: string
     ) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
         if (!isString(nome) || nome.length <= 0)
-            return { "erro": "ERRO_BODY" };
+            return { "erro": "NOME_INVALIDO" };
 
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
@@ -181,13 +186,11 @@ export default class GeneroController {
     * @apiName AtualizarGenero
     * @apiGroup Genero
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
     * @apiParam  {String} nome Novo nome
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"       
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "id": 1,
@@ -197,21 +200,25 @@ export default class GeneroController {
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Admin inválido:
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Put("/")
     async update(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @Body({ validate: true }) req: UpdateRequest
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
@@ -231,38 +238,39 @@ export default class GeneroController {
     * @apiName RemoverGenero
     * @apiGroup Genero
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"       
-    *   }
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "id": 1
-    *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} ID inválido:
+    *   {
+    *       "erro": "ID_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Gênero inválido:
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Delete("/")
     async delete(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @BodyParam("id") id: number
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
         if (!isNumber(id))
             return { "erro": "ID_INVALIDO" };
 
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 

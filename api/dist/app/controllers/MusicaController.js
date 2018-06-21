@@ -18,9 +18,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const class_validator_1 = require("class-validator");
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-const util_1 = require("util");
 const MusicaAprovada_1 = __importDefault(require("../models/MusicaAprovada"));
 const MusicaNaoAprovada_1 = __importDefault(require("../models/MusicaNaoAprovada"));
+const AdminRepository_1 = __importDefault(require("../repositories/AdminRepository"));
 const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
 const MusicaNaoAprovadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAprovadaRepository"));
 const MusicaNaoAvaliadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAvaliadaRepository"));
@@ -43,17 +43,25 @@ __decorate([
     class_validator_1.IsEnum(Avaliacao),
     __metadata("design:type", String)
 ], AvaliarRequest.prototype, "avaliacao", void 0);
+// TODO:
+/*
+    Documentar
+    Exluir, atualizar. CRUD simples
+
+*/
 let MusicaController = class MusicaController {
-    async getNaoAvaliadas(token) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async getNaoAvaliadas(email) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
         return {
             "naoAvaliadas": await this.musicaNaoAvaliadaRepository.getAll()
         };
     }
-    async avaliar(token, req) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async avaliar(email, req) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
         const musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
         if (musica === null)
             return { "erro": "MUSICA_INVALIDA" };
@@ -71,6 +79,10 @@ let MusicaController = class MusicaController {
 };
 __decorate([
     typedi_1.Inject(),
+    __metadata("design:type", AdminRepository_1.default)
+], MusicaController.prototype, "adminRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
     __metadata("design:type", MusicaAprovadaRepository_1.default)
 ], MusicaController.prototype, "musicaAprovadaRepository", void 0);
 __decorate([
@@ -82,15 +94,17 @@ __decorate([
     __metadata("design:type", MusicaNaoAvaliadaRepository_1.default)
 ], MusicaController.prototype, "musicaNaoAvaliadaRepository", void 0);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/nao-avaliadas"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], MusicaController.prototype, "getNaoAvaliadas", null);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Post("/avaliar"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, AvaliarRequest]),

@@ -1,9 +1,18 @@
-import { IsNotEmpty, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
+import { compare, hash } from "bcrypt";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { sign } from "jsonwebtoken";
+import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
-import { isNumber, isString } from "util";
 import Administrador from "../models/Administrador";
 import AdminRepository from "../repositories/AdminRepository";
+
+
+// TODO:
+/*
+    Listar gêneros administrados pelo admin. 1:n
+    Listar playlists administradas pelo admin. 1:n
+    Listar músicas avaliadas pelo admin. 1:n
+*/
 
 class InsertRequest {
 
@@ -24,6 +33,17 @@ class InsertRequest {
     senha: string = "";
 }
 
+class LoginRequest {
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    email: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    senha: string = "";
+}
+
 @JsonController("/admin")
 export default class AdminController {
 
@@ -32,44 +52,33 @@ export default class AdminController {
 
     /**
     * 
-    * @api {get} /admin/:id Informações do administrador
+    * @api {get} /admin Informações do administrador
     * @apiName InfoAdmin
     * @apiGroup Admin
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   { 
-    *       "token": "1234"  
-    *   }
-    * @apiParam  {number} id ID
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
-    *       "admin": 
-    *       {
-    *           "id": "1",
-    *           "nome": "Doravante",
-    *           "email": "a@a.com",
-    *           "cpf": "11111111111"
-    *       }
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cpf": "11111111111"
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
     *   {
-    *        "erro": "TOKEN_INVALIDO"
+    *        "erro": "ADMIN_INVALIDO"
     *   } 
     *
     */
-    @Get("/:id")
+    @Authorized("ADMIN")
+    @Get("/")
     async get(
-        @HeaderParam("token") token: string,
-        @Param("id") id: number
+        @CurrentUser({ required: true }) email: string
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        if (!isNumber(id))
-            return { "erro": "ID_INVALIDO" };
-
-        const admin = await this.adminRepository.getById(id);
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
@@ -83,57 +92,58 @@ export default class AdminController {
         }
     }
 
+    // FAZ SENTIDO TER ESSA FUNÇÃO?
+    // /*
+    // * 
+    // * api_ {get} /admin Listar todos os administradores
+    // * @apiName ListarAdmins
+    // * @apiGroup Admin
+    // * 
+    // * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    // * @apiHeaderExample {json} Exemplo Header:
+    // *   { 
+    // *       "token": "1234"  
+    // *   }
+    // * @apiSuccessExample {json} Resposta bem sucessida:
+    // *   {
+    // *       "admins": 
+    // *       [
+    // *           {
+    // *               "id": "1",
+    // *               "nome": "Doravante",
+    // *               "email": "a@a.com",
+    // *               "cpf": "11111111111"
+    // *           },
+    // *           {
+    // *               "id": "2",
+    // *               "nome": "Sebastião",
+    // *               "email": "b@a.com",
+    // *               "cpf": "11111111111"
+    // *           }
+    // *       ]
+    // *   }
+    // * @apiErrorExample {json} Resposta com erro:
+    // *   {
+    // *       "erro": "TOKEN_INVALIDO"
+    // *   } 
+    // *
+    // */
+    // @Get("/")
+    // async getAll(
+    //     @HeaderParam("token") token: string
+    // ) {
+
+    //     if (!isString(token) || token.length <= 0)
+    //         return { "erro": "TOKEN_INVALIDO" };
+
+    //     const admins = await this.adminRepository.getAll();
+    //     return { "admins": admins.map(({ senha, ...attrs }) => attrs) };
+    // }
+
+
     /**
     * 
-    * @api {get} /admin Listar todos os administradores
-    * @apiName ListarAdmins
-    * @apiGroup Admin
-    * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   { 
-    *       "token": "1234"  
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "admins": 
-    *       [
-    *           {
-    *               "id": "1",
-    *               "nome": "Doravante",
-    *               "email": "a@a.com",
-    *               "cpf": "11111111111"
-    *           },
-    *           {
-    *               "id": "2",
-    *               "nome": "Sebastião",
-    *               "email": "b@a.com",
-    *               "cpf": "11111111111"
-    *           }
-    *       ]
-    *   }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *       "erro": "TOKEN_INVALIDO"
-    *   } 
-    *
-    */
-    @Get("/")
-    async getAll(
-        @HeaderParam("token") token: string
-    ) {
-
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        const admins = await this.adminRepository.getAll();
-        return { "admins": admins.map(({ senha, ...attrs }) => attrs) };
-    }
-
-
-    /**
-    * 
-    * @api {post} /admin Cadastrar administrador
+    * @api {post} /admin/signup Cadastrar administrador
     * @apiName CadastrarAdmin
     * @apiGroup Admin
     * 
@@ -158,30 +168,67 @@ export default class AdminController {
     *   } 
     * @apiErrorExample {json} Email já existe:
     *   {
-    *       "erro": "CAMPOS_INVALIDOS"
+    *       "erro": "ERRO_BD"
     *   } 
-    *
     */
-    @Post("/")
+    @Post("/signup")
     async insert(
-        @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest
     ) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+        let admin = await this.adminRepository.getByEmail(req.email);
+        if (admin !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
 
-        const admin = new Administrador(0, req.cpf, req.nome, req.email, req.senha);
-        await this.adminRepository.add(admin);
+        const hashSenha = await hash(req.senha, 1024);
+        admin = new Administrador(0, req.cpf, req.nome, req.email, hashSenha);
+
+        const insertId = await this.adminRepository.add(admin);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
 
         return { "sucesso": true };
     }
 
-    
+    /**
+    * 
+    * @api {post} /admin/signin Login administrador
+    * @apiName LoginAdmin
+    * @apiGroup Admin
+    * 
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    */
+    @Post("/signin")
+    async signin(
+        @Body({ validate: true }) req: LoginRequest
+    ) {
 
+        let admin = await this.adminRepository.getByEmail(req.email);
+        if (admin === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
 
+        const match = await compare(req.senha, admin.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
 
+        const token = sign(admin.email, "supersecret");
 
+        return { "token": token };
+    }
 
     /**
     * 
@@ -189,15 +236,13 @@ export default class AdminController {
     * @apiName AtualizarAdmin
     * @apiGroup Admin
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
     * @apiParam  {String} nome Novo nome
     * @apiParam  {String} email Novo email
     * @apiParam  {String} senha Nova senha
     * @apiParam  {String} cpf Novo CPF
-    * @apiHeaderExample {json} Exemplo Header:
-    *    {
-    *       "token": "1234"       
-    *    }
     * @apiParamExample  {json} Exemplo:
     *    {
     *       "nome": "Doravante",
@@ -211,27 +256,26 @@ export default class AdminController {
     *    }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *        "erro": "GENERO_INVALIDO"
+    *        "erro": "ADMIN_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Put("/")
     async update(
-        @HeaderParam("token") token: string,
+        @CurrentUser({ required: true }) email: string,
         @Body({ validate: true }) req: InsertRequest
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email)
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
         admin.nome = req.nome;
         admin.email = req.email;
-        admin.senha = req.senha;
+        admin.senha = await hash(req.senha, 1024);
         admin.cpf = req.cpf;
-        await this.adminRepository.update(Number.parseInt(token), admin);
+        await this.adminRepository.update(admin.id, admin);
 
         return { "sucesso": true };
     }
@@ -242,42 +286,30 @@ export default class AdminController {
     * @apiName RemoverAdmin
     * @apiGroup Admin
     * 
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiParam  {number} id ID
-    * @apiHeaderExample {json} Exemplo Header:
-    *    {
-    *       "token": "1234"       
-    *    }
-    * @apiParamExample  {json} Exemplo:
-    *    {
-    *        "id": 1
-    *    }
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *    {
     *        "sucesso": true
     *    }
     * @apiErrorExample {json} Resposta com erro:
     *   {
-    *        "erro": "TOKEN_INVALIDO"
+    *        "erro": "ADMIN_INVALIDO"
     *   } 
     *
     */
+    @Authorized("ADMIN")
     @Delete("/")
     async delete(
-        @HeaderParam("token") token: string,
-        @BodyParam("id") id: number
+        @CurrentUser({ required: true }) email: string
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        if (!isNumber(id))
-            return { "erro": "ID_INVALIDO" };
-
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
-        await this.adminRepository.delete(id);
+        await this.adminRepository.delete(admin.id);
 
         return { "sucesso": true };
     }

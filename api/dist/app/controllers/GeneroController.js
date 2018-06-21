@@ -46,6 +46,10 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpdateRequest.prototype, "nome", void 0);
+// TODO:
+/*
+    Listar músicas pertencentes ao gênero. 1:n
+*/
 let GeneroController = class GeneroController {
     /**
     *
@@ -53,29 +57,33 @@ let GeneroController = class GeneroController {
     * @apiName InfoGenero
     * @apiGroup Genero
     *
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "id": 1,
     *       "nome": "Ação"
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} ID gênero inválido:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "ID_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Admin inváludo:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Gênero inváludo:
+    *   {
+    *       "erro": "GENERO_INVALIDO"
     *   }
     *
     */
-    async get(token, id) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async get(email, id) {
         if (!util_1.isNumber(id))
             return { "erro": "ID_INVALIDO" };
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const genero = await this.generoRepository.getById(id);
@@ -94,11 +102,9 @@ let GeneroController = class GeneroController {
     * @apiName ListarGeneros
     * @apiGroup Genero
     *
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "generos":
@@ -113,16 +119,14 @@ let GeneroController = class GeneroController {
     *               }
     *           ]
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
     *   {
-    *       "erro": "TOKEN_INVALIDO"
+    *       "erro": "ADMIN_INVALIDO"
     *   }
     *
     */
-    async getAll(token) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+    async getAll(email) {
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const generos = await this.generoRepository.getAll();
@@ -137,12 +141,10 @@ let GeneroController = class GeneroController {
     * @apiName InserirGenero
     * @apiGroup Genero
     *
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {String} nome Nome
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "nome": "Ação"
@@ -151,18 +153,20 @@ let GeneroController = class GeneroController {
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
     *   {
     *       "erro": "ADMIN_INVALIDO"
     *   }
+    * @apiErrorExample {json} Nome inválido:
+    *   {
+    *       "erro": "NOME_INVALIDO"
+    *   }
     *
     */
-    async insert(token, nome) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async insert(email, nome) {
         if (!util_1.isString(nome) || nome.length <= 0)
-            return { "erro": "ERRO_BODY" };
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+            return { "erro": "NOME_INVALIDO" };
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const genero = new Genero_1.default(0, nome);
@@ -176,13 +180,11 @@ let GeneroController = class GeneroController {
     * @apiName AtualizarGenero
     * @apiGroup Genero
     *
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
     * @apiParam  {String} nome Novo nome
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
     * @apiParamExample  {json} Exemplo:
     *   {
     *       "id": 1,
@@ -192,16 +194,18 @@ let GeneroController = class GeneroController {
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Admin inválido:
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   }
     *
     */
-    async update(token, req) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+    async update(email, req) {
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const genero = await this.generoRepository.getById(req.id);
@@ -217,32 +221,32 @@ let GeneroController = class GeneroController {
     * @apiName RemoverGenero
     * @apiGroup Genero
     *
-    * @apiHeader {String} token Token do Administrador (por enquanto é o id)
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
-    * @apiHeaderExample {json} Exemplo Header:
-    *   {
-    *       "token": "1234"
-    *   }
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "id": 1
-    *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "sucesso": true
     *   }
-    * @apiErrorExample {json} Resposta com erro:
+    * @apiErrorExample {json} ID inválido:
+    *   {
+    *       "erro": "ID_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Gênero inválido:
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   }
     *
     */
-    async delete(token, id) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
+    async delete(email, id) {
         if (!util_1.isNumber(id))
             return { "erro": "ID_INVALIDO" };
-        const admin = await this.adminRepository.getById(Number.parseInt(token));
+        const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const genero = await this.generoRepository.getById(id);
@@ -261,39 +265,44 @@ __decorate([
     __metadata("design:type", AdminRepository_1.default)
 ], GeneroController.prototype, "adminRepository", void 0);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/:id"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.Param("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "get", null);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "getAll", null);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Post("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.BodyParam("nome")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "insert", null);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Put("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, UpdateRequest]),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "update", null);
 __decorate([
+    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Delete("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.BodyParam("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),

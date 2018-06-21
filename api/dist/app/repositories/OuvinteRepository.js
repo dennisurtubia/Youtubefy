@@ -15,6 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let OuvinteRepository = class OuvinteRepository {
+    async getByEmail(email) {
+        const query = `
+            SELECT u.id, o.cpf, u.nome, u.email, u.senha
+            FROM Ouvinte o INNER JOIN Usuario u
+            ON u.id = o.id
+            AND u.email = ?
+        `;
+        return await this.database.queryOne(query, [email]);
+    }
     async getById(id) {
         const query = `
         SELECT a.id, a.cpf, u.nome, u.email, u.senha
@@ -38,6 +47,8 @@ let OuvinteRepository = class OuvinteRepository {
             VALUES (0, ?, ?, ?)
         `;
         const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        if (insertId === -1)
+            return -1;
         const query2 = `
             INSERT INTO Ouvinte
             VALUES (?, ?)

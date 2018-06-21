@@ -153,12 +153,4 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
   FOREIGN KEY(idMusicaAprovada) REFERENCES MusicaAprovada(id)
 );
 
-SELECT o.id
-        FROM Ouvinte o 
-        INNER JOIN Usuario u 
-        ON o.id = u.id
-        HAVING o.id = 1;
-        
-insert into Administrador values (1, '1111111111');
-insert into Usuario values (1, "El Administrador", "a@a.com", "isso não estará aqui futuramente" );
-select * from Usuario;
+select * from Genero;

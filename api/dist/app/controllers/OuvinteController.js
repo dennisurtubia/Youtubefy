@@ -64,11 +64,36 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "senha", void 0);
+// TODO: 
+/*
+    Adicionar jwt
+    Documentar
+    Listar, adicionar, remover músicas. n:n
+    Listar, adicionar, remover playlists privadas. n:n
+    Listar, seguir, deixar de seguir playlists públicas. n:n
+*/
 let OuvinteController = class OuvinteController {
     async getAll(token) {
         if (!util_1.isString(token) || token.length <= 0)
             return { "erro": "TOKEN_INVALIDO" };
         return { "ouvintes": await this.ouvinteRepository.getAll() };
+    }
+    async getById(token, id) {
+        if (!util_1.isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+        if (!util_1.isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+        const ouvinte = await this.ouvinteRepository.getById(id);
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+        return {
+            "ouvinte": {
+                "id": ouvinte.id,
+                "nome": ouvinte.nome,
+                "email": ouvinte.email,
+                "cpf": ouvinte.cpf
+            }
+        };
     }
     async insertOne(token, req) {
         if (!util_1.isString(token) || token.length <= 0)
@@ -109,6 +134,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], OuvinteController.prototype, "getAll", null);
+__decorate([
+    routing_controllers_1.Get("/:id"),
+    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(1, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "getById", null);
 __decorate([
     routing_controllers_1.Post("/"),
     __param(0, routing_controllers_1.HeaderParam("token")),
