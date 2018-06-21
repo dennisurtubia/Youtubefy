@@ -1,3 +1,81 @@
-<p>
-  home works!
-</p>
+<div class="sidebar col-md-2">
+  <h4>UTFPR | MUSIC</h4>
+  <div class="sidebarMenu">
+    <ul>
+      <li (click)="changePage(1);">
+        <i class="fas fa-home "></i> Home</li>
+      <li>
+        <i class="fas fa-search "></i> Pesquisar</li>
+      <li (click)="changePage(3);">
+        <i class="fas fa-list "></i> Playlists</li>
+      <li class="innerLi ">
+        <i class="fas fa-plus "></i> Criar Playlist</li>
+      <li class="innerLi " *ngFor="let playlist of playlists ">{{playlist.name}}</li>
+      <li (click)="changePage(2);">
+        <i class="fas fa-compact-disc "></i> Albums</li>
+      <li (click)="changePage(4);">
+        <i class="fas fa-music "></i> Minhas Musicas</li>
+    </ul>
+  </div>
+  <div class="row ">
+    <div class=" AlbumCover col-md-2 ">
+      <img [src]="current[0].img " alt=" ">
+      <p>{{current[0].title}}</p>
+      <p>{{current[0].author}}</p>
+    </div>
+  </div>
+</div>
+<div class="col-md-10 offset-md-2 main-content ">
+  <div *ngIf="page===4 ">
+    <p>Minhas Musicas</p>
+  </div>
+  <div *ngIf="page===3 ">
+    <p>Minhas Playlists</p>
+  </div>
+  <div *ngIf="page===2 ">
+    <p>Meus Albuns</p>
+  </div>
+  <div *ngIf="page===1 ">
+    <h4>Musicas da sua última playlist</h4>
+    <div class="row ">
+      <div class="col-md-2 " *ngFor="let item of items ">
+        <app-card-music [img]="item.img " [author]="item.author " [title]="item.title "></app-card-music>
+      </div>
+    </div>
+    <h4>Suas playlists</h4>
+    <div class="row ">
+
+    </div>
+    <h4>Álbuns salvos</h4>
+    <div class="row ">
+
+    </div>
+  </div>
+
+  <div class="player ">
+
+
+    <div class="col-md-6 offset-md-4 ">
+      <div class="row">
+        <input type="range" name="musiclength" id="">
+        <div class="col-md-4 offset-md-4 ">
+          <i class="fas fa-backward "></i>
+          <i class="fas fa-play "></i>
+          <i class="fas fa-forward "></i>
+        </div>
+        <div class="col-md-2 offset-md-2 volume ">
+
+          <!-- <div class="row ">
+                  <i class="fas fa-volume-up "></i>
+                  <input type="range " name="volume " id=" ">
+              </div> -->
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
