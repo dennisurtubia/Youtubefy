@@ -26,37 +26,39 @@ export class HomeComponent implements OnInit {
         img:
           "http://www.punknet.com.br/wp-content/uploads/arctic-monkeys-am-300x300.jpg",
         title: "Speak to Me / Breathe",
+        url: "http://youtube.com/whatch?",
         author: "Pink Floyd"
       }
     ];
+    this.localSt.store("currPlaying", this.current);
     this.playlists = [
       {
-        id: "1";
+        id: "1",
         name: "Teste 01",
         date: "01/01/2001"
       },
       {
-        id: "2";
+        id: "2",
         name: "Teste 02",
         date: "01/01/2001"
       },
       {
-        id: "3";
+        id: "3",
         name: "Teste 0444",
         date: "01/01/2001"
       },
       {
-        id: "4";
+        id: "4",
         name: "Teste 04",
         date: "01/01/2001"
       },
       {
-        id: "5";
+        id: "5",
         name: "Teste 05",
         date: "01/01/2001"
       },
       {
-        id: "6";
+        id: "6",
         name: "Teste 06",
         date: "01/01/2001"
       }
@@ -121,6 +123,6 @@ export class HomeComponent implements OnInit {
   changePage(pageNumber: number) {
     this.page = pageNumber;
   }
-  
+
   ngOnInit() {}
 }
