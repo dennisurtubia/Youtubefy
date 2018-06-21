@@ -55,7 +55,7 @@ export default class PublicadoraRepository implements IRepository<Entity> {
         const query1 = `
             UPDATE Publicadora a
             SET a.cpnj = ?
-            WHERE a.id
+            WHERE a.id = ?
         `;
 
         await this.database.query(query1, [object.cnpj, id]);
