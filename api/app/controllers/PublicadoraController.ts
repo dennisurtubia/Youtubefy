@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
+import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put, Authorized } from "routing-controllers";
 import { Inject } from "typedi";
 import { isNumber, isString } from "util";
 import Publicadora from "../models/Publicadora"
@@ -54,44 +54,42 @@ class InsertRequest {
 
 */
 
+
 @JsonController("/publicadora")
 export default class PublicadoraController {
 
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
-    
-    
+
+
     @Get("/")
     async getAll(@HeaderParam("token") token: string) {
-        if(!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO"};
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
 
-        return { "publicadoras": await this.publicadoraRepository.getAll() };     
+        return { "publicadoras": await this.publicadoraRepository.getAll() };
     }
 
     @Get("/:id")
     async getById(
         @HeaderParam("token") token: string,
-        @Param("id") id:number
+        @Param("id") id: number
     ) {
-        if(!isString("token") || token.length <= 0)
-            return {"erro": "TOKEN_INVALIDO"};
-        
-        if(!isNumber(id))
-            return {"erro": "TOKEN_INVALIDO"};
-        
+        if (!isNumber(id))
+            return { "erro": "TOKEN_INVALIDO" };
+
         const publicadora = await this.publicadoraRepository.getById(id);
-        if(publicadora === null)
-            return {"erro": "PUBLICADORA_INVALIDA"};   
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
 
         return {
             "publicadora":
-                {
-                    "id": publicadora.id,
-                    "nome": publicadora.nome,
-                    "email": publicadora.email,
-                    "cnpj": publicadora.cnpj
-                }
+            {
+                "id": publicadora.id,
+                "nome": publicadora.nome,
+                "email": publicadora.email,
+                "cnpj": publicadora.cnpj
+            }
         };
     }
 
@@ -100,14 +98,14 @@ export default class PublicadoraController {
         @HeaderParam("token") token: string,
         @Body({ validate: true }) req: InsertRequest
     ) {
-        if (!isString(token) || token.length <= 0 )
-            return { "erro": "TOKEN_INVALIDO"};
-        
+        if (!isString(token) || token.length <= 0)
+            return { "erro": "TOKEN_INVALIDO" };
+
         const publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, req.senha)
         await this.publicadoraRepository.add(publicadora);
-        return {"sucesso": true};
-    }   
-    
+        return { "sucesso": true };
+    }
+
     @Put("/")
     async update(
         @HeaderParam("token") token: string,

@@ -13,9 +13,11 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 const AdminRepository_1 = __importDefault(require("./app/repositories/AdminRepository"));
 const OuvinteRepository_1 = __importDefault(require("./app/repositories/OuvinteRepository"));
 const PublicadoraRepository_1 = __importDefault(require("./app/repositories/PublicadoraRepository"));
+const MusicaController_1 = __importDefault(require("./app/controllers/MusicaController"));
 routing_controllers_1.useContainer(typedi_1.Container);
 const app = routing_controllers_1.createExpressServer({
-    controllers: [GeneroController_1.default, AdminController_1.default, PublicadoraController_1.default],
+    controllers: [GeneroController_1.default, AdminController_1.default, PublicadoraController_1.default,
+        MusicaController_1.default],
     authorizationChecker: async (action, roles) => {
         const token = action.request.query.token;
         try {

@@ -97,8 +97,6 @@ let PublicadoraController = class PublicadoraController {
         return { "publicadoras": await this.publicadoraRepository.getAll() };
     }
     async getById(token, id) {
-        if (!util_1.isString("token") || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
         if (!util_1.isNumber(id))
             return { "erro": "TOKEN_INVALIDO" };
         const publicadora = await this.publicadoraRepository.getById(id);
