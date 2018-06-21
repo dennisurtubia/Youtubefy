@@ -110,9 +110,9 @@ let AdminController = class AdminController {
         };
     }
     // FAZ SENTIDO TER ESSA FUNÇÃO?
-    // /**
+    // /*
     // * 
-    // * @api {get} /admin Listar todos os administradores
+    // * api_ {get} /admin Listar todos os administradores
     // * @apiName ListarAdmins
     // * @apiGroup Admin
     // * 
