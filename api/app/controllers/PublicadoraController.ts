@@ -1,31 +1,8 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
+import { Body, Delete, Get, JsonController, Post, Put, Authorized, CurrentUser } from "routing-controllers";
 import { Inject } from "typedi";
-import { isNumber, isString } from "util";
 import Publicadora from "../models/Publicadora"
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
-
-class UpdateRequest {
-    @IsString()
-    @IsNotEmpty()
-    cnpj: string = "";
-
-    @IsString()
-    @IsNotEmpty()
-    nome: string = "";
-
-    @IsString()
-    @IsNotEmpty()
-    email: string = "";
-
-    @IsString()
-    @IsNotEmpty()
-    senha: string = "";
-
-    @IsNumber()
-    @IsNotEmpty()
-    id: number = 0;
-}
 
 class InsertRequest {
 
@@ -59,28 +36,15 @@ export default class PublicadoraController {
 
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
-    
-    
+
+
+    @Authorized("PUBLICADORA")
     @Get("/")
-    async getAll(@HeaderParam("token") token: string) {
-        if(!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO"};
-
-        return { "publicadoras": await this.publicadoraRepository.getAll() };     
-    }
-
-    @Get("/:id")
-    async getById(
-        @HeaderParam("token") token: string,
-        @Param("id") id:number
+    async get(
+        @CurrentUser( {required: true} ) email:string
     ) {
-        if(!isString("token") || token.length <= 0)
-            return {"erro": "TOKEN_INVALIDO"};
         
-        if(!isNumber(id))
-            return {"erro": "TOKEN_INVALIDO"};
-        
-        const publicadora = await this.publicadoraRepository.getById(id);
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if(publicadora === null)
             return {"erro": "PUBLICADORA_INVALIDA"};   
 
@@ -97,52 +61,43 @@ export default class PublicadoraController {
 
     @Post("/")
     async insertOne(
-        @HeaderParam("token") token: string,
-        @Body({ validate: true }) req: InsertRequest
+        @Body({required: true}) req: InsertRequest
     ) {
-        if (!isString(token) || token.length <= 0 )
-            return { "erro": "TOKEN_INVALIDO"};
         
         const publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, req.senha)
         await this.publicadoraRepository.add(publicadora);
         return {"sucesso": true};
     }   
     
+    @Authorized("PUBLICADORA")
     @Put("/")
     async update(
-        @HeaderParam("token") token: string,
-        @Body({ validate: true }) req: UpdateRequest
-    ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        @CurrentUser({required: true}) email: string,
+        @Body({ validate: true }) req: InsertRequest
+    ){
+        
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
-            return { "erro": "PUBLICADORA_INVALIDA" };
-
+            return {"erro": "PUBLICADORA_INVALIDA"};
+        
         publicadora.cnpj = req.cnpj;
+        publicadora.nome = req.nome;
+        publicadora.senha = req.senha;
 
-        await this.publicadoraRepository.update(req.id, publicadora);
-
-        return { "sucesso": true };
+        return {"sucesso": true};
     }
 
+    @Authorized("PUBLICADORA")
     @Delete("/")
     async delete(
-        @HeaderParam("token") token: string,
-        @BodyParam("id") id: number
+        @CurrentUser({required: true}) email: string,
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        if (!isNumber(token))
-            return { "erro": "ID_INVALIDO" };
-
-        const publicadora = await this.publicadoraRepository.getById(Number.parseInt(token));
+        
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
-            return { "erro": "PUBLICADORA_INVALIDA" };
-
-        await this.publicadoraRepository.delete(id);
+            return {"erro": "PUBLICADORA_INVALIDA"};
+        
+        await this.publicadoraRepository.delete(publicadora.id);
 
         return { "sucesso": true };
     }
