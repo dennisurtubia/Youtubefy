@@ -50,29 +50,144 @@ __decorate([
 
 */
 let MusicaController = class MusicaController {
+    /**
+    *
+    * @api {get} /musica/naoavaliadas Listar músicas não avaliadas
+    * @apiName ListarMusicasNaoAvaliadas
+    * @apiGroup Musica
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "naoAvaliadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    */
     async getNaoAvaliadas(email) {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
+        const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         return {
-            "naoAvaliadas": await this.musicaNaoAvaliadaRepository.getAll()
+            "naoAvaliadas": musicas.map((m) => m.id)
         };
     }
+    /**
+    *
+    * @api {get} /musica/aprovadas Listar músicas aprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    */
+    async getAprovadas(email) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+        const musicas = await this.musicaAprovadaRepository.getAll();
+        return {
+            "aprovadas": musicas
+        };
+    }
+    /**
+    *
+    * @api {post} /musica/avaliar Aprovar/Reprovar música
+    * @apiName AvaliarMusica
+    * @apiGroup Musica
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiParam  {number} id ID
+    * @apiParam  {String} avaliacao "aprovado" | "reprovado"
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "id": "1",
+    *       "avaliacao": "reprovado"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_INVALIDA"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_ESTA_REPROVADA"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_ESTA_APROVADA"
+    *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
     async avaliar(email, req) {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
-        const musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
-        if (musica === null)
-            return { "erro": "MUSICA_INVALIDA" };
-        await this.musicaNaoAvaliadaRepository.delete(musica.id);
-        if (req.avaliacao == Avaliacao.Aprovado) {
-            const musicaAprovada = new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito);
-            await this.musicaAprovadaRepository.add(musicaAprovada);
+        let musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
+        if (musica === null) {
+            musica = await this.musicaAprovadaRepository.getById(req.musica);
+            if (musica === null) {
+                musica = await this.musicaNaoAprovadaRepository.getById(req.musica);
+                if (musica === null)
+                    return { "erro": "MUSICA_INVALIDA" };
+                if (req.avaliacao === Avaliacao.Aprovado) {
+                    await this.musicaNaoAprovadaRepository.delete(musica.id);
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                }
+                else {
+                    return { "erro": "MUSICA_ESTA_REPROVADA" };
+                }
+            }
+            else {
+                if (req.avaliacao === Avaliacao.Reprovado) {
+                    await this.musicaAprovadaRepository.delete(musica.id);
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                }
+                else {
+                    return { "erro": "MUSICA_ESTA_APROVADA" };
+                }
+            }
         }
         else {
-            const musicaNaoAprovada = new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito);
-            await this.musicaNaoAprovadaRepository.add(musicaNaoAprovada);
+            await this.musicaNaoAvaliadaRepository.delete(musica.id);
+            if (req.avaliacao === Avaliacao.Aprovado)
+                await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+            else if (req.avaliacao === Avaliacao.Reprovado)
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
         }
         return { "sucesso": true };
     }
@@ -95,12 +210,20 @@ __decorate([
 ], MusicaController.prototype, "musicaNaoAvaliadaRepository", void 0);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
-    routing_controllers_1.Get("/nao-avaliadas"),
+    routing_controllers_1.Get("/naoavaliadas"),
     __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], MusicaController.prototype, "getNaoAvaliadas", null);
+__decorate([
+    routing_controllers_1.Authorized("ADMIN"),
+    routing_controllers_1.Get("/aprovadas"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], MusicaController.prototype, "getAprovadas", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Post("/avaliar"),

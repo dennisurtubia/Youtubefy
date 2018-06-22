@@ -35,7 +35,7 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
             INSERT INTO Musica
             VALUES (0, ?, ?, ?, ?)
         `;
-        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.genero.id]);
+        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero]);
         const query2 = `
             INSERT INTO MusicaNaoAvaliada
             VALUES (?);

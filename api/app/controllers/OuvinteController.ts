@@ -1,18 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { Body, BodyParam, Delete, Get, HeaderParam, JsonController, Param, Post, Put } from "routing-controllers";
+import { compare, hash } from "bcrypt";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { sign } from "jsonwebtoken";
+import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
-import { isNumber, isString } from "util";
-import Ouvinte from "../models/Ouvinte"
-import OuvinteRepository from "../repositories/OuvinteRepository"
+import Ouvinte from "../models/Ouvinte";
+import OuvinteRepository from "../repositories/OuvinteRepository";
 
-class UpdateRequest {
-    @IsNumber()
-    id: number = 0;
-
-    @IsString()
-    @IsNotEmpty()
-    nome: string = "";
-}
 
 class InsertRequest {
 
@@ -33,6 +26,18 @@ class InsertRequest {
     senha: string = "";
 }
 
+class LoginRequest {
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    email: string = "";
+
+    @IsString()
+    @IsNotEmpty()
+    senha: string = "";
+}
+
+
 // TODO: 
 /*
     Adicionar jwt
@@ -48,89 +53,202 @@ export default class OuvinteController {
 
     @Inject()
     private ouvinteRepository!: OuvinteRepository;
-    
-    @Get("/")
-    async getAll(@HeaderParam("token") token: string) {
-        if(!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        
-        return { "ouvintes": await this.ouvinteRepository.getAll() };
-    }
 
-    @Get("/:id")
-    async getById(
-        @HeaderParam("token") token: string,
-        @Param("id") id: number
+
+    /**
+    * 
+    * @api {get} /ouvinte Informações do ouvinte
+    * @apiName InfoOuvinte
+    * @apiGroup Ouvinte
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/ouvinte?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cpf": "11111111111"
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "OUVINTE_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    */
+    @Authorized("OUVINTE")
+    @Get("/")
+    async get(
+        @CurrentUser({ required: true }) email: string
     ) {
 
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        if (!isNumber(id))
-            return { "erro": "ID_INVALIDO" };
-
-        const ouvinte = await this.ouvinteRepository.getById(id);
-        if(ouvinte === null)
-            return {"erro": "OUVINTE_INVALIDO" };
+        const ouvinte = await this.ouvinteRepository.getByEmail(email);
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
 
         return {
-            "ouvinte":
-            {
-                "id": ouvinte.id,
-                "nome": ouvinte.nome,
-                "email": ouvinte.email,
-                "cpf": ouvinte.cpf
-            }    
+            "id": ouvinte.id,
+            "nome": ouvinte.nome,
+            "email": ouvinte.email,
+            "cpf": ouvinte.cpf
         };
     }
 
-    @Post("/")
-    async insertOne(
-        @HeaderParam("token") token: string,
+    /**
+    * 
+    * @api {post} /ouvinte/signup Cadastrar ouvinte
+    * @apiName CadastrarOuvinte
+    * @apiGroup Ouvinte
+    * 
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParam  {String} cpf CPF
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cpf": "11111111111"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "EMAIL_EXISTENTE"
+    *   } 
+    * @apiErrorExample {json} Erro BD:
+    *   {
+    *       "erro": "ERRO_BD"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
+    */
+    @Post("/signup")
+    async insert(
         @Body({ validate: true }) req: InsertRequest
-    ){
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        
-        const ouvinte = new Ouvinte(0, req.cpf, req.nome, req.email, req.senha)
-        await this.ouvinteRepository.add(ouvinte);
+    ) {
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
+        if (ouvinte !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+
+        const hashSenha = await hash(req.senha, 1024);
+        ouvinte = new Ouvinte(0, req.cpf, req.nome, req.email, hashSenha);
+
+        const insertId = await this.ouvinteRepository.add(ouvinte);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+
         return { "sucesso": true };
     }
 
+    /**
+    * 
+    * @api {post} /ouvinte/signin Login ouvinte
+    * @apiName LoginOuvinte
+    * @apiGroup Ouvinte
+    * 
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
+    */
+    @Post("/signin")
+    async signin(
+        @Body({ validate: true }) req: LoginRequest
+    ) {
+
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
+        if (ouvinte === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const match = await compare(req.senha, ouvinte.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const token = sign(ouvinte.email, "supersecret");
+
+        return { "token": token };
+    }
+
+    /**
+    * 
+    * @api {put} /ouvinte Atualizar ouvinte
+    * @apiName AtualizarOuvinte
+    * @apiGroup Ouvinte
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiParam  {String} nome Novo nome
+    * @apiParam  {String} email Novo email
+    * @apiParam  {String} senha Nova senha
+    * @apiParam  {String} cpf Novo CPF
+    * @apiParamExample  {json} Exemplo:
+    *    {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cpf": "11111111111"
+    *    }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "OUVINTE_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
+    */
+    @Authorized("OUVINTE")
     @Put("/")
     async update(
-        @HeaderParam("token") token: string,
-        @Body({validate: true}) req: UpdateRequest
-
-    ){
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-
-        const ouvinte = await this.ouvinteRepository.getById(req.id);
-        if(ouvinte === null)
-            return {"erro": "OUVINTE_INVALIDO"};
-        
-        await this.ouvinteRepository.update(req.id, ouvinte);
-        return {"sucesso": true};
-
-    }
-    @Delete("/")
-    async delete(
-        @HeaderParam("token") token: string,
-        @BodyParam("id") id: number
+        @CurrentUser({ required: true }) email: string,
+        @Body({ validate: true }) req: InsertRequest
     ) {
-        if (!isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
 
-        if (!isNumber(token))
-            return { "erro": "ID_INVALIDO" };
+        const ouvinte = await this.ouvinteRepository.getByEmail(email)
+        if (ouvinte === null)
+            return { "erro": "ADMIN_INVALIDO" };
 
-        const ouvinte = await this.ouvinteRepository.getById(id);
-        if(ouvinte === null)
-            return {"erro": "OUVINTE_INVALIDO"};
-            
-        await this.ouvinteRepository.delete(id);
-        return {"sucesso": true};
+        ouvinte.nome = req.nome;
+        ouvinte.email = req.email;
+        ouvinte.senha = await hash(req.senha, 1024);
+        ouvinte.cpf = req.cpf;
+        await this.ouvinteRepository.update(ouvinte.id, ouvinte);
+
+        return { "sucesso": true };
     }
-    
+
 }

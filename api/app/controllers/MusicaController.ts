@@ -44,8 +44,27 @@ export default class MusicaController {
     @Inject()
     private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
 
+
+    /**
+    * 
+    * @api {get} /musica/naoavaliadas Listar músicas não avaliadas
+    * @apiName ListarMusicasNaoAvaliadas
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "naoAvaliadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    */
     @Authorized("ADMIN")
-    @Get("/nao-avaliadas")
+    @Get("/naoavaliadas")
     async getNaoAvaliadas(
         @CurrentUser({ required: true }) email: string,
     ) {
@@ -53,11 +72,94 @@ export default class MusicaController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
+        const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         return {
-            "naoAvaliadas": await this.musicaNaoAvaliadaRepository.getAll()
+            "naoAvaliadas": musicas.map((m) => m.id)
         };
     }
 
+    /**
+    * 
+    * @api {get} /musica/aprovadas Listar músicas aprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    */
+    @Authorized("ADMIN")
+    @Get("/aprovadas")
+    async getAprovadas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+
+        const musicas = await this.musicaAprovadaRepository.getAll();
+        return {
+            "aprovadas": musicas
+        };
+    }
+
+    /**
+    * 
+    * @api {post} /musica/avaliar Aprovar/Reprovar música
+    * @apiName AvaliarMusica
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiParam  {number} id ID
+    * @apiParam  {String} avaliacao "aprovado" | "reprovado"
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "id": "1",
+    *       "avaliacao": "reprovado"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_INVALIDA"
+    *   } 
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_ESTA_REPROVADA"
+    *   } 
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "MUSICA_ESTA_APROVADA"
+    *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
+    */
     @Authorized("ADMIN")
     @Post("/avaliar")
     async avaliar(
@@ -69,18 +171,34 @@ export default class MusicaController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
-        const musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
-        if (musica === null)
-            return { "erro": "MUSICA_INVALIDA" };
+        let musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
+        if (musica === null) {
+            musica = await this.musicaAprovadaRepository.getById(req.musica);
+            if (musica === null) {
+                musica = await this.musicaNaoAprovadaRepository.getById(req.musica);
+                if (musica === null)
+                    return { "erro": "MUSICA_INVALIDA" };
 
-        await this.musicaNaoAvaliadaRepository.delete(musica.id);
-
-        if (req.avaliacao == Avaliacao.Aprovado) {
-            const musicaAprovada = new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito);
-            await this.musicaAprovadaRepository.add(musicaAprovada);
+                if (req.avaliacao === Avaliacao.Aprovado) {
+                    await this.musicaNaoAprovadaRepository.delete(musica.id);
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                } else {
+                    return { "erro": "MUSICA_ESTA_REPROVADA" };
+                }
+            } else {
+                if (req.avaliacao === Avaliacao.Reprovado) {
+                    await this.musicaAprovadaRepository.delete(musica.id);
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                } else {
+                    return { "erro": "MUSICA_ESTA_APROVADA" };
+                }
+            }
         } else {
-            const musicaNaoAprovada = new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito);
-            await this.musicaNaoAprovadaRepository.add(musicaNaoAprovada);
+            await this.musicaNaoAvaliadaRepository.delete(musica.id);
+            if (req.avaliacao === Avaliacao.Aprovado)
+                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+            else if (req.avaliacao === Avaliacao.Reprovado)
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
         }
 
         return { "sucesso": true };
