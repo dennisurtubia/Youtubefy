@@ -37,6 +37,7 @@ CustomErrorHandler = __decorate([
 ], CustomErrorHandler);
 exports.CustomErrorHandler = CustomErrorHandler;
 const app = routing_controllers_1.createExpressServer({
+    cors: true,
     defaultErrorHandler: false,
     controllers: [GeneroController_1.default, AdminController_1.default, PublicadoraController_1.default,
         MusicaController_1.default, AlbumController_1.default, OuvinteController_1.default],

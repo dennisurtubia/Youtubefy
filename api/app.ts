@@ -19,7 +19,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
 
     error(error: any, request: any, response: any, next: Function): void {
 
-     
+
         if (error.name === "AccessDeniedError")
             response.json({ "erro": "ACESSO_NEGADO" });
         else if (error.name === 'BadRequestError')
@@ -30,6 +30,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
 }
 
 const app = createExpressServer({
+    cors: true,
     defaultErrorHandler: false,
     controllers: [GeneroController, AdminController, PublicadoraController,
         MusicaController, AlbumController, OuvinteController],
