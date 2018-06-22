@@ -30,49 +30,87 @@ export class HomeComponent implements OnInit {
         author: "Pink Floyd"
       }
     ];
-    this.localSt.store("currPlaying", this.current);
+
     this.playlists = [
       {
         id: "1",
         img:
           "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
         name: "Teste 01",
-        date: "01/01/2001"
-      },
-      {
-        id: "2",
-        img:
-          "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Arctic_Monkeys_-_AM.png/220px-Arctic_Monkeys_-_AM.png",
-        name: "Teste 02",
-        date: "01/01/2001"
-      },
-      {
-        id: "3",
-        img:
+        date: "01/01/2001",
+        musics: [{
+          id: "1",
+          img:
           "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 03",
-        date: "01/01/2001"
-      },
-      {
-        id: "4",
-        img:
+          title: "Another Brick In The Wall",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://pegasus-g4.sscdn.co/palcomp3/7/7/4/4/kevinho-pa-pum-dj-rd-37b2037c.mp3"
+        },
+        {
+          id: "2",
+          img:
           "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 04",
-        date: "01/01/2001"
-      },
-      {
-        id: "5",
-        img:
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://griphon-g2.sscdn.co/palcomp3/c/a/b/0/kevinho-mc-dede-e-pega-a-receita-dj-rd-dfaafe35.mp3"
+        },
+        {
+          id: "3",
+          img:
           "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 05",
-        date: "01/01/2001"
-      },
-      {
-        id: "6",
-        img:
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://phoenix-g4.sscdn.co/palcomp3/6/9/5/8/mckevinho-rabiola-3b4f065f.mp3"
+        },
+        {
+          id: "1",
+          img:
           "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 06",
-        date: "01/01/2001"
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://youtube.com/teste"
+        },
+        {
+          id: "1",
+          img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://youtube.com/teste"
+        },
+        {
+          id: "1",
+          img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://youtube.com/teste"
+        },
+        {
+          id: "1",
+          img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://youtube.com/teste"
+        },
+        {
+          id: "1",
+          img:
+          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
+          title: "Speak to Me / Breathe",
+          author: "Pink Floyd",
+          album: "Dark Side of The Moon",
+          url: "https://youtube.com/teste"
+        }
+      ]
       }
     ];
     this.items = [

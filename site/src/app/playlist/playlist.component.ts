@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
+import { componentRefresh } from "@angular/core/src/render3/instructions";
+import { ngAudio}
 
 @Component({
   selector: "app-playlist",
@@ -15,6 +17,11 @@ export class PlaylistComponent implements OnInit {
   ) {
     this.image =
       "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg";
+  }
+
+  
+  setCurrent(music:any[]){
+    this.localSt.store("currPlaying", music);
   }
   changePlaylist() {}
   ngOnInit() {

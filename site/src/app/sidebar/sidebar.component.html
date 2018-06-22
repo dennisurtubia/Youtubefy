@@ -35,11 +35,11 @@
                 <i class="fas fa-music "></i> Minhas Musicas</li>
         </ul>
     </div>
-    <div class="row ">
-        <div class=" AlbumCover col-md-2 ">
-            <img [src]="this.localSt.retrieve('currplaying')[0].img" alt=" ">
-            <p>{{this.localSt.retrieve("currplaying")[0].title}}</p>
-            <p>{{this.localSt.retrieve("currplaying")[0].author}}</p>
+    <div class="row">
+        <div class=" AlbumCover col-md-2" *ngIf="this.localSt.retrieve('currPlaying')">
+            <img [src]="this.localSt.retrieve('currplaying').img" alt=" ">
+            <p>{{this.localSt.retrieve("currplaying").title}}</p>
+            <p>{{this.localSt.retrieve("currplaying").author}}</p>
         </div>
     </div>
 </div>
