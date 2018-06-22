@@ -55,7 +55,6 @@ export default class AdminController {
     * @api {get} /admin Informações do administrador
     * @apiName InfoAdmin
     * @apiGroup Admin
-    * 
     * @apiParam  {String} token Json Web Token
     * @apiParamExample  {String} Request-Example:
     *    https://utfmusic.me/v1/admin?token=deadbeef
@@ -70,6 +69,10 @@ export default class AdminController {
     *   {
     *        "erro": "ADMIN_INVALIDO"
     *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
     *
     */
     @Authorized("ADMIN")
@@ -83,12 +86,10 @@ export default class AdminController {
             return { "erro": "ADMIN_INVALIDO" };
 
         return {
-            "admin": {
-                "id": admin.id,
-                "nome": admin.nome,
-                "email": admin.email,
-                "cpf": admin.cpf
-            }
+            "id": admin.id,
+            "nome": admin.nome,
+            "email": admin.email,
+            "cpf": admin.cpf
         }
     }
 
@@ -118,9 +119,13 @@ export default class AdminController {
     *   {
     *       "erro": "EMAIL_EXISTENTE"
     *   } 
-    * @apiErrorExample {json} Email já existe:
+    * @apiErrorExample {json} Erro BD:
     *   {
     *       "erro": "ERRO_BD"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
     *   } 
     */
     @Post("/signup")
@@ -162,6 +167,10 @@ export default class AdminController {
     * @apiErrorExample {json} Email já existe:
     *   {
     *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
     *   } 
     */
     @Post("/signin")
@@ -210,7 +219,14 @@ export default class AdminController {
     *   {
     *        "erro": "ADMIN_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
     */
     @Authorized("ADMIN")
     @Put("/")

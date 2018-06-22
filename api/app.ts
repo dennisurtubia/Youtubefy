@@ -1,21 +1,39 @@
+import { verify } from "jsonwebtoken";
 import "reflect-metadata";
-import { createExpressServer, useContainer, Action } from "routing-controllers";
+import { Action, createExpressServer, ExpressErrorMiddlewareInterface, Middleware, useContainer } from "routing-controllers";
 import { Container } from "typedi";
 import AdminController from "./app/controllers/AdminController";
+import AlbumController from "./app/controllers/AlbumController";
 import GeneroController from "./app/controllers/GeneroController";
+import MusicaController from "./app/controllers/MusicaController";
+import OuvinteController from "./app/controllers/OuvinteController";
 import PublicadoraController from "./app/controllers/PublicadoraController";
-import { verify } from "jsonwebtoken";
 import AdminRepository from "./app/repositories/AdminRepository";
 import OuvinteRepository from "./app/repositories/OuvinteRepository";
 import PublicadoraRepository from "./app/repositories/PublicadoraRepository";
-import MusicaController from "./app/controllers/MusicaController";
-import AlbumController from "./app/controllers/AlbumController";
 
 useContainer(Container);
 
+@Middleware({ type: "after" })
+export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
+
+    error(error: any, request: any, response: any, next: Function): void {
+
+     
+        if (error.name === "AccessDeniedError")
+            response.json({ "erro": "ACESSO_NEGADO" });
+        else if (error.name === 'BadRequestError')
+            response.json({ "erro": "ERRO_BODY" })
+
+        next(error);
+    }
+}
+
 const app = createExpressServer({
+    defaultErrorHandler: false,
     controllers: [GeneroController, AdminController, PublicadoraController,
-        MusicaController, AlbumController],
+        MusicaController, AlbumController, OuvinteController],
+    routePrefix: "v1",
     authorizationChecker: async (action: Action, roles: string[]) => {
 
         const token = action.request.query.token;
@@ -60,6 +78,6 @@ const app = createExpressServer({
 });
 
 app.listen(3000, async () => {
-    console.log('Server running at http://127.0.0.1:3000');
+    console.log('Server running at port 3000');
 }
 );

@@ -94,6 +94,10 @@ let MusicaController = class MusicaController {
     *   {
     *       "erro": "ADMIN_INVALIDO"
     *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
     */
     async getAprovadas(email) {
         const admin = await this.adminRepository.getByEmail(email);
@@ -139,6 +143,14 @@ let MusicaController = class MusicaController {
     * @apiErrorExample {json} Email já existe:
     *   {
     *       "erro": "MUSICA_ESTA_APROVADA"
+    *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
     *   }
     */
     async avaliar(email, req) {

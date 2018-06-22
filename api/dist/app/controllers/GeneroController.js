@@ -58,9 +58,9 @@ let GeneroController = class GeneroController {
     * @apiGroup Genero
     *
     * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero/4?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "id": 1,
@@ -78,7 +78,10 @@ let GeneroController = class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
     */
     async get(email, id) {
         if (!util_1.isNumber(id))
@@ -90,10 +93,8 @@ let GeneroController = class GeneroController {
         if (genero === null)
             return { "erro": "GENERO_INVALIDO" };
         return {
-            "genero": {
-                "id": genero.id,
-                "nome": genero.nome
-            }
+            "id": genero.id,
+            "nome": genero.nome
         };
     }
     /**
@@ -123,7 +124,10 @@ let GeneroController = class GeneroController {
     *   {
     *       "erro": "ADMIN_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
     */
     async getAll(email) {
         const admin = await this.adminRepository.getByEmail(email);
@@ -161,7 +165,14 @@ let GeneroController = class GeneroController {
     *   {
     *       "erro": "NOME_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
     */
     async insert(email, nome) {
         if (!util_1.isString(nome) || nome.length <= 0)
@@ -202,7 +213,14 @@ let GeneroController = class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
     */
     async update(email, req) {
         const admin = await this.adminRepository.getByEmail(email);
@@ -241,7 +259,10 @@ let GeneroController = class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
     */
     async delete(email, id) {
         if (!util_1.isNumber(id))

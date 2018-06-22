@@ -8,10 +8,10 @@ export default class Database {
 
     private async init() {
         this.connection = await createConnection({
-            host: "localhost",
-            user: "fjorg",
-            password: "1234",
-            database: "ProjectBD"
+            host: process.env.MYSQL_HOST || "localhost",
+            user: process.env.MYSQL_USER || "fjorg",
+            password: process.env.MYSQL_ROOT_PASSWORD || "1234",
+            database: process.env.DATABASE || "ProjectBD"
         });
     }
 

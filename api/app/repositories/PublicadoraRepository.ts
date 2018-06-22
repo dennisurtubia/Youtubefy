@@ -2,7 +2,6 @@ import { Inject, Service } from "typedi";
 import Publicadora from "../models/Publicadora";
 import Database from "./Database";
 import IRepository from "./IRepository";
-import { MethodNotAllowedError } from "routing-controllers";
 
 type Entity = Publicadora;
 

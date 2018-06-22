@@ -79,7 +79,6 @@ let AdminController = class AdminController {
     * @api {get} /admin Informações do administrador
     * @apiName InfoAdmin
     * @apiGroup Admin
-    *
     * @apiParam  {String} token Json Web Token
     * @apiParamExample  {String} Request-Example:
     *    https://utfmusic.me/v1/admin?token=deadbeef
@@ -94,6 +93,10 @@ let AdminController = class AdminController {
     *   {
     *        "erro": "ADMIN_INVALIDO"
     *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
     *
     */
     async get(email) {
@@ -101,12 +104,10 @@ let AdminController = class AdminController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         return {
-            "admin": {
-                "id": admin.id,
-                "nome": admin.nome,
-                "email": admin.email,
-                "cpf": admin.cpf
-            }
+            "id": admin.id,
+            "nome": admin.nome,
+            "email": admin.email,
+            "cpf": admin.cpf
         };
     }
     /**
@@ -134,9 +135,13 @@ let AdminController = class AdminController {
     *   {
     *       "erro": "EMAIL_EXISTENTE"
     *   }
-    * @apiErrorExample {json} Email já existe:
+    * @apiErrorExample {json} Erro BD:
     *   {
     *       "erro": "ERRO_BD"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
     *   }
     */
     async insert(req) {
@@ -170,6 +175,10 @@ let AdminController = class AdminController {
     * @apiErrorExample {json} Email já existe:
     *   {
     *       "erro": "INFORMACOES_INCORRETAS"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
     *   }
     */
     async signin(req) {
@@ -210,7 +219,14 @@ let AdminController = class AdminController {
     *   {
     *        "erro": "ADMIN_INVALIDO"
     *   }
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
     */
     async update(email, req) {
         const admin = await this.adminRepository.getByEmail(email);
