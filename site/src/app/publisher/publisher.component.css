@@ -24,3 +24,41 @@
 .formSearch {
   margin-top: 20px;
 }
+.cardMusic {
+  margin-bottom: 10px;
+  cursor: pointer;
+  color: white;
+}
+.cardMusic img {
+  width: 100%;
+}
+
+.cardMusic p {
+  padding-top: 0px;
+}
+.cardMusic .bold {
+  padding-top: 5px;
+  margin-bottom: 0px !important;
+}
+.cardMusic p:last-of-type {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.itemsContainer {
+  float: left;
+  position: relative;
+}
+.cardMusic:hover .itemsContainer .play {
+  display: block;
+}
+.play {
+  position: absolute;
+  display: none;
+  top: calc(50% - 20px);
+  left: 43%;
+  text-align: center;
+  margin: 0 auto;
+  font-size: 30px;
+  z-index: 100;
+}

@@ -16,6 +16,7 @@ import { CardMusicComponent } from "./card-music/card-music.component";
 import { MyMusicComponent } from "./my-music/my-music.component";
 import { GlobalsComponent } from "./globals/globals.component";
 import { Ng2Webstorage } from "ngx-webstorage";
+import { YoutubePlayerModule } from "ngx-youtube-player";
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -25,7 +26,6 @@ const appRoutes: Routes = [
   { path: "signup", component: SignupComponent },
   { path: "**", component: PageNotFoundComponent }
 ];
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +44,12 @@ const appRoutes: Routes = [
     MyMusicComponent,
     GlobalsComponent
   ],
-  imports: [BrowserModule, RouterModule.forRoot(appRoutes), Ng2Webstorage],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(appRoutes),
+    Ng2Webstorage,
+    YoutubePlayerModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
