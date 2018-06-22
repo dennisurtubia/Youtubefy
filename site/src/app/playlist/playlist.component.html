@@ -21,14 +21,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let music of this.localSt.retrieve('currPlaylist').musics">
-      <th scope="row " (click)="setCurrent(music)" >
+    <tr *ngFor="let musica of this.localSt.retrieve('currPlaylist').musicas">
+      <th scope="row" (click)="setMusic(musica)">
         <i class="fas fa-play "></i>
       </th>
-      <td>{{music.title}}</td>
-      <td>{{music.author}}</td>
-      <td>{{music.album}}</td>
+      <td>{{musica.title}}</td>
+      <td>{{musica.author}}</td>
+      <td>{{musica.album}}</td>
     </tr>
+
 
   </tbody>
 </table>
