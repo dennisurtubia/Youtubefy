@@ -12,7 +12,7 @@ const typedi_1 = require("typedi");
 let Database = class Database {
     async init() {
         this.connection = await promise_1.createConnection({
-            host: process.env.MYSQL_HOST || "localhost",
+            host: process.env.MYSQL_HOST || "127.0.0.1",
             user: process.env.MYSQL_USER || "fjorg",
             password: process.env.MYSQL_ROOT_PASSWORD || "1234",
             database: process.env.DATABASE || "ProjectBD"
