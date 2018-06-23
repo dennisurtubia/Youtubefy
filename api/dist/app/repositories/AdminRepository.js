@@ -55,9 +55,8 @@ let AdminRepository = class AdminRepository {
         `;
         let insertId2 = await this.database.query(query2, [insertId, object.cpf]);
         if (insertId2 === -1) {
-            console.log('teve erro');
-            // await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId2]);
-            //  return -1;
+            await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId]);
+            return -1;
         }
         return insertId;
     }
@@ -70,10 +69,10 @@ let AdminRepository = class AdminRepository {
         await this.database.query(query1, [object.cpf, id]);
         const query2 = `
             UPDATE Usuario u
-            SET u.nome = ?, u.email = ?, u.senha = ?
+            SET u.nome = ?, u.senha = ?
             WHERE u.id = ?
         `;
-        await this.database.query(query2, [object.nome, object.email, object.senha, id]);
+        await this.database.query(query2, [object.nome, object.senha, id]);
     }
     async delete(id) {
         const query = `

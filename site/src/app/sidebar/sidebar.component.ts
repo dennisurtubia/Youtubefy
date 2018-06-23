@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
-
+import {HomeComponent} from "../home/home.component";
 @Component({
   selector: "app-sidebar",
   templateUrl: "./sidebar.component.html",
@@ -9,7 +9,8 @@ import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 export class SidebarComponent {
   constructor(
     private localSt: LocalStorageService,
-    private sessionSt: SessionStorageService
+    private sessionSt: SessionStorageService,
+    private home: HomeComponent
   ) {}
   changePage(pageNumber: number) {
     this.localSt.store("page", pageNumber);

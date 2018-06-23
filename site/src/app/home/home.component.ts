@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GetApiService } from "../get-api.service";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
+import {Router } from '@angular/router';
 
 interface myData {
   obj:Object;
@@ -20,7 +21,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
-    private getApi: GetApiService 
+    private getApi: GetApiService,
+    private router: Router
   ) {
     if (this.localSt.retrieve("page") === null) {
       this.localSt.store("page", 1);
@@ -51,11 +53,21 @@ export class HomeComponent implements OnInit {
   changePage(pageNumber: number) {
     this.page = pageNumber;
   }
-
+  quit() {
+    this.localSt.clear('page');
+    this.localSt.clear('data');
+    this.localSt.clear('token');
+    this.router.navigate(['/login']);
+  }
 
   ngOnInit() {
-    this.getApi.getPlaylists().subscribe(data => {
-      console.log(data)
-    });
+    this.getApi.getUser(this.localSt.retrieve('token').token);
+    if(!this.localSt.retrieve('token') || this.localSt.retrieve('data').erro === "ACESSO_NEGADO") {
+      this.quit();
+    }
+  }
+  ngOnDestroy() {
+    this.localSt.clear('data');
+    this.localSt.clear('page');
   }
 }

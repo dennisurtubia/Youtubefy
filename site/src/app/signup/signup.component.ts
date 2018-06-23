@@ -31,6 +31,9 @@ export class SignupComponent implements OnInit {
 
   ngOnInit() {
   }
+  ngOnDestroy() {
+    this.localSt.clear('registered');
+  }
   submitRegister(form:FormData) {
     if(this.form.value.opcao === "admin") {
       this.getApi.addAdmin(this.form.value);

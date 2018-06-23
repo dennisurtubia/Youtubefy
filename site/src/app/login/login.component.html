@@ -5,14 +5,23 @@
     <div class="col-md-6 offset-md-3">
       <form class="loginForm whiteBG"  novalidate [formGroup]="form">
         <h1 class="center">Entrar</h1>
+        <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('erro')">
+            Usuario inexistente ou informações incorretas
+          </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Email:</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"> </div>
+          <input type="email" formControlName="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"> </div>
         <div class="form-group">
           <label for="exampleInputPassword1">Senha</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+          <input type="password" formControlName="senha" class="form-control" id="exampleInputPassword1" placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-primary">Entrar</button>
+        <div class="form-group">
+          <label for="passwordInput">Registrar como:</label><br>
+          <input type="radio" formControlName="opcao" value="admin"> Admin<br>
+          <input type="radio" formControlName="opcao" value="publisher"> Publicador<br>
+          <input type="radio" formControlName="opcao" value="user"> Usuário
+        </div>
+        <button (click)="submitLogin();" type="submit" class="btn btn-primary">Entrar</button>
         <a routerLink="/signup" routerLinkActive="active">
           <button class="btn btn-outline-dark" style="float: right;">Registrar-se</button>
         </a>
