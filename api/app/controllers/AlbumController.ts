@@ -1,5 +1,5 @@
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
-import { Authorized, Body, CurrentUser, JsonController, Post } from "routing-controllers";
+import { Authorized, Body, CurrentUser, JsonController, Post, Delete, BodyParam, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Album from "../models/Album";
 import MusicaNaoAvaliada from "../models/MusicaNaoAvaliada";
@@ -10,7 +10,7 @@ import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
 // TODO:
 /*
-    Listar, atualizar, remover álbuns. CRUD simples
+    Listar, atualizar, CRUD simples
     Listar músicas do álbum. 1:n
 */
 
@@ -154,5 +154,49 @@ export default class AlbumController {
             "musicasAdicionadas": musicasAdicionadas,
             "musicasNaoAdicionadas": musicasNaoAdicionadas
         };
+    }   
+
+    @Authorized("PUBLICADORA")
+    @Put("/")
+    async update (
+        @CurrentUser({required: true}) id: number,
+        @Body({validate: true}) req: InsertRequest
+    ){
+
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return{"erro": "ALBUM_INVALIDO"};
+        
+        album.nome = req.nome;
+        album.descricao = req.descricao;
+        album.nomeArtista = req.nomeArtista;
+        album.capa = req.capa;
+            
+        return {"sucesso": true};  
     }
+
+    @Authorized("PUBLICADORA")
+    @Delete("/")
+    async delete(
+        @CurrentUser({required: true}) email: string,
+        @BodyParam("id") id: number
+    ) {
+        const album = await this.albumRepository.getById(id);
+        if(album === null)
+            return{"erro": "ALBUM_INVALIDO"};
+
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if(publicadora === null)
+            return {"erro": "PUBLICADORA_INVALIDA"};
+
+        if(publicadora.id !== album.idPublicadora)
+            return {"erro": "ACESSO_NEGADO"};
+    
+            await this.albumRepository.delete(id);
+        
+        return {"sucesso": true};
+    }
+
+    
+    
 }
