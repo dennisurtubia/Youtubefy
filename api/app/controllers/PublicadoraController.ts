@@ -49,6 +49,78 @@ export default class PublicadoraController {
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
 
+ /**
+    * 
+    * @api {post} /publicadora/signup Cadastrar publicadora
+    * @apiName CadastrarPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParam  {String} cnpj CNPJ
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cnpj": "11111111111"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "EMAIL_EXISTENTE"
+    *   } 
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ERRO_BD"
+    *   } 
+    */
+
+    @Post("/signup")
+    async insert(
+        @Body({ validate: true }) req: InsertRequest
+    ) {
+
+        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
+        if (publicadora !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+
+        const hashSenha = await hash(req.senha, 1024);
+        publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
+
+        const insertId = await this.publicadoraRepository.add(publicadora);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+
+        return { "sucesso": true };
+    }
+
+        /**
+    * 
+    * @api {get} /publicadora Informações da publicadora
+    * @apiName InfoPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cnpj": "11111111111"
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
 
     @Authorized("PUBLICADORA")
     @Get("/")
@@ -71,6 +143,37 @@ export default class PublicadoraController {
         };
     }  
     
+    /**
+    * 
+    * @api {put} /publicadora Atualizar publicadora
+    * @apiName AtualizarPublicadora 
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiParam  {String} nome Novo nome
+    * @apiParam  {String} email Novo email
+    * @apiParam  {String} senha Nova senha
+    * @apiParam  {String} cnpj Novo CNPJ
+    * @apiParamExample  {json} Exemplo:
+    *    {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cnpj": "11111111111"
+    *    }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
+
     @Authorized("PUBLICADORA")
     @Put("/")
     async update(
@@ -89,6 +192,64 @@ export default class PublicadoraController {
         return {"sucesso": true};
     }
 
+        /**
+    * 
+    * @api {delete} /publicadora Remover publicadora
+    * @apiName RemoverPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
+    
+    @Authorized("PUBLICADORA")
+    @Delete("/")
+    async delete(
+        @CurrentUser({required: true}) email: string,
+    ) {
+        
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if (publicadora === null)
+        return {"erro": "PUBLICADORA_INVALIDA"};
+        
+        await this.publicadoraRepository.delete(publicadora.id);
+        
+        return { "sucesso": true };
+    }
+    
+    /**
+    * 
+    * @api {post} /publicadora/signin Login publicadora
+    * @apiName LoginPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    */
+
     @Post("/signin")
     async signin(
         @Body({ validate: true }) req: LoginRequest
@@ -105,39 +266,5 @@ export default class PublicadoraController {
         const token = sign(admin.email, "supersecret");
 
         return { "token": token };
-    }
-
-    @Post("/signup")
-    async insert(
-        @Body({ validate: true }) req: InsertRequest
-    ) {
-
-        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
-        if (publicadora !== null)
-            return { "erro": "EMAIL_EXISTENTE" };
-
-        const hashSenha = await hash(req.senha, 1024);
-        publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
-
-        const insertId = await this.publicadoraRepository.add(publicadora);
-        if (insertId === -1)
-            return { "erro": "ERRO_BD" };
-
-        return { "sucesso": true };
-    }
-
-    @Authorized("PUBLICADORA")
-    @Delete("/")
-    async delete(
-        @CurrentUser({required: true}) email: string,
-    ) {
-        
-        const publicadora = await this.publicadoraRepository.getByEmail(email);
-        if (publicadora === null)
-            return {"erro": "PUBLICADORA_INVALIDA"};
-        
-        await this.publicadoraRepository.delete(publicadora.id);
-
-        return { "sucesso": true };
     }
 }
