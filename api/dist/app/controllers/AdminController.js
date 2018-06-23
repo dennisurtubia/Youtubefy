@@ -74,6 +74,9 @@ __decorate([
     __metadata("design:type", String)
 ], LoginRequest.prototype, "senha", void 0);
 let AdminController = class AdminController {
+    async test() {
+        return (await this.adminRepository.getAll()).length;
+    }
     /**
     *
     * @api {get} /admin Informações do administrador
@@ -244,6 +247,12 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", AdminRepository_1.default)
 ], AdminController.prototype, "adminRepository", void 0);
+__decorate([
+    routing_controllers_1.Get("/test"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "test", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/"),

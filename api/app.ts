@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+    import { verify } from "jsonwebtoken";
 import "reflect-metadata";
 import { Action, createExpressServer, ExpressErrorMiddlewareInterface, Middleware, useContainer } from "routing-controllers";
 import { Container } from "typedi";
