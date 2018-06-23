@@ -1,5 +1,10 @@
 import { Component, OnInit } from "@angular/core";
+import { GetApiService } from "../get-api.service";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
+
+interface myData {
+  obj:Object;
+}
 
 @Component({
   selector: "app-home",
@@ -7,16 +12,18 @@ import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
   styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
-  playlists: any[];
+  playlists:{};
+  player: YT.Player;
   items: any[];
   current: any[];
   page: number;
   constructor(
     private localSt: LocalStorageService,
-    private sessionSt: SessionStorageService
+    private sessionSt: SessionStorageService,
+    private getApi: GetApiService 
   ) {
     if (this.localSt.retrieve("page") === null) {
-      this.localSt.store("page", "1");
+      this.localSt.store("page", 1);
       this.page = 1;
     } else {
       this.page = this.localSt.retrieve("page");
@@ -30,111 +37,25 @@ export class HomeComponent implements OnInit {
         author: "Pink Floyd"
       }
     ];
-    this.localSt.store("currPlaying", this.current);
-    this.playlists = [
-      {
-        id: "1",
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 01",
-        date: "01/01/2001"
-      },
-      {
-        id: "2",
-        img:
-          "https://upload.wikimedia.org/wikipedia/en/thumb/0/04/Arctic_Monkeys_-_AM.png/220px-Arctic_Monkeys_-_AM.png",
-        name: "Teste 02",
-        date: "01/01/2001"
-      },
-      {
-        id: "3",
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 03",
-        date: "01/01/2001"
-      },
-      {
-        id: "4",
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 04",
-        date: "01/01/2001"
-      },
-      {
-        id: "5",
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 05",
-        date: "01/01/2001"
-      },
-      {
-        id: "6",
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        name: "Teste 06",
-        date: "01/01/2001"
-      }
-    ];
-    this.items = [
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Speak to Me / Breathe",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "On The Run",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Time",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "The Great Gig in the Sky",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Money",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Us and Them",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Any Colour You Like",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Brain Damage",
-        author: "Pink Floyd"
-      },
-      {
-        img:
-          "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg",
-        title: "Eclipse",
-        author: "Pink Floyd"
-      }
-    ];
+
+    
+  }
+
+  savePlayer(player) {
+    this.player = player;
+    console.log("player instance", player);
+  }
+  onStateChange(event) {
+    console.log("player state", event.data);
   }
   changePage(pageNumber: number) {
     this.page = pageNumber;
   }
 
-  ngOnInit() {}
+
+  ngOnInit() {
+    this.getApi.getPlaylists().subscribe(data => {
+      console.log(data)
+    });
+  }
 }

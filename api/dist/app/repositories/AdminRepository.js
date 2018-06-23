@@ -46,14 +46,20 @@ let AdminRepository = class AdminRepository {
             INSERT INTO Usuario
             VALUES (0, ?, ?, ?)
         `;
-        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        let insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
         if (insertId === -1)
             return -1;
         const query2 = `
             INSERT INTO Administrador
             VALUES (?, ?)
         `;
-        return await this.database.query(query2, [insertId, object.cpf]);
+        let insertId2 = await this.database.query(query2, [insertId, object.cpf]);
+        if (insertId2 === -1) {
+            console.log('teve erro');
+            // await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId2]);
+            //  return -1;
+        }
+        return insertId;
     }
     async update(id, object) {
         const query1 = `

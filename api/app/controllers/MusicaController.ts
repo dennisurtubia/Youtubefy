@@ -74,10 +74,46 @@ export default class MusicaController {
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         return {
-            "naoAvaliadas": musicas.map((m) => m.id);
+            "naoAvaliadas": musicas.map((m) => m.id)
         };
     }
 
+    /**
+    * 
+    * @api {get} /musica/aprovadas Listar músicas aprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ADMIN_INVALIDO"
+    *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    */
+    @Authorized("ADMIN")
+    @Get("/aprovadas")
+    async getAprovadas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+
+        const musicas = await this.musicaAprovadaRepository.getAll();
+        return {
+            "aprovadas": musicas
+        };
+    }
 
     /**
     * 
@@ -115,6 +151,14 @@ export default class MusicaController {
     *   {
     *       "erro": "MUSICA_ESTA_APROVADA"
     *   } 
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
     */
     @Authorized("ADMIN")
     @Post("/avaliar")

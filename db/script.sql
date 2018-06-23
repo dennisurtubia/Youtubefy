@@ -2,33 +2,38 @@ DROP DATABASE IF EXISTS ProjectBD;
 CREATE DATABASE IF NOT EXISTS ProjectBD;
 USE ProjectBD;
 
+
 CREATE TABLE IF NOT EXISTS Usuario (
     id INTEGER AUTO_INCREMENT,
     nome CHAR(30) NOT NULL,
-    email CHAR(30) NOT NULL,
+    email CHAR(30) NOT NULL ,
     senha CHAR(200) NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE KEY (email)
 );
 
 CREATE TABLE IF NOT EXISTS Publicadora (
   id INTEGER, 
   cnpj CHAR(18) NOT NULL, 
   
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
 CREATE TABLE IF NOT EXISTS Ouvinte (
   id INTEGER, 
   cpf CHAR(14) NOT NULL, 
  
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+    FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
 CREATE TABLE IF NOT EXISTS Administrador (
   id INTEGER, 
   cpf CHAR(14) NOT NULL, 
   
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  FOREIGN KEY (id) REFERENCES Usuario(id)
 );
 
 CREATE TABLE IF NOT EXISTS Album (
@@ -153,4 +158,5 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
   FOREIGN KEY(idMusicaAprovada) REFERENCES MusicaAprovada(id)
 );
 
-select * from Genero;
+
+select * from Administrador;

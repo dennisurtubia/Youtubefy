@@ -1,10 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, IsEmail } from "class-validator";
-import { Body, Delete, Get, JsonController, Post, Put, Authorized, CurrentUser } from "routing-controllers";
-import { Inject } from "typedi";
-import Publicadora from "../models/Publicadora"
-import PublicadoraRepository from "../repositories/PublicadoraRepository";
-import { hash, compare } from "bcrypt";
+import { compare, hash } from "bcrypt";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { sign } from "jsonwebtoken";
+import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Post, Put } from "routing-controllers";
+import { Inject } from "typedi";
+import Publicadora from "../models/Publicadora";
+import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
 class InsertRequest {
 
@@ -125,22 +125,23 @@ export default class PublicadoraController {
     @Authorized("PUBLICADORA")
     @Get("/")
     async get(
-        @CurrentUser( {required: true} ) email:string
+        @CurrentUser({ required: true }) email: string
     ) {
-        
+
         const publicadora = await this.publicadoraRepository.getByEmail(email);
-        if(publicadora === null)
-            return {"erro": "PUBLICADORA_INVALIDA"};   
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
 
         return {
             "publicadora":
-                {
-                    "id": publicadora.id,
-                    "nome": publicadora.nome,
-                    "email": publicadora.email,
-                    "cnpj": publicadora.cnpj
-                }
+            {
+                "id": publicadora.id,
+                "nome": publicadora.nome,
+                "email": publicadora.email,
+                "cnpj": publicadora.cnpj
+            }
         };
+<<<<<<< HEAD
     }  
     
     /**
@@ -173,23 +174,28 @@ export default class PublicadoraController {
     *   } 
     *
     */
+=======
+    }
+>>>>>>> a1634ac6bdb285dc9642431a64c92ef32b80913f
 
     @Authorized("PUBLICADORA")
     @Put("/")
     async update(
-        @CurrentUser({required: true}) email: string,
+        @CurrentUser({ required: true }) email: string,
         @Body({ validate: true }) req: InsertRequest
-    ){
-        
+    ) {
+
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
-            return {"erro": "PUBLICADORA_INVALIDA"};
-        
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
         publicadora.cnpj = req.cnpj;
         publicadora.nome = req.nome;
         publicadora.senha = req.senha;
 
-        return {"sucesso": true};
+        await this.publicadoraRepository.update(publicadora.id, publicadora);
+
+        return { "sucesso": true };
     }
 
         /**
@@ -267,4 +273,41 @@ export default class PublicadoraController {
 
         return { "token": token };
     }
+<<<<<<< HEAD
+=======
+
+    @Post("/signup")
+    async insert(
+        @Body({ validate: true }) req: InsertRequest
+    ) {
+
+        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
+        if (publicadora !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+
+        const hashSenha = await hash(req.senha, 1024);
+        publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
+
+        const insertId = await this.publicadoraRepository.add(publicadora);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+
+        return { "sucesso": true };
+    }
+
+    @Authorized("PUBLICADORA")
+    @Delete("/")
+    async delete(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        await this.publicadoraRepository.delete(publicadora.id);
+
+        return { "sucesso": true };
+    }
+>>>>>>> a1634ac6bdb285dc9642431a64c92ef32b80913f
 }

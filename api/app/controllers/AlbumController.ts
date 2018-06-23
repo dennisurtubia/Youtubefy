@@ -110,7 +110,14 @@ export default class AlbumController {
     *   {
     *       "erro": "PUBLICADORA_INVALIDA"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
     */
     @Authorized("PUBLICADORA")
     @Post("/")

@@ -2,7 +2,6 @@ import { Inject, Service } from "typedi";
 import Publicadora from "../models/Publicadora";
 import Database from "./Database";
 import IRepository from "./IRepository";
-import { MethodNotAllowedError } from "routing-controllers";
 
 type Entity = Publicadora;
 
@@ -68,7 +67,7 @@ export default class PublicadoraRepository implements IRepository<Entity> {
 
         const query1 = `
             UPDATE Publicadora a
-            SET a.cpnj = ?
+            SET a.cnpj = ?
             WHERE a.id = ?
         `;
 

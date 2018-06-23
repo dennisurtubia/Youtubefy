@@ -36,9 +36,9 @@ export default class GeneroController {
     * @apiGroup Genero
     * 
     * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiParam  {number} id ID
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/genero/4?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "id": 1,
@@ -56,7 +56,10 @@ export default class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
     */
     @Authorized("ADMIN")
     @Get("/:id")
@@ -78,11 +81,8 @@ export default class GeneroController {
             return { "erro": "GENERO_INVALIDO" };
 
         return {
-            "genero":
-            {
-                "id": genero.id,
-                "nome": genero.nome
-            }
+            "id": genero.id,
+            "nome": genero.nome
         };
     }
 
@@ -114,7 +114,10 @@ export default class GeneroController {
     *   {
     *       "erro": "ADMIN_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
     */
     @Authorized("ADMIN")
     @Get("/")
@@ -157,7 +160,14 @@ export default class GeneroController {
     *   {
     *       "erro": "NOME_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
     */
     @Authorized("ADMIN")
     @Post("/")
@@ -208,7 +218,14 @@ export default class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
     */
     @Authorized("ADMIN")
     @Put("/")
@@ -258,7 +275,10 @@ export default class GeneroController {
     *   {
     *       "erro": "GENERO_INVALIDO"
     *   } 
-    *
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   } 
     */
     @Authorized("ADMIN")
     @Delete("/")

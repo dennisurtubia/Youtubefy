@@ -1,1 +1,178 @@
-<p>admin works</p>
+<!-- <app-login></app-login> -->
+<!-- *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('userType') == 3" -->
+
+<body class="admin">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">UTFPR | Music</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Músicas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" (click)="setPage(3);">Aprovadas</a>
+                        <a class="dropdown-item" (click)="setPage(1);">Aguardando Aprovação</a>
+                        <a class="dropdown-item" (click)="setPage(2);">Reprovadas</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Gerenciar
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item">Playlists</a>
+                        <a class="dropdown-item">Gêneros</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item">Conta</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" *ngIf="this.localSt.retrieve('page') === 1">
+        <table class="table table-bordered table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Anoter Brick In The Wall</td>
+                    <td>Pink Floyd</td>
+                    <td>Dark Side Of The Moon</td>
+                    <td>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-thumbs-up"></i> Aprovar</button>
+                        <button class="btn btn-danger">
+                            <i class="fas fa-thumbs-down"></i> Reprovar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container" *ngIf="this.localSt.retrieve('page') === 2">
+        <table class="table table-bordered table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Anoter Brick In The Wall</td>
+                    <td>Pink Floyd</td>
+                    <td>Dark Side Of The Moon</td>
+                    <td>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-danger">
+                            <i class="fas fa-thumbs-down"></i> Reprovar</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="container" *ngIf="this.localSt.retrieve('page') === 3">
+        <table class="table table-bordered table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Autor</th>
+                    <th scope="col">Album</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Anoter Brick In The Wall</td>
+                    <td>Pink Floyd</td>
+                    <td>Dark Side Of The Moon</td>
+                    <td>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-success">
+                            <i class="fas fa-thumbs-up"></i> Aprovar</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<body class="admin" *ngIf="this.localSt.retrieve('page') === 2">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">UTFPR | Music</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Músicas aguardando aprovação</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reprovadas.html">Músicas reprovadas</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Músicas aprovadas
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</body>
+
+
+<body class="admin" *ngIf="this.localSt.retrieve('page') === 3">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">UTFPR | Music</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Músicas aguardando aprovação</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Músicas reprovadas
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="aprovadas.html">Músicas aprovadas
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</body>

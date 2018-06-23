@@ -15,27 +15,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcrypt_1 = require("bcrypt");
 const class_validator_1 = require("class-validator");
+const jsonwebtoken_1 = require("jsonwebtoken");
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
-const util_1 = require("util");
 const Ouvinte_1 = __importDefault(require("../models/Ouvinte"));
 const OuvinteRepository_1 = __importDefault(require("../repositories/OuvinteRepository"));
-class UpdateRequest {
-    constructor() {
-        this.id = 0;
-        this.nome = "";
-    }
-}
-__decorate([
-    class_validator_1.IsNumber(),
-    __metadata("design:type", Number)
-], UpdateRequest.prototype, "id", void 0);
-__decorate([
-    class_validator_1.IsString(),
-    class_validator_1.IsNotEmpty(),
-    __metadata("design:type", String)
-], UpdateRequest.prototype, "nome", void 0);
 class InsertRequest {
     constructor() {
         this.cpf = "";
@@ -64,6 +50,23 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "senha", void 0);
+class LoginRequest {
+    constructor() {
+        this.email = "";
+        this.senha = "";
+    }
+}
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    class_validator_1.IsEmail(),
+    __metadata("design:type", String)
+], LoginRequest.prototype, "email", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], LoginRequest.prototype, "senha", void 0);
 // TODO: 
 /*
     Adicionar jwt
@@ -73,53 +76,169 @@ __decorate([
     Listar, seguir, deixar de seguir playlists públicas. n:n
 */
 let OuvinteController = class OuvinteController {
-    async getAll(token) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        return { "ouvintes": await this.ouvinteRepository.getAll() };
-    }
-    async getById(token, id) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        if (!util_1.isNumber(id))
-            return { "erro": "ID_INVALIDO" };
-        const ouvinte = await this.ouvinteRepository.getById(id);
+    /**
+    *
+    * @api {get} /ouvinte Informações do ouvinte
+    * @apiName InfoOuvinte
+    * @apiGroup Ouvinte
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/ouvinte?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cpf": "11111111111"
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "OUVINTE_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    */
+    async get(email) {
+        const ouvinte = await this.ouvinteRepository.getByEmail(email);
         if (ouvinte === null)
             return { "erro": "OUVINTE_INVALIDO" };
         return {
-            "ouvinte": {
-                "id": ouvinte.id,
-                "nome": ouvinte.nome,
-                "email": ouvinte.email,
-                "cpf": ouvinte.cpf
-            }
+            "id": ouvinte.id,
+            "nome": ouvinte.nome,
+            "email": ouvinte.email,
+            "cpf": ouvinte.cpf
         };
     }
-    async insertOne(token, req) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        const ouvinte = new Ouvinte_1.default(0, req.cpf, req.nome, req.email, req.senha);
-        await this.ouvinteRepository.add(ouvinte);
+    /**
+    *
+    * @api {post} /ouvinte/signup Cadastrar ouvinte
+    * @apiName CadastrarOuvinte
+    * @apiGroup Ouvinte
+    *
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParam  {String} cpf CPF
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cpf": "11111111111"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "EMAIL_EXISTENTE"
+    *   }
+    * @apiErrorExample {json} Erro BD:
+    *   {
+    *       "erro": "ERRO_BD"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
+    async insert(req) {
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
+        if (ouvinte !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+        const hashSenha = await bcrypt_1.hash(req.senha, 1024);
+        ouvinte = new Ouvinte_1.default(0, req.cpf, req.nome, req.email, hashSenha);
+        const insertId = await this.ouvinteRepository.add(ouvinte);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
         return { "sucesso": true };
     }
-    async update(token, req) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        const ouvinte = await this.ouvinteRepository.getById(req.id);
+    /**
+    *
+    * @api {post} /ouvinte/signin Login ouvinte
+    * @apiName LoginOuvinte
+    * @apiGroup Ouvinte
+    *
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
+    async signin(req) {
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
         if (ouvinte === null)
-            return { "erro": "OUVINTE_INVALIDO" };
-        await this.ouvinteRepository.update(req.id, ouvinte);
-        return { "sucesso": true };
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const match = await bcrypt_1.compare(req.senha, ouvinte.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const token = jsonwebtoken_1.sign(ouvinte.email, "supersecret");
+        return { "token": token };
     }
-    async delete(token, id) {
-        if (!util_1.isString(token) || token.length <= 0)
-            return { "erro": "TOKEN_INVALIDO" };
-        if (!util_1.isNumber(token))
-            return { "erro": "ID_INVALIDO" };
-        const ouvinte = await this.ouvinteRepository.getById(id);
+    /**
+    *
+    * @api {put} /ouvinte Atualizar ouvinte
+    * @apiName AtualizarOuvinte
+    * @apiGroup Ouvinte
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiParam  {String} nome Novo nome
+    * @apiParam  {String} email Novo email
+    * @apiParam  {String} senha Nova senha
+    * @apiParam  {String} cpf Novo CPF
+    * @apiParamExample  {json} Exemplo:
+    *    {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cpf": "11111111111"
+    *    }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "OUVINTE_INVALIDO"
+    *   }
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *        "erro": "ACESSO_NEGADO"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
+    async update(email, req) {
+        const ouvinte = await this.ouvinteRepository.getByEmail(email);
         if (ouvinte === null)
-            return { "erro": "OUVINTE_INVALIDO" };
-        await this.ouvinteRepository.delete(id);
+            return { "erro": "ADMIN_INVALIDO" };
+        ouvinte.nome = req.nome;
+        ouvinte.email = req.email;
+        ouvinte.senha = await bcrypt_1.hash(req.senha, 1024);
+        ouvinte.cpf = req.cpf;
+        await this.ouvinteRepository.update(ouvinte.id, ouvinte);
         return { "sucesso": true };
     }
 };
@@ -128,44 +247,36 @@ __decorate([
     __metadata("design:type", OuvinteRepository_1.default)
 ], OuvinteController.prototype, "ouvinteRepository", void 0);
 __decorate([
+    routing_controllers_1.Authorized("OUVINTE"),
     routing_controllers_1.Get("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "getAll", null);
+], OuvinteController.prototype, "get", null);
 __decorate([
-    routing_controllers_1.Get("/:id"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
-    __param(1, routing_controllers_1.Param("id")),
+    routing_controllers_1.Post("/signup"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:paramtypes", [InsertRequest]),
     __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "getById", null);
+], OuvinteController.prototype, "insert", null);
 __decorate([
-    routing_controllers_1.Post("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
+    routing_controllers_1.Post("/signin"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [LoginRequest]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "signin", null);
+__decorate([
+    routing_controllers_1.Authorized("OUVINTE"),
+    routing_controllers_1.Put("/"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __param(1, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "insertOne", null);
-__decorate([
-    routing_controllers_1.Put("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
-    __param(1, routing_controllers_1.Body({ validate: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, UpdateRequest]),
-    __metadata("design:returntype", Promise)
 ], OuvinteController.prototype, "update", null);
-__decorate([
-    routing_controllers_1.Delete("/"),
-    __param(0, routing_controllers_1.HeaderParam("token")),
-    __param(1, routing_controllers_1.BodyParam("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number]),
-    __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "delete", null);
 OuvinteController = __decorate([
     routing_controllers_1.JsonController("/ouvinte")
 ], OuvinteController);

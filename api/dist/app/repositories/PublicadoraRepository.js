@@ -58,7 +58,7 @@ let PublicadoraRepository = class PublicadoraRepository {
     async update(id, object) {
         const query1 = `
             UPDATE Publicadora a
-            SET a.cpnj = ?
+            SET a.cnpj = ?
             WHERE a.id = ?
         `;
         await this.database.query(query1, [object.cnpj, id]);

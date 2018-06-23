@@ -4,3 +4,6 @@
 .admin * button {
   margin-top: -7px;
 }
+.nav-item {
+  cursor: pointer;
+}
