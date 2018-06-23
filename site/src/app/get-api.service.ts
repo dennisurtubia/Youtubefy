@@ -12,6 +12,7 @@ interface Object{
   cpf:number;
   email:string;
   token:string;
+  cnpj:number;
 }
 
 const httpOptions = {
@@ -41,6 +42,23 @@ export class GetApiService {
       nome: form.nome,
       senha: form.senha,
       cpf: form.cpf,
+      email: form.email
+    })
+    .subscribe(
+      res => {
+        console.log(res);
+        this.localSt.store('registered', res);
+      },
+      err => {
+        console.log("Erro");
+      }
+    );
+  }
+  addPublicadora (form: Object) {
+    const req = this.http.post(this.apiUrl + 'publicadora/signup', {
+      nome: form.nome,
+      senha: form.senha,
+      cnpj: form.cpf,
       email: form.email
     })
     .subscribe(
@@ -119,9 +137,39 @@ export class GetApiService {
       }
     );
   }
+  loginPublicadora(form:Object){
+    const req = this.http.post(this.apiUrl + 'publicadora/signin', {
+      senha: form.senha,
+      email: form.email
+    })
+    .subscribe(
+      res => {
+        console.log(res);
+        if(res.token){
+          this.localSt.store('token', res);
+          if(this.localSt.retrieve('erro')){
+            this.localSt.clear('erro');
+            
+          }
+          this.router.navigate(['/']);
+        } else {
+          this.localSt.store('erro', res);
+        }
+      },
+      err => {
+        console.log("Erro");
+      }
+    );
+  }
   getAdmin(token:string){
     console.log(this.apiUrl + 'admin?token=' + token);
     this.http.get(this.apiUrl + 'admin?token=' + token).subscribe(data => {
+      this.localSt.store('data', data);
+    });
+  }
+  getPublicadora(token:string){
+    console.log(this.apiUrl + 'publicadora?token=' + token);
+    this.http.get(this.apiUrl + 'publicadora?token=' + token).subscribe(data => {
       this.localSt.store('data', data);
     });
   }

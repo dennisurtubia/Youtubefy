@@ -39,6 +39,8 @@ export class SignupComponent implements OnInit {
       this.getApi.addAdmin(this.form.value);
     } else if(this.form.value.opcao === "user") {
       this.getApi.addUser(this.form.value);
+    } else if(this.form.value.opcao === "publisher") {
+      this.getApi.addPublicadora(this.form.value);
     }
   }
 }

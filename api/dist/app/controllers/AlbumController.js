@@ -26,7 +26,7 @@ const MusicaNaoAvaliadaRepository_1 = __importDefault(require("../repositories/M
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
 // TODO:
 /*
-    Listar, atualizar, remover álbuns. CRUD simples
+    Listar, atualizar, CRUD simples
     Listar músicas do álbum. 1:n
 */
 class InsertMusica {
@@ -166,6 +166,28 @@ let AlbumController = class AlbumController {
             "musicasNaoAdicionadas": musicasNaoAdicionadas
         };
     }
+    async update(id, req) {
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+        album.nome = req.nome;
+        album.descricao = req.descricao;
+        album.nomeArtista = req.nomeArtista;
+        album.capa = req.capa;
+        return { "sucesso": true };
+    }
+    async delete(email, id) {
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        if (publicadora.id !== album.idPublicadora)
+            return { "erro": "ACESSO_NEGADO" };
+        await this.albumRepository.delete(id);
+        return { "sucesso": true };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -192,6 +214,24 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], AlbumController.prototype, "submitAlbum", null);
+__decorate([
+    routing_controllers_1.Authorized("PUBLICADORA"),
+    routing_controllers_1.Put("/"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __param(1, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, InsertRequest]),
+    __metadata("design:returntype", Promise)
+], AlbumController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Authorized("PUBLICADORA"),
+    routing_controllers_1.Delete("/"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __param(1, routing_controllers_1.BodyParam("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], AlbumController.prototype, "delete", null);
 AlbumController = __decorate([
     routing_controllers_1.JsonController("/album")
 ], AlbumController);

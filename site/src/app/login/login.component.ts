@@ -43,6 +43,8 @@ export class LoginComponent implements OnInit {
       this.getApi.loginAdmin(this.form.value);
     } else if(this.form.value.opcao === "user") {
       this.getApi.loginUser(this.form.value);
+    } else if(this.form.value.opcao === "publisher") {
+      this.getApi.loginPublicadora(this.form.value);
     }
   }
 }

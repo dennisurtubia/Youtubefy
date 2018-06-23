@@ -24,7 +24,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
-  { path: "publisher", component: PublisherComponent },
+  { path: "publicadora", component: PublisherComponent },
   { path: "admin", component: AdminComponent },
   { path: "login", component: LoginComponent },
   { path: "signup", component: SignupComponent },
