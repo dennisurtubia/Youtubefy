@@ -50,6 +50,11 @@ export default class AdminController {
     @Inject()
     private adminRepository!: AdminRepository;
 
+    @Get("/test")
+    async test() {
+        return (await this.adminRepository.getAll()).length;
+    }
+
     /**
     * 
     * @api {get} /admin Informações do administrador
