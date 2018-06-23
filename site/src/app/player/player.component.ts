@@ -9,6 +9,7 @@ export class PlayerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    
   }
   @Input("music") music: string;
 }

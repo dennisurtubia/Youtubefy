@@ -10,7 +10,7 @@
     </div>
   </nav>
   <div class="col-md-6 offset-md-3 formSearch">
-    <form class="form-inline">
+    <form  novalidate [formGroup]="form" class="form-inline">
       <input class="form-control mr-sm-2 col-md-10" type="search" placeholder="Search" aria-label="Search">
       <button class="btn btn-light my-2 my-sm-0 bold" type="submit">Procurar</button>
     </form>
@@ -22,9 +22,7 @@
         <h2>Meus Álbuns</h2>
       </div>
       <div class="col-md-8">
-        <form class="form-inline float-right">
           <button class="btn btn-light bold float-right">Submeter Novo Álbum</button>
-        </form>
       </div>
       <div class="cardMusic col-md-2">
         <div class="itemsContainer">

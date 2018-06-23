@@ -2,26 +2,43 @@
   <div class="backgroundImg"></div>
 
   <div class="container">
+    
     <div class="col-md-6 offset-md-3">
-      <form class="registroForm whiteBG">
+      
+      <form class="registroForm whiteBG" novalidate [formGroup]="form">
         <h1 class="center">Registrar</h1>
+        <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'ERRO_BODY'">
+          Necessário preencher todos os campos
+        </div>
+        <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'EMAIL_EXISTENTE'">
+            Email já cadastrado
+        </div>
+        <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
+            Cadastro realizado com sucesso
+        </div>
         <div class="form-group">
           <label for="emailInput">Email:</label>
-          <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Seu email">
+          <input formControlName="email" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Seu email">
         </div>
         <div class="form-group">
-          <label for="nameInput">Nome</label>
-          <input type="password" class="form-control" id="nameInput" placeholder="Nome">
+          <label for="nameInput">Nome:</label>
+          <input formControlName="nome" type="text" class="form-control" id="nameInput" placeholder="Nome">
         </div>
         <div class="form-group">
-          <label for="nameInput">CPF</label>
-          <input type="cpf" class="form-control" id="cpfInput" placeholder="000.000.000-00">
+          <label for="nameInput">CPF:</label>
+          <input formControlName="cpf" type="cpf" class="form-control" id="cpfInput" placeholder="000.000.000-00" maxlength="11">
         </div>
         <div class="form-group">
-          <label for="passwordInput">Senha</label>
-          <input type="password" class="form-control" id="passwordInput" placeholder="Senha">
+          <label for="passwordInput">Senha:</label>
+          <input formControlName="senha" type="password" class="form-control" id="passwordInput" placeholder="Senha">
         </div>
-        <button type="submit" class="btn btn-primary">Finalizar cadastro</button>
+        <div class="form-group">
+          <label for="passwordInput">Registrar como:</label><br>
+          <input type="radio" formControlName="opcao" value="admin"> Admin<br>
+          <input type="radio" formControlName="opcao" value="publisher"> Publicador<br>
+          <input type="radio" formControlName="opcao" value="user"> Usuário
+        </div>
+        <button (click)=submitRegister(form) type="submit" class="btn btn-primary">Finalizar cadastro</button>
         <a routerLink="/login" routerLinkActive="active">
           <button class="btn btn-outline-dark" style="float: right;">Entrar</button>
         </a>

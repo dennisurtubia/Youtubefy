@@ -17,6 +17,10 @@ import { MyMusicComponent } from "./my-music/my-music.component";
 import { GlobalsComponent } from "./globals/globals.component";
 import { Ng2Webstorage } from "ngx-webstorage";
 import { YoutubePlayerModule } from "ngx-youtube-player";
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { Pipe, PipeTransform } from '@angular/core';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -48,7 +52,15 @@ const appRoutes: Routes = [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     Ng2Webstorage,
-    YoutubePlayerModule
+    YoutubePlayerModule,
+    CommonModule,
+    ReactiveFormsModule,
+    HttpClientModule
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
