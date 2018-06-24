@@ -154,6 +154,21 @@ describe('signin', () => {
         expect(res.erro).toBe('INFORMACOES_INCORRETAS')
         expect(res.token).toBeUndefined();
     });
+
+    it('retorna erro se as informações estiverem faltando', async () => {
+
+        let res = await post(url, {
+            json: {
+                email: email
+               
+            }
+        });
+
+        expect(res.erro).toBe('ERRO_BODY')
+        expect(res.token).toBeUndefined();
+
+
+    });
 });
 
 describe.only('info', () => {

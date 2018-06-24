@@ -5,6 +5,7 @@ import { of } from "rxjs";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import {Router} from "@angular/router";
+import { catchError, retry } from 'rxjs/operators';
 
 interface Object{
   nome:string;
@@ -12,6 +13,7 @@ interface Object{
   cpf:number;
   email:string;
   token:string;
+  id:number;
   cnpj:number;
 }
 
@@ -151,7 +153,7 @@ export class GetApiService {
             this.localSt.clear('erro');
             
           }
-          this.router.navigate(['/']);
+          this.router.navigate(['/publicadora']);
         } else {
           this.localSt.store('erro', res);
         }
@@ -162,21 +164,49 @@ export class GetApiService {
     );
   }
   getAdmin(token:string){
-    console.log(this.apiUrl + 'admin?token=' + token);
     this.http.get(this.apiUrl + 'admin?token=' + token).subscribe(data => {
       this.localSt.store('data', data);
     });
   }
   getPublicadora(token:string){
-    console.log(this.apiUrl + 'publicadora?token=' + token);
     this.http.get(this.apiUrl + 'publicadora?token=' + token).subscribe(data => {
       this.localSt.store('data', data);
     });
   }
   getUser(token:string){
-    console.log(this.apiUrl + 'ouvinte?token=' + token);
     this.http.get(this.apiUrl + 'ouvinte?token=' + token).subscribe(data => {
       this.localSt.store('data', data);
     });
+  }
+  getGender(token:string){
+    this.http.get(this.apiUrl + 'genero?token=' + token).subscribe(data => {
+      this.localSt.store('genero', data.generos);
+    });
+  }
+  postGender(token:string, form:Object){
+    const req = this.http.post(this.apiUrl + 'genero?token=' + token, {
+      nome: form.nome,
+    })
+    .subscribe(
+      res => {
+        console.log(res);
+        this.localSt.store('registered', res);
+      },
+      err => {
+        console.log("Erro");
+      }
+    );
+  }
+
+  deleteGender(id:number){
+    this.http.request('delete', this.apiUrl + 'genero?token=' + this.localSt.retrieve('token').token, { body: {id:id} })
+    .subscribe(
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log("Erro");
+      }
+    );;
   }
 }
