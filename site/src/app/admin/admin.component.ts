@@ -12,6 +12,9 @@ import {Router} from "@angular/router";
 export class AdminComponent implements OnInit {
   response: Object;
   form:FormGroup;
+  loading: boolean;
+  currentBtn: number;
+  currentEdit: any[];
   listGender: any[];
   constructor(
     private localSt: LocalStorageService,
@@ -27,12 +30,13 @@ export class AdminComponent implements OnInit {
     this.createForm();
     this.localSt.clear('registered');
     this.listGender = this.localSt.retrieve('genero');
+    this.loading = false;
+    this.currentBtn = -1;
   }
 
   createForm() {
     this.form = this.fb.group({
-      nome: [ '', Validators.required ],
-      
+      nome: [ '', Validators.required ]
     });
   }
   addGender() {
@@ -43,10 +47,26 @@ export class AdminComponent implements OnInit {
       this.getApi.getGender(this.localSt.retrieve('token').token);
     }, 2000);
   }
+  close(){
+    this.localSt.clear('registered');
+  }
   deleteGender(id:number, index:number) {
     this.getApi.deleteGender(id);
-    this.localSt.retrieve('genero').splice(index, 1);
-    this.listGender.splice(index, 1);
+    this.loading = true;
+    this.currentBtn = index;
+    setTimeout(() => 
+    {
+      this.getApi.getGender(this.localSt.retrieve('token').token);
+      this.loading = false;
+      this.currentBtn = null;
+    }, 2000);
+  }
+  updateGender() {
+    this.getApi.updateGender(this.currentEdit.id, this.form.value.nome);
+    setTimeout(() => 
+    {
+      this.getApi.getGender(this.localSt.retrieve('token').token);
+    }, 2000);
   }
   setPage(page: number) {
     this.localSt.store("page", page);

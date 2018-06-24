@@ -30,8 +30,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.localSt.retrieve('token').token) {
-      this.router.navigate(['/admin']);
+    if(this.localSt.retrieve('token')) {
+      if(this.localSt.retrieve('token').token) {
+        this.router.navigate(['/admin']);
+      }
     }
   }
   ngOnDestroy(){

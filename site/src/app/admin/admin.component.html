@@ -132,37 +132,67 @@
             <!-- Modal -->
             <div class="modal fade" id="addGenero" tabindex="-1" role="dialog" aria-labelledby="addGeneroLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="addGeneroLabel">Adicionar novo gênero</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    
-                    </div>
-                    <div class="modal-body">
-                    <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
-                        Necessário preencher todos os campos
-                    </div>
-                    <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
-                        Gênero cadastrado com sucesso
-                    </div>
-                    <form class="registroForm whiteBG" novalidate [formGroup]="form">
-                        <div class="form-group">
-                            <label for="generoInput">De um nome para o gênero:</label>
-                            <input formControlName="nome" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
-                        </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="addGeneroLabel">Adicionar novo gênero</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         
-                    </form>
-                    
+                        </div>
+                        <div class="modal-body">
+                        <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
+                            Necessário preencher todos os campos
+                        </div>
+                        <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
+                            Gênero cadastrado com sucesso
+                        </div>
+                        <form class="registroForm whiteBG" novalidate [formGroup]="form">
+                            <div class="form-group">
+                                <label for="generoInput">De um nome para o gênero:</label>
+                                <input formControlName="nome" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+                            </div>
+                        </form>
+                        
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button (click)=addGender() type="button" class="btn btn-primary">Save changes</button>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button (click)=addGender() type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
                 </div>
             </div>
+            <div class="modal fade" id="updateGenero" tabindex="-1" role="dialog" aria-labelledby="updateGeneroLabel" aria-hidden="true" *ngIf="this.currentEdit">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="updateGeneroLabel">Atualizar gênero</h5>
+                            <button type="button" class="close" (click)="close();" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            
+                            </div>
+                            <div class="modal-body">
+                            <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
+                                Necessário preencher todos os campos
+                            </div>
+                            <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
+                                Gênero atualizado com sucesso
+                            </div>
+                            <form class="registroForm whiteBG" novalidate [formGroup]="form">
+                                <div class="form-group">
+                                    <label for="generoInput">De um nome para o gênero:</label>
+                                    <input formControlName="nome" type="text" [value]="this.currentEdit.nome" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+                                </div>
+                            </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" (click)="close();" data-dismiss="modal">Fechar</button>
+                                <button (click)=updateGender() type="button" class="btn btn-primary">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <h1>Gêneros</h1>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addGenero">
                 <i class="fas fa-plus"></i> Adicionar Gênero
@@ -179,14 +209,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let genero of this.localSt.retrieve('genero')">
+                    <tr *ngFor="let genero of this.localSt.retrieve('genero'); let i of index">
                         <th scope="row">{{genero.id}}</th>
                         <td>{{genero.nome}}</td>
                         <td>
-                            <button class="btn btn-primary">
-                                <i class="fas fa-edit"></i> Editar</button>
-                                <button class="btn btn-success" (click)="deleteGender(genero.id, index);">
-                                <i class="fas fa-trash"></i> Excluir</button>
+                            <button class="btn btn-primary" (click)="this.currentEdit = genero"  data-toggle="modal" data-target="#updateGenero">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-danger" (click)="deleteGender(genero.id, i);"  *ngIf="this.currentBtn !== i || this.loading === false">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                            <button class="btn btn-danger btn-disabled" *ngIf="this.currentBtn === i && this.loading === true">
+                                <i class="fas fa-spinner fa-spin"></i> Excluir
+                            </button>
                         </td>
                     </tr>
     
