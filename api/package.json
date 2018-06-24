@@ -8,7 +8,7 @@
     "start": "tsc --watch | nodemon --inspect ./dist/app.js --watch dist",
     "docgen": "npm run-script build && apidoc app/controllers/ -e node_modules/ -e app/controllers/tests/  -o ../docs/api/",
     "deploy": "npm run-script build && we deploy -p projectbd",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",

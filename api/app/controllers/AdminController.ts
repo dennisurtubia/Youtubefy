@@ -5,6 +5,7 @@ import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "r
 import { Inject } from "typedi";
 import Administrador from "../models/Administrador";
 import AdminRepository from "../repositories/AdminRepository";
+import GeneroRepository from "../repositories/GeneroRepository";
 
 
 // TODO:
@@ -51,6 +52,9 @@ export default class AdminController {
 
     @Inject()
     private adminRepository!: AdminRepository;
+
+    @Inject()
+    private generoRepository!: GeneroRepository;
 
 
     /**
@@ -242,5 +246,18 @@ export default class AdminController {
         await this.adminRepository.update(admin.id, admin);
 
         return { "sucesso": true };
+    }
+
+    @Authorized("ADMIN")
+    @Get("/generos")
+    async generosAdministrados(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email)
+        if (admin === null)
+            return;
+
+        const generos = await this.generoRepository.getByAdmin(admin.id);
+        return { "generos": generos.map(({ idAdministrador, ...attrs }) => attrs) }
     }
 }
