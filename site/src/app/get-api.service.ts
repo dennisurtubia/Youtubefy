@@ -220,4 +220,14 @@ export class GetApiService {
       }
     );
   }
+  getMusicaAprovada() {
+    this.http.get(this.apiUrl + 'musica/aprovadas?token=' + this.localSt.retrieve('token').token).subscribe(data => {
+      this.localSt.store('musicasAprovadas', data);
+    });
+  }
+  getNaoAvaliadas() {
+    this.http.get(this.apiUrl + 'musica/naoavaliadas?token=' + this.localSt.retrieve('token').token).subscribe(data => {
+      this.localSt.store('musicasNaoAvaliadas', data);
+    });
+  }
 }

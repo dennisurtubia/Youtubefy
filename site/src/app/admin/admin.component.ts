@@ -39,6 +39,7 @@ export class AdminComponent implements OnInit {
       nome: [ '', Validators.required ]
     });
   }
+
   addGender() {
     this.localSt.clear('registered');
     this.getApi.postGender(this.localSt.retrieve('token').token, this.form.value);
@@ -47,9 +48,11 @@ export class AdminComponent implements OnInit {
       this.getApi.getGender(this.localSt.retrieve('token').token);
     }, 2000);
   }
+
   close(){
     this.localSt.clear('registered');
   }
+
   deleteGender(id:number, index:number) {
     this.getApi.deleteGender(id);
     this.loading = true;
@@ -61,6 +64,7 @@ export class AdminComponent implements OnInit {
       this.currentBtn = null;
     }, 2000);
   }
+
   updateGender() {
     this.getApi.updateGender(this.currentEdit.id, this.form.value.nome);
     setTimeout(() => 
@@ -68,21 +72,31 @@ export class AdminComponent implements OnInit {
       this.getApi.getGender(this.localSt.retrieve('token').token);
     }, 2000);
   }
+  
   setPage(page: number) {
     this.localSt.store("page", page);
+    if(page === 2) {
+      this.getApi.getMusicaAprovada();
+    } else if(page === 1) {
+      this.getApi.getNaoAvaliadas();
+    }
   }
+
   getAdmin(token:string){
     this.getApi.getAdmin(token);
   }
+
   refresh() {
     this.getApi.getGender(this.localSt.retrieve('token').token);
   }
+
   quit(){
     this.localSt.clear('token');
     this.localSt.clear('data');
     this.localSt.clear('page');
     this.router.navigate(['/login']);
   }
+
   ngOnInit() {
     this.localSt.clear('registered');
     if(!this.localSt.retrieve('token')) {
@@ -91,13 +105,17 @@ export class AdminComponent implements OnInit {
     this.getAdmin(this.localSt.retrieve('token').token);
     this.getApi.getGender(this.localSt.retrieve('token').token);
     this.listGender = this.localSt.retrieve('genero');
-
+    this.getApi.getMusicaAprovada();
+    this.getApi.getNaoAvaliadas();
   }
+
   ngOnDestroy(){
     this.localSt.clear('data');
     this.localSt.clear('page');
     this.localSt.clear('registered');
     this.localSt.clear('genero');
+    this.localSt.clear('musicasAprovadas');
+    this.localSt.clear('musicasNaoAvaliadas');
   }
   
 }

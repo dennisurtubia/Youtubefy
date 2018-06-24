@@ -16,9 +16,9 @@
                         Músicas
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" (click)="setPage(3);">Aprovadas</a>
+                        <a class="dropdown-item" (click)="setPage(2);">Aprovadas</a>
                         <a class="dropdown-item" (click)="setPage(1);">Aguardando Aprovação</a>
-                        <a class="dropdown-item" (click)="setPage(2);">Reprovadas</a>
+                        <a class="dropdown-item" (click)="setPage(3);">Reprovadas</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -50,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr  *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
                     <th scope="row">1</th>
                     <td>Anoter Brick In The Wall</td>
                     <td>Pink Floyd</td>
@@ -80,7 +80,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr *ngFor="let musica of this.localSt.retrieve('musicasaprovadas').aprovadas">
                     <th scope="row">1</th>
                     <td>Anoter Brick In The Wall</td>
                     <td>Pink Floyd</td>
