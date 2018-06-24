@@ -1,9 +1,10 @@
 import { compare, hash } from "bcrypt";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { sign } from "jsonwebtoken";
-import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Post, Put } from "routing-controllers";
+import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Publicadora from "../models/Publicadora";
+import AlbumRepository from "../repositories/AlbumRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
 class InsertRequest {
@@ -49,36 +50,39 @@ export default class PublicadoraController {
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
 
- /**
-    * 
-    * @api {post} /publicadora/signup Cadastrar publicadora
-    * @apiName CadastrarPublicadora
-    * @apiGroup Publicadora
-    * 
-    * @apiParam  {String} nome Nome
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParam  {String} cnpj CNPJ
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "nome": "Doravante",
-    *       "email": "a@a.com",
-    *       "senha": "9876",
-    *       "cnpj": "11111111111"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "sucesso": true
-    *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "EMAIL_EXISTENTE"
-    *   } 
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "ERRO_BD"
-    *   } 
-    */
+    @Inject()
+    private albumRepository!: AlbumRepository;
+
+    /**
+       * 
+       * @api {post} /publicadora/signup Cadastrar publicadora
+       * @apiName CadastrarPublicadora
+       * @apiGroup Publicadora
+       * 
+       * @apiParam  {String} nome Nome
+       * @apiParam  {String} email Email
+       * @apiParam  {String} senha Senha
+       * @apiParam  {String} cnpj CNPJ
+       * @apiParamExample  {json} Exemplo:
+       *   {
+       *       "nome": "Doravante",
+       *       "email": "a@a.com",
+       *       "senha": "9876",
+       *       "cnpj": "11111111111"
+       *   }
+       * @apiSuccessExample {json} Resposta bem sucessida:
+       *   {
+       *       "sucesso": true
+       *   }
+       * @apiErrorExample {json} Email já existe:
+       *   {
+       *       "erro": "EMAIL_EXISTENTE"
+       *   } 
+       * @apiErrorExample {json} Email já existe:
+       *   {
+       *       "erro": "ERRO_BD"
+       *   } 
+       */
 
     @Post("/signup")
     async insert(
@@ -99,7 +103,7 @@ export default class PublicadoraController {
         return { "sucesso": true };
     }
 
-        /**
+    /**
     * 
     * @api {get} /publicadora Informações da publicadora
     * @apiName InfoPublicadora
@@ -113,7 +117,8 @@ export default class PublicadoraController {
     *       "id": "1",
     *       "nome": "Doravante",
     *       "email": "a@a.com",
-    *       "cnpj": "11111111111"
+    *       "cnpj": "11111111111",
+            "tipoUser": 2
     *   }
     * @apiErrorExample {json} Admin inválido:
     *   {
@@ -121,7 +126,6 @@ export default class PublicadoraController {
     *   } 
     *
     */
-
     @Authorized("PUBLICADORA")
     @Get("/")
     async get(
@@ -133,13 +137,12 @@ export default class PublicadoraController {
             return { "erro": "PUBLICADORA_INVALIDA" };
 
         return {
-            "publicadora":
-            {
-                "id": publicadora.id,
-                "nome": publicadora.nome,
-                "email": publicadora.email,
-                "cnpj": publicadora.cnpj
-            }
+
+            "id": publicadora.id,
+            "nome": publicadora.nome,
+            "email": publicadora.email,
+            "cnpj": publicadora.cnpj,
+            "tipoUser": 2
         };
     }
 
@@ -163,7 +166,7 @@ export default class PublicadoraController {
         return { "sucesso": true };
     }
 
-        /**
+    /**
     * 
     * @api {delete} /publicadora Remover publicadora
     * @apiName RemoverPublicadora
@@ -182,22 +185,21 @@ export default class PublicadoraController {
     *   } 
     *
     */
-    
     @Authorized("PUBLICADORA")
     @Delete("/")
     async delete(
-        @CurrentUser({required: true}) email: string,
+        @CurrentUser({ required: true }) email: string,
     ) {
-        
+
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
-        return {"erro": "PUBLICADORA_INVALIDA"};
-        
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
         await this.publicadoraRepository.delete(publicadora.id);
-        
+
         return { "sucesso": true };
     }
-    
+
     /**
     * 
     * @api {post} /publicadora/signin Login publicadora
@@ -237,5 +239,20 @@ export default class PublicadoraController {
         const token = sign(admin.email, "supersecret");
 
         return { "token": token };
+    }
+
+    @Get("/albuns/:id")
+    async getAlbuns(
+        @Param("id") id: number
+    ) {
+
+        const publicadora = await this.publicadoraRepository.getById(id);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        const albuns = await this.albumRepository.getByPublicadora(id);
+        return {
+            "albuns": albuns
+        }
     }
 }

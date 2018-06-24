@@ -15,6 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let AlbumRepository = class AlbumRepository {
+    async getByPublicadora(id) {
+        const query = `
+            SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
+            FROM Album a
+            WHERE a.idPublicadora = ?
+        `;
+        return await this.database.queryAll(query, []);
+    }
     async getById(id) {
         const query = `
             SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
@@ -40,15 +48,15 @@ let AlbumRepository = class AlbumRepository {
     async update(id, object) {
         const query1 = `
             UPDATE Album a
-            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?, a.idPublicadora = ?
+            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?
             WHERE a.id = ?
         `;
-        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
+        await this.database.query(query1, [object.capa, object.nome, object.nomeArtista, object.descricao, id]);
     }
     async delete(id) {
         const query = `
-            DELETE FROM Album a
-            WHERE a.id = ?
+            DELETE FROM Album
+            WHERE id = ?
         `;
         await this.database.query(query, [id]);
     }

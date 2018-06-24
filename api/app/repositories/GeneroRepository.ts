@@ -10,7 +10,18 @@ export default class GeneroRepository implements IRepository<Entity> {
 
     @Inject()
     database!: Database;
-    
+
+    async getByAdmin(id: number): Promise<Entity[]> {
+
+        const query = `
+            SELECT g.id, g.nome, g.idAdministrador
+            FROM Genero g
+            WHERE g.idAdministrador = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [id]);
+    }
+
     async getById(id: number): Promise<Entity | null> {
 
         const query = `
@@ -49,8 +60,7 @@ export default class GeneroRepository implements IRepository<Entity> {
             SET g.nome = ?, g.idAdministrador = ?
             WHERE g.id = ?
         `;
-        console.log(object.nome);
-        
+
         await this.database.query(query1, [object.nome, object.idAdministrador, id]);
     }
 

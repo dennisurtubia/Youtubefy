@@ -5,11 +5,13 @@ import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "r
 import { Inject } from "typedi";
 import Administrador from "../models/Administrador";
 import AdminRepository from "../repositories/AdminRepository";
+import GeneroRepository from "../repositories/GeneroRepository";
+import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
+import MusicaNaoAprovadaRepository from "../repositories/MusicaNaoAprovadaRepository";
 
 
 // TODO:
 /*
-    Listar gêneros administrados pelo admin. 1:n
     Listar playlists administradas pelo admin. 1:n
     Listar músicas avaliadas pelo admin. 1:n
 */
@@ -52,6 +54,15 @@ export default class AdminController {
     @Inject()
     private adminRepository!: AdminRepository;
 
+    @Inject()
+    private generoRepository!: GeneroRepository;
+
+    @Inject()
+    private musicaAprovadaRepository!: MusicaAprovadaRepository;
+
+    @Inject()
+    private musicaNaoAprovadaRepository!: MusicaNaoAprovadaRepository;
+
 
     /**
     * 
@@ -66,7 +77,8 @@ export default class AdminController {
     *       "id": "1",
     *       "nome": "Doravante",
     *       "email": "a@a.com",
-    *       "cpf": "11111111111"
+    *       "cpf": "11111111111",
+    *       "tipoUser": 3
     *   }
     * @apiErrorExample {json} Acesso negado:
     *   {
@@ -88,7 +100,8 @@ export default class AdminController {
             "id": admin.id,
             "nome": admin.nome,
             "email": admin.email,
-            "cpf": admin.cpf
+            "cpf": admin.cpf,
+            "tipoUser": 3
         }
     }
 
@@ -240,5 +253,35 @@ export default class AdminController {
         await this.adminRepository.update(admin.id, admin);
 
         return { "sucesso": true };
+    }
+
+    @Authorized("ADMIN")
+    @Get("/generos")
+    async generosAdministrados(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email)
+        if (admin === null)
+            return;
+
+        const generos = await this.generoRepository.getByAdmin(admin.id);
+        return { "generos": generos.map(({ idAdministrador, ...attrs }) => attrs) }
+    }
+
+    @Authorized("ADMIN")
+    @Get("/musicas-avaliadas")
+    async musicasAvaliadas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const admin = await this.adminRepository.getByEmail(email)
+        if (admin === null)
+            return;
+
+        const aprovadas = await this.musicaAprovadaRepository.getByAdmin(admin.id);
+        const reprovadas = await this.musicaNaoAprovadaRepository.getByAdmin(admin.id);
+        return {
+            "aprovadas": aprovadas,
+            "reprovadas": reprovadas
+        }
     }
 }

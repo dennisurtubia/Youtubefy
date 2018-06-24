@@ -21,6 +21,7 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const Publicadora_1 = __importDefault(require("../models/Publicadora"));
+const AlbumRepository_1 = __importDefault(require("../repositories/AlbumRepository"));
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
 class InsertRequest {
     constructor() {
@@ -117,38 +118,38 @@ let PublicadoraController = class PublicadoraController {
         return { "sucesso": true };
     }
     /**
-*
-* @api {get} /publicadora Informações da publicadora
-* @apiName InfoPublicadora
-* @apiGroup Publicadora
-*
-* @apiParam  {String} token Json Web Token
-* @apiParamExample  {String} Request-Example:
-*    https://utfmusic.me/v1/admin?token=deadbeef
-* @apiSuccessExample {json} Resposta bem sucessida:
-*   {
-*       "id": "1",
-*       "nome": "Doravante",
-*       "email": "a@a.com",
-*       "cnpj": "11111111111"
-*   }
-* @apiErrorExample {json} Admin inválido:
-*   {
-*        "erro": "PUBLICADORA_INVALIDA"
-*   }
-*
-*/
+    *
+    * @api {get} /publicadora Informações da publicadora
+    * @apiName InfoPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cnpj": "11111111111",
+            "tipoUser": 2
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   }
+    *
+    */
     async get(email) {
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
         return {
-            "publicadora": {
-                "id": publicadora.id,
-                "nome": publicadora.nome,
-                "email": publicadora.email,
-                "cnpj": publicadora.cnpj
-            }
+            "id": publicadora.id,
+            "nome": publicadora.nome,
+            "email": publicadora.email,
+            "cnpj": publicadora.cnpj,
+            "tipoUser": 2
         };
     }
     async update(email, req) {
@@ -162,24 +163,24 @@ let PublicadoraController = class PublicadoraController {
         return { "sucesso": true };
     }
     /**
-*
-* @api {delete} /publicadora Remover publicadora
-* @apiName RemoverPublicadora
-* @apiGroup Publicadora
-*
-* @apiParam  {String} token Json Web Token
-* @apiParamExample  {String} Request-Example:
-*    https://utfmusic.me/v1/admin?token=deadbeef
-* @apiSuccessExample {json} Resposta bem sucessida:
-*    {
-*        "sucesso": true
-*    }
-* @apiErrorExample {json} Resposta com erro:
-*   {
-*        "erro": "PUBLICADORA_INVALIDA"
-*   }
-*
-*/
+    *
+    * @api {delete} /publicadora Remover publicadora
+    * @apiName RemoverPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   }
+    *
+    */
     async delete(email) {
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
@@ -219,11 +220,24 @@ let PublicadoraController = class PublicadoraController {
         const token = jsonwebtoken_1.sign(admin.email, "supersecret");
         return { "token": token };
     }
+    async getAlbuns(id) {
+        const publicadora = await this.publicadoraRepository.getById(id);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        const albuns = await this.albumRepository.getByPublicadora(id);
+        return {
+            "albuns": albuns
+        };
+    }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", PublicadoraRepository_1.default)
 ], PublicadoraController.prototype, "publicadoraRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", AlbumRepository_1.default)
+], PublicadoraController.prototype, "albumRepository", void 0);
 __decorate([
     routing_controllers_1.Post("/signup"),
     __param(0, routing_controllers_1.Body({ validate: true })),
@@ -263,6 +277,13 @@ __decorate([
     __metadata("design:paramtypes", [LoginRequest]),
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "signin", null);
+__decorate([
+    routing_controllers_1.Get("/albuns/:id"),
+    __param(0, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "getAlbuns", null);
 PublicadoraController = __decorate([
     routing_controllers_1.JsonController("/publicadora")
 ], PublicadoraController);

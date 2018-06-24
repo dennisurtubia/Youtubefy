@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Genero {
-    constructor(id, nome) {
+    constructor(id, nome, idAdministrador) {
         this._id = 0;
         this._nome = "";
         this._idAdministrador = 0;
         this._id = id;
         this._nome = nome;
+        this._idAdministrador = idAdministrador;
     }
     get id() {
         return this._id;

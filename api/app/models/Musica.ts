@@ -6,11 +6,13 @@ export default class Musica {
     private _idGenero: number = 0;
     private _idAlbum: number = 0;
 
-    constructor(id: number, nome: string, duracao: number, explicito: boolean) {
+    constructor(id: number, nome: string, duracao: number, explicito: boolean, idGenero: number, idAlbum: number) {
         this._id = id;
         this._nome = nome;
         this._duracao = duracao;
         this._explicito = explicito;
+        this._idGenero = idGenero;
+        this._idAlbum = idAlbum;
     }
 
     public get id(): number {

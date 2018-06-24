@@ -46,14 +46,19 @@ let OuvinteRepository = class OuvinteRepository {
             INSERT INTO Usuario
             VALUES (0, ?, ?, ?)
         `;
-        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        let insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
         if (insertId === -1)
             return -1;
         const query2 = `
             INSERT INTO Ouvinte
             VALUES (?, ?)
         `;
-        return await this.database.query(query2, [insertId, object.cpf]);
+        let insertId2 = await this.database.query(query2, [insertId, object.cpf]);
+        if (insertId2 === -1) {
+            await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId]);
+            return -1;
+        }
+        return insertId;
     }
     async update(id, object) {
         const query1 = `
@@ -71,13 +76,13 @@ let OuvinteRepository = class OuvinteRepository {
     }
     async delete(id) {
         const query = `
-            DELETE FROM Ouvinte 
-            WHERE a.id = ?
+            DELETE FROM Ouvinte
+            WHERE id = ?
         `;
         await this.database.query(query, [id]);
         const query2 = `
-            DELETE FROM Usuario u
-            WHERE a.id = ?
+            DELETE FROM Usuario
+            WHERE id = ?
         `;
         await this.database.query(query2, [id]);
     }

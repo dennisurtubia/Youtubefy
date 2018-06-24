@@ -11,6 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -22,9 +31,11 @@ const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const Administrador_1 = __importDefault(require("../models/Administrador"));
 const AdminRepository_1 = __importDefault(require("../repositories/AdminRepository"));
+const GeneroRepository_1 = __importDefault(require("../repositories/GeneroRepository"));
+const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
+const MusicaNaoAprovadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAprovadaRepository"));
 // TODO:
 /*
-    Listar gêneros administrados pelo admin. 1:n
     Listar playlists administradas pelo admin. 1:n
     Listar músicas avaliadas pelo admin. 1:n
 */
@@ -89,7 +100,8 @@ let AdminController = class AdminController {
     *       "id": "1",
     *       "nome": "Doravante",
     *       "email": "a@a.com",
-    *       "cpf": "11111111111"
+    *       "cpf": "11111111111",
+    *       "tipoUser": 3
     *   }
     * @apiErrorExample {json} Acesso negado:
     *   {
@@ -105,7 +117,8 @@ let AdminController = class AdminController {
             "id": admin.id,
             "nome": admin.nome,
             "email": admin.email,
-            "cpf": admin.cpf
+            "cpf": admin.cpf,
+            "tipoUser": 3
         };
     }
     /**
@@ -233,11 +246,44 @@ let AdminController = class AdminController {
         await this.adminRepository.update(admin.id, admin);
         return { "sucesso": true };
     }
+    async generosAdministrados(email) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return;
+        const generos = await this.generoRepository.getByAdmin(admin.id);
+        return { "generos": generos.map((_a) => {
+                var { idAdministrador } = _a, attrs = __rest(_a, ["idAdministrador"]);
+                return attrs;
+            }) };
+    }
+    async musicasAvaliadas(email) {
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return;
+        const aprovadas = await this.musicaAprovadaRepository.getByAdmin(admin.id);
+        const reprovadas = await this.musicaNaoAprovadaRepository.getByAdmin(admin.id);
+        return {
+            "aprovadas": aprovadas,
+            "reprovadas": reprovadas
+        };
+    }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", AdminRepository_1.default)
 ], AdminController.prototype, "adminRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", GeneroRepository_1.default)
+], AdminController.prototype, "generoRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", MusicaAprovadaRepository_1.default)
+], AdminController.prototype, "musicaAprovadaRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", MusicaNaoAprovadaRepository_1.default)
+], AdminController.prototype, "musicaNaoAprovadaRepository", void 0);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/"),
@@ -269,6 +315,22 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Authorized("ADMIN"),
+    routing_controllers_1.Get("/generos"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "generosAdministrados", null);
+__decorate([
+    routing_controllers_1.Authorized("ADMIN"),
+    routing_controllers_1.Get("/musicas-avaliadas"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "musicasAvaliadas", null);
 AdminController = __decorate([
     routing_controllers_1.JsonController("/admin")
 ], AdminController);

@@ -11,6 +11,16 @@ export default class AlbumRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
+    async getByPublicadora(id: number): Promise<Entity[]> {
+        const query = `
+            SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
+            FROM Album a
+            WHERE a.idPublicadora = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [])
+    }
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
             SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
@@ -44,17 +54,17 @@ export default class AlbumRepository implements IRepository<Entity> {
 
         const query1 = `
             UPDATE Album a
-            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?, a.idPublicadora = ?
+            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?
             WHERE a.id = ?
         `;
 
-        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
+        await this.database.query(query1, [object.capa, object.nome, object.nomeArtista, object.descricao, id]);
     }
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM Album a
-            WHERE a.id = ?
+            DELETE FROM Album
+            WHERE id = ?
         `;
 
         await this.database.query(query, [id]);

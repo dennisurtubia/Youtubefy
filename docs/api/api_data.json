@@ -359,7 +359,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\",\n    \"tipoUser\": 3\n}",
           "type": "json"
         }
       ]
@@ -407,7 +407,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\",\n    \"tipoUser\": 3\n}",
           "type": "json"
         }
       ]
@@ -2197,7 +2197,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\",\n    \"tipoUser\": 1\n}",
           "type": "json"
         }
       ]
@@ -2250,7 +2250,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cpf\": \"11111111111\",\n    \"tipoUser\": 1\n}",
           "type": "json"
         }
       ]
@@ -2571,7 +2571,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cnpj\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cnpj\": \"11111111111\",\n      \"tipoUser\": 2\n}",
           "type": "json"
         }
       ]
@@ -2619,7 +2619,7 @@
       "examples": [
         {
           "title": "Resposta bem sucessida:",
-          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cnpj\": \"11111111111\"\n}",
+          "content": "{\n    \"id\": \"1\",\n    \"nome\": \"Doravante\",\n    \"email\": \"a@a.com\",\n    \"cnpj\": \"11111111111\",\n      \"tipoUser\": 2\n}",
           "type": "json"
         }
       ]

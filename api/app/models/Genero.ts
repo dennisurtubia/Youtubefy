@@ -3,9 +3,10 @@ export default class Genero {
     private _nome: string = "";
     private _idAdministrador: number = 0;
 
-    constructor(id: number, nome: string) {
+    constructor(id: number, nome: string, idAdministrador: number) {
         this._id = id;
         this._nome = nome;
+        this._idAdministrador = idAdministrador;
     }
 
     public get id(): number {

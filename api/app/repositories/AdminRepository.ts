@@ -44,9 +44,6 @@ export default class AdminRepository implements IRepository<Entity> {
     }
 
     async add(object: Entity): Promise<number> {
-
-
-
         const query1 = `
             INSERT INTO Usuario
             VALUES (0, ?, ?, ?)

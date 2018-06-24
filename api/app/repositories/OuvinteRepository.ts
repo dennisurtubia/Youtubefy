@@ -49,7 +49,8 @@ export default class OuvinteRepository implements IRepository<Entity> {
             VALUES (0, ?, ?, ?)
         `;
 
-        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        let insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+
         if (insertId === -1)
             return -1;
 
@@ -58,7 +59,14 @@ export default class OuvinteRepository implements IRepository<Entity> {
             VALUES (?, ?)
         `;
 
-        return await this.database.query(query2, [insertId, object.cpf]);
+        let insertId2 = await this.database.query(query2, [insertId, object.cpf]);
+
+        if (insertId2 === -1) {
+            await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId]);
+            return -1;
+        }
+
+        return insertId;
     }
 
     async update(id: number, object: Entity): Promise<void> {
@@ -82,14 +90,14 @@ export default class OuvinteRepository implements IRepository<Entity> {
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM Ouvinte 
-            WHERE a.id = ?
+            DELETE FROM Ouvinte
+            WHERE id = ?
         `;
         await this.database.query(query, [id]);
 
         const query2 = `
-            DELETE FROM Usuario u
-            WHERE a.id = ?
+            DELETE FROM Usuario
+            WHERE id = ?
         `;
         await this.database.query(query2, [id]);
     }

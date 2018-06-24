@@ -33,6 +33,7 @@ class AvaliarRequest {
     constructor() {
         this.musica = 0;
         this.avaliacao = Avaliacao.Reprovado;
+        this.observacao = "";
     }
 }
 __decorate([
@@ -43,6 +44,11 @@ __decorate([
     class_validator_1.IsEnum(Avaliacao),
     __metadata("design:type", String)
 ], AvaliarRequest.prototype, "avaliacao", void 0);
+__decorate([
+    class_validator_1.IsOptional(),
+    class_validator_1.IsString(),
+    __metadata("design:type", String)
+], AvaliarRequest.prototype, "observacao", void 0);
 // TODO:
 /*
     Documentar
@@ -73,6 +79,7 @@ let MusicaController = class MusicaController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
+        console.log(musicas);
         return {
             "naoAvaliadas": musicas.map((m) => m.id)
         };
@@ -83,26 +90,12 @@ let MusicaController = class MusicaController {
     * @apiName ListarMusicasAprovadas
     * @apiGroup Musica
     *
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "aprovadas": []
     *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "ADMIN_INVALIDO"
-    *   }
-    * @apiErrorExample {json} Acesso negado:
-    *   {
-    *        "erro": "ACESSO_NEGADO"
-    *   }
     */
-    async getAprovadas(email) {
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
+    async getAprovadas() {
         const musicas = await this.musicaAprovadaRepository.getAll();
         return {
             "aprovadas": musicas
@@ -166,7 +159,7 @@ let MusicaController = class MusicaController {
                     return { "erro": "MUSICA_INVALIDA" };
                 if (req.avaliacao === Avaliacao.Aprovado) {
                     await this.musicaNaoAprovadaRepository.delete(musica.id);
-                    await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
                 }
                 else {
                     return { "erro": "MUSICA_ESTA_REPROVADA" };
@@ -175,7 +168,7 @@ let MusicaController = class MusicaController {
             else {
                 if (req.avaliacao === Avaliacao.Reprovado) {
                     await this.musicaAprovadaRepository.delete(musica.id);
-                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
                 }
                 else {
                     return { "erro": "MUSICA_ESTA_APROVADA" };
@@ -185,9 +178,9 @@ let MusicaController = class MusicaController {
         else {
             await this.musicaNaoAvaliadaRepository.delete(musica.id);
             if (req.avaliacao === Avaliacao.Aprovado)
-                await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                await this.musicaAprovadaRepository.add(new MusicaAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
             else if (req.avaliacao === Avaliacao.Reprovado)
-                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito));
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada_1.default(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
         }
         return { "sucesso": true };
     }
@@ -217,11 +210,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MusicaController.prototype, "getNaoAvaliadas", null);
 __decorate([
-    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/aprovadas"),
-    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], MusicaController.prototype, "getAprovadas", null);
 __decorate([

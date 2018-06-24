@@ -51,7 +51,8 @@ export default class PublicadoraRepository implements IRepository<Entity> {
             VALUES (0, ?, ?, ?)
         `;
 
-        const insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+        let insertId = await this.database.query(query1, [object.nome, object.email, object.senha]);
+
         if (insertId === -1)
             return -1;
 
@@ -60,7 +61,14 @@ export default class PublicadoraRepository implements IRepository<Entity> {
             VALUES (?, ?)
         `;
 
-        return await this.database.query(query2, [insertId, object.cnpj]);
+        let insertId2 = await this.database.query(query2, [insertId, object.cnpj]);
+
+        if (insertId2 === -1) {
+            await this.database.query('DELETE FROM Usuario WHERE id = ?', [insertId]);
+            return -1;
+        }
+
+        return insertId;
     }
 
     async update(id: number, object: Publicadora): Promise<void> {
@@ -84,15 +92,15 @@ export default class PublicadoraRepository implements IRepository<Entity> {
 
     async delete(id: number): Promise<void> {
 
-        const query1 = `
-            DELETE FROM Publicadora a
-            WHERE a.id = ?
+        const query = `
+            DELETE FROM Publicadora
+            WHERE id = ?
         `;
-        await this.database.query(query1, [id]);
+        await this.database.query(query, [id]);
 
         const query2 = `
-            DELETE FROM Usuario u
-            WHERE a.id = ?
+            DELETE FROM Usuario
+            WHERE id = ?
         `;
         await this.database.query(query2, [id]);
     }
