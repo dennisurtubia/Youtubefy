@@ -44,17 +44,17 @@ export default class AlbumRepository implements IRepository<Entity> {
 
         const query1 = `
             UPDATE Album a
-            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?, a.idPublicadora = ?
+            SET a.capa = ?, a.nome = ?, a.nomeArtista = ?, a.descricao = ?
             WHERE a.id = ?
         `;
 
-        await this.database.query(query1, [id, object.capa, object.nome, object.nomeArtista, object.descricao, object.idPublicadora]);
+        await this.database.query(query1, [object.capa, object.nome, object.nomeArtista, object.descricao, id]);
     }
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM Album a
-            WHERE a.id = ?
+            DELETE FROM Album
+            WHERE id = ?
         `;
 
         await this.database.query(query, [id]);

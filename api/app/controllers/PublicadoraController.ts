@@ -134,14 +134,12 @@ export default class PublicadoraController {
             return { "erro": "PUBLICADORA_INVALIDA" };
 
         return {
-            "publicadora":
-            {
-                "id": publicadora.id,
-                "nome": publicadora.nome,
-                "email": publicadora.email,
-                "cnpj": publicadora.cnpj,
-                "tipoUser": 2
-            }
+
+            "id": publicadora.id,
+            "nome": publicadora.nome,
+            "email": publicadora.email,
+            "cnpj": publicadora.cnpj,
+            "tipoUser": 2
         };
     }
 
