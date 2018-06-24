@@ -125,14 +125,28 @@ test('lista todos os administradores', async () => {
 
 test('atualiza informações administrador', async () => {
     const insertId = await adminRepository.add(new Administrador(0, "cpf", "nome", "a@a.com", "senha"));
-    const admin = await adminRepository.getById(insertId);
+    let admin = await adminRepository.getById(insertId);
     expect(admin.cpf).toBe("cpf");
     expect(admin.nome).toBe("nome");
     expect(admin.senha).toBe("senha");
     admin.cpf = "novocpf";
-    admin.nome = "novonome"
+    admin.nome = "novonome";
+    admin.senha = "novasenha";
+    await adminRepository.update(insertId, admin);
+    admin = await adminRepository.getById(insertId);
+    expect(admin.cpf).toBe("novocpf");
+    expect(admin.nome).toBe("novonome");
+    expect(admin.senha).toBe("novasenha");
 });
 
+test('remove um administrador', async () => {
+    const insertId = await adminRepository.add(new Administrador(0, "cpf", "nome", "a@a.com", "senha"));
+    let admin = await adminRepository.getById(insertId);
+    expect(admin).not.toBeNull();
+    await adminRepository.delete(insertId);
+    admin = await adminRepository.getById(insertId);
+    expect(admin).toBeNull();
+});
 
 afterAll(async () => {
     await database.disconnect();

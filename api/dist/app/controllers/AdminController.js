@@ -39,6 +39,7 @@ class InsertRequest {
 __decorate([
     class_validator_1.IsString(),
     class_validator_1.IsNotEmpty(),
+    class_validator_1.Length(11, 11),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "cpf", void 0);
 __decorate([
@@ -48,6 +49,7 @@ __decorate([
 ], InsertRequest.prototype, "nome", void 0);
 __decorate([
     class_validator_1.IsString(),
+    class_validator_1.IsEmail(),
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "email", void 0);
@@ -74,9 +76,6 @@ __decorate([
     __metadata("design:type", String)
 ], LoginRequest.prototype, "senha", void 0);
 let AdminController = class AdminController {
-    async test() {
-        return (await this.adminRepository.getAll()).length;
-    }
     /**
     *
     * @api {get} /admin Informações do administrador
@@ -91,10 +90,6 @@ let AdminController = class AdminController {
     *       "nome": "Doravante",
     *       "email": "a@a.com",
     *       "cpf": "11111111111"
-    *   }
-    * @apiErrorExample {json} Admin inválido:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
     *   }
     * @apiErrorExample {json} Acesso negado:
     *   {
@@ -175,7 +170,7 @@ let AdminController = class AdminController {
     *   {
     *       "token": "deadbeef"
     *   }
-    * @apiErrorExample {json} Email já existe:
+    * @apiErrorExample {json} Email/senha incorretos:
     *   {
     *       "erro": "INFORMACOES_INCORRETAS"
     *   }
@@ -218,10 +213,6 @@ let AdminController = class AdminController {
     *    {
     *        "sucesso": true
     *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
-    *   }
     * @apiErrorExample {json} Acesso negado:
     *   {
     *        "erro": "ACESSO_NEGADO"
@@ -234,7 +225,7 @@ let AdminController = class AdminController {
     async update(email, req) {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
+            return;
         admin.nome = req.nome;
         admin.email = req.email;
         admin.senha = await bcrypt_1.hash(req.senha, 1024);
@@ -247,12 +238,6 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", AdminRepository_1.default)
 ], AdminController.prototype, "adminRepository", void 0);
-__decorate([
-    routing_controllers_1.Get("/test"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "test", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/"),
