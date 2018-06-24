@@ -66,7 +66,7 @@ export class AdminComponent implements OnInit {
   }
 
   updateGender() {
-    this.getApi.updateGender(this.currentEdit.id, this.form.value.nome);
+    this.getApi.updateGender(this.currentEdit['id'], this.form.value.nome);
     setTimeout(() => 
     {
       this.getApi.getGender(this.localSt.retrieve('token').token);

@@ -1,7 +1,7 @@
 <!-- <app-login></app-login> -->
 <!-- *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('userType') == 3" -->
 
-<body class="admin" *ngIf="this.localSt.retrieve('token') && this.localSt.retrieve('data')">
+<body class="admin" *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('data') !== null">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">UTFPR | Music</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -196,10 +196,10 @@
             <h1>Gêneros</h1>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addGenero">
                 <i class="fas fa-plus"></i> Adicionar Gênero
-                </button>
-                <button type="button" class="btn btn-success" (click)=refresh();>
-                    <i class="fas fa-sync"></i> Atualizar
-                </button>
+            </button>
+            <button type="button" class="btn btn-success" (click)=refresh();>
+                <i class="fas fa-sync"></i> Atualizar
+            </button>
             <table class="table table-bordered table-dark">
                 <thead>
                     <tr>

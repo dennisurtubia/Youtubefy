@@ -1,4 +1,4 @@
-<body *ngIf="this.localSt.retrieve('token')">
+<body *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('data') !== null">
   <app-sidebar [current]="current" [playlists]="playlists"></app-sidebar>
     <div class="col-md-10 offset-md-2 main-content">
       <div *ngIf="localSt.retrieve('page') === 4">

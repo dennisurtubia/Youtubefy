@@ -8,19 +8,20 @@ import {Router} from "@angular/router";
 import { catchError, retry } from 'rxjs/operators';
 
 interface Object{
-  nome:string;
-  senha:string;
-  cpf:number;
-  email:string;
-  token:string;
-  id:number;
-  cnpj:number;
+  nome?:string;
+  senha?:string;
+  cpf?:number;
+  email?:string;
+  token?:string;
+  id?:number;
+  generos?:any[];
+  cnpj?:number;
 }
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-    'Authorization' : "8f1ce254-7a29-4180-b17c-b1f0653c1c02"
+    'Content-Type': 'application/json',
+    'Authorization' : 'Bearer 8f1ce254-7a29-4180-b17c-b1f0653c1c02'
   })
 };
 
@@ -33,8 +34,9 @@ export class GetApiService {
     private http:HttpClient,
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
-    private router: Router
+    private router: Router,
   ) {
+
   }
   private apiUrl = "https://api-projectbd.wedeploy.io/v1/";
 
@@ -98,7 +100,7 @@ export class GetApiService {
     .subscribe(
       res => {
         console.log(res);
-        if(res.token){
+        if(res['token']){
           this.localSt.store('token', res);
           if(this.localSt.retrieve('erro')){
             this.localSt.clear('erro');
@@ -122,7 +124,7 @@ export class GetApiService {
     .subscribe(
       res => {
         console.log(res);
-        if(res.token){
+        if(res['token']){
           this.localSt.store('token', res);
           if(this.localSt.retrieve('erro')){
             this.localSt.clear('erro');
@@ -147,7 +149,7 @@ export class GetApiService {
     .subscribe(
       res => {
         console.log(res);
-        if(res.token){
+        if(res['token']){
           this.localSt.store('token', res);
           if(this.localSt.retrieve('erro')){
             this.localSt.clear('erro');
@@ -180,7 +182,7 @@ export class GetApiService {
   }
   getGender(token:string){
     this.http.get(this.apiUrl + 'genero?token=' + token).subscribe(data => {
-      this.localSt.store('genero', data.generos);
+      this.localSt.store('genero', data['generos']);
     });
   }
   postGender(token:string, form:Object){

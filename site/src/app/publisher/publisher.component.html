@@ -1,4 +1,4 @@
-<body class="publisher">
+<body class="publisher" *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('data') !== null">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">UTFPR | Music</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -15,14 +15,49 @@
       <button class="btn btn-light my-2 my-sm-0 bold" type="submit">Procurar</button>
     </form>
   </div>
-
+  <div class="modal fade" id="addAlbum" tabindex="-1" role="dialog" aria-labelledby="addAlbumLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAlbumLabel">Adicionar Album</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> 
+        </div>
+        <div class="modal-body">              
+          <form class="registroForm whiteBG" novalidate [formGroup]="form">
+            <div class="form-group">
+              <label for="generoInput">Nome do Álbum:</label>
+              <input formControlName="nome" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+            </div>
+            <div class="form-group">
+              <label for="generoInput">Link da capa:</label>
+              <input formControlName="capa" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+            </div>
+            <div class="form-group">
+              <label for="generoInput">Nome do Artista:</label>
+              <input formControlName="nomeArtista" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+            </div>
+            <div class="form-group">
+              <label for="generoInput">Descrição:</label>
+              <input formControlName="descricao" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <button  type="button" class="btn btn-primary">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container albumHolder">
     <div class="row">
       <div class="col-md-4">
         <h2>Meus Álbuns</h2>
       </div>
       <div class="col-md-8">
-          <button class="btn btn-light bold float-right">Submeter Novo Álbum</button>
+          <button class="btn btn-light bold float-right" data-toggle="modal" data-target="#addAlbum">Submeter Novo Álbum</button>
       </div>
       <div class="cardMusic col-md-2">
         <div class="itemsContainer">
