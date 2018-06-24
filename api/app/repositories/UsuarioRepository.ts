@@ -1,8 +1,7 @@
 import { Inject, Service } from "typedi";
-import Administrador from "../models/Administrador";
+import Usuario from "../models/Usuario";
 import Database from "./Database";
 import IRepository from "./IRepository";
-import Usuario from "../models/Usuario";
 
 type Entity = Usuario;
 

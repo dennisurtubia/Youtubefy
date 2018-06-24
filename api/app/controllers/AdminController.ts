@@ -1,5 +1,5 @@
 import { compare, hash } from "bcrypt";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
 import { sign } from "jsonwebtoken";
 import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
@@ -18,6 +18,7 @@ class InsertRequest {
 
     @IsString()
     @IsNotEmpty()
+    @Length(11, 11)
     cpf: string = "";
 
     @IsString()
@@ -25,6 +26,7 @@ class InsertRequest {
     nome: string = "";
 
     @IsString()
+    @IsEmail()
     @IsNotEmpty()
     email: string = "";
 
@@ -50,10 +52,6 @@ export default class AdminController {
     @Inject()
     private adminRepository!: AdminRepository;
 
-    @Get("/test")
-    async test() {
-        return (await this.adminRepository.getAll()).length;
-    }
 
     /**
     * 
@@ -70,10 +68,6 @@ export default class AdminController {
     *       "email": "a@a.com",
     *       "cpf": "11111111111"
     *   }
-    * @apiErrorExample {json} Admin inválido:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
-    *   } 
     * @apiErrorExample {json} Acesso negado:
     *   {
     *        "erro": "ACESSO_NEGADO"
@@ -97,7 +91,6 @@ export default class AdminController {
             "cpf": admin.cpf
         }
     }
-
 
     /**
     * 
@@ -169,7 +162,7 @@ export default class AdminController {
     *   {
     *       "token": "deadbeef"
     *   }
-    * @apiErrorExample {json} Email já existe:
+    * @apiErrorExample {json} Email/senha incorretos:
     *   {
     *       "erro": "INFORMACOES_INCORRETAS"
     *   } 
@@ -220,10 +213,6 @@ export default class AdminController {
     *    {
     *        "sucesso": true
     *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "ADMIN_INVALIDO"
-    *   } 
     * @apiErrorExample {json} Acesso negado:
     *   {
     *        "erro": "ACESSO_NEGADO"
@@ -242,7 +231,7 @@ export default class AdminController {
 
         const admin = await this.adminRepository.getByEmail(email)
         if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
+            return;
 
         admin.nome = req.nome;
         admin.email = req.email;

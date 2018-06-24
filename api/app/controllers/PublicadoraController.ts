@@ -238,38 +238,4 @@ export default class PublicadoraController {
 
         return { "token": token };
     }
-
-    @Post("/signup")
-    async insert(
-        @Body({ validate: true }) req: InsertRequest
-    ) {
-
-        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
-        if (publicadora !== null)
-            return { "erro": "EMAIL_EXISTENTE" };
-
-        const hashSenha = await hash(req.senha, 1024);
-        publicadora = new Publicadora(0, req.cnpj, req.nome, req.email, hashSenha);
-
-        const insertId = await this.publicadoraRepository.add(publicadora);
-        if (insertId === -1)
-            return { "erro": "ERRO_BD" };
-
-        return { "sucesso": true };
-    }
-
-    @Authorized("PUBLICADORA")
-    @Delete("/")
-    async delete(
-        @CurrentUser({ required: true }) email: string,
-    ) {
-
-        const publicadora = await this.publicadoraRepository.getByEmail(email);
-        if (publicadora === null)
-            return { "erro": "PUBLICADORA_INVALIDA" };
-
-        await this.publicadoraRepository.delete(publicadora.id);
-
-        return { "sucesso": true };
-    }
 }
