@@ -15,6 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const typedi_1 = require("typedi");
 const Database_1 = __importDefault(require("./Database"));
 let GeneroRepository = class GeneroRepository {
+    async getByAdmin(id) {
+        const query = `
+            SELECT g.id, g.nome, g.idAdministrador
+            FROM Genero g
+            WHERE g.idAdministrador = ?
+        `;
+        return await this.database.queryAll(query, [id]);
+    }
     async getById(id) {
         const query = `
             SELECT g.id, g.nome, g.idAdministrador
@@ -43,7 +51,6 @@ let GeneroRepository = class GeneroRepository {
             SET g.nome = ?, g.idAdministrador = ?
             WHERE g.id = ?
         `;
-        console.log(object.nome);
         await this.database.query(query1, [object.nome, object.idAdministrador, id]);
     }
     async delete(id) {

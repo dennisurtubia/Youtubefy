@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS Musica (
 CREATE TABLE IF NOT EXISTS MusicaAprovada (
   id INTEGER, 
   dataAprov DATE NOT NULL,
+  plays INTEGER,
   
   idAdministrador INTEGER,
   

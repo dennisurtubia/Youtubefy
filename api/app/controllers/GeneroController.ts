@@ -93,9 +93,6 @@ export default class GeneroController {
     * @apiName ListarGeneros
     * @apiGroup Genero
     * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "generos": 
@@ -110,24 +107,9 @@ export default class GeneroController {
     *               }
     *           ]
     *   }
-    * @apiErrorExample {json} Admin inválido:
-    *   {
-    *       "erro": "ADMIN_INVALIDO"
-    *   } 
-    * @apiErrorExample {json} Acesso negado:
-    *   {
-    *        "erro": "ACESSO_NEGADO"
-    *   } 
     */
-    @Authorized("ADMIN")
     @Get("/")
-    async getAll(
-        @CurrentUser({ required: true }) email: string,
-    ) {
-
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
+    async getAll() {
 
         const generos = await this.generoRepository.getAll();
 
@@ -183,8 +165,7 @@ export default class GeneroController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
-        const genero = new Genero(0, nome);
-        genero.idAdministrador = admin.id;
+        const genero = new Genero(0, nome, admin.id);
         await this.generoRepository.add(genero);
 
         return { "sucesso": true };

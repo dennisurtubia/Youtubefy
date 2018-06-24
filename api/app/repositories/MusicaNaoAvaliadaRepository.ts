@@ -8,14 +8,29 @@ type Entity = MusicaNaoAvaliada;
 @Service()
 export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> {
 
+
     @Inject()
     database!: Database;
 
+    async getByAdmin(id: number): Promise<Entity[]> {
+
+        const query = `
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            FROM MusicaNaoAvaliada mn
+            INNER JOIN Musica m ON m.id = mr.id
+            WHERE mr.idAdministrador = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [id]);
+    }
+
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito
-            FROM MusicaNaoAvaliada m
-            WHERE m.id = ?
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            FROM MusicaNaoAvaliada mn
+            INNER JOIN Musica m ON m.id = mr.id
+            WHERE mr.id = ?
         `;
 
         return await this.database.queryOne<Entity>(query, [id]);
@@ -24,8 +39,9 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito
-            FROM MusicaNaoAvaliada m
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            FROM MusicaNaoAvaliada mn
+            INNER JOIN Musica m ON m.id = mr.id
         `;
 
         return await this.database.queryAll<Entity>(query, [])
@@ -35,40 +51,47 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
 
         const query1 = `
             INSERT INTO Musica
-            VALUES (0, ?, ?, ?, ?)
+            VALUES (0, ?, ?, ?, ?, ?)
         `;
 
-        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero]);
+        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
+        console.log(insertId);
+        
+        
+        if (insertId === -1)
+            return -1;
 
         const query2 = `
             INSERT INTO MusicaNaoAvaliada
             VALUES (?);
         `;
 
-        return await this.database.query(query2, [insertId]);
+        let insertId2 = await this.database.query(query2, [insertId]);
+        console.log(insertId2);
+        
+        if (insertId2 === -1) {
+            await this.database.query('DELETE FROM Musica WHERE id = ?', [insertId]);
+            return -1;
+        }
+
+        return insertId;
     }
 
     async update(id: number, object: MusicaNaoAvaliada): Promise<void> {
-        const query = `
-            UPDATE MusicaNaoAvaliada m
-            SET m.nome = ?, m.duracao = ?, m.explicito = ?
-            WHERE m.id = ?
-        `;
-
-        await this.database.query(query, [object.nome, object.duracao, object.explicito, id]);
+        throw new Error("Method not implemented.");
     }
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM MusicaNaoAvaliada m
-            WHERE m.id = ?
+            DELETE FROM MusicaNaoAvaliada
+            WHERE id = ?
         `;
 
         await this.database.query(query, [id]);
 
         const query2 = `
-            DELETE FROM Musica m
-            WHERE m.id = ?
+            DELETE FROM Musica
+            WHERE id = ?
         `;
 
         await this.database.query(query2, [id]);

@@ -1,9 +1,10 @@
 import { compare, hash } from "bcrypt";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { sign } from "jsonwebtoken";
-import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Post, Put } from "routing-controllers";
+import { Authorized, Body, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Publicadora from "../models/Publicadora";
+import AlbumRepository from "../repositories/AlbumRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
 class InsertRequest {
@@ -48,6 +49,9 @@ export default class PublicadoraController {
 
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
+
+    @Inject()
+    private albumRepository!: AlbumRepository;
 
     /**
        * 
@@ -100,29 +104,28 @@ export default class PublicadoraController {
     }
 
     /**
-* 
-* @api {get} /publicadora Informações da publicadora
-* @apiName InfoPublicadora
-* @apiGroup Publicadora
-* 
-* @apiParam  {String} token Json Web Token
-* @apiParamExample  {String} Request-Example:
-*    https://utfmusic.me/v1/admin?token=deadbeef
-* @apiSuccessExample {json} Resposta bem sucessida:
-*   {
-*       "id": "1",
-*       "nome": "Doravante",
-*       "email": "a@a.com",
-*       "cnpj": "11111111111",
-        "tipoUser": 2
-*   }
-* @apiErrorExample {json} Admin inválido:
-*   {
-*        "erro": "PUBLICADORA_INVALIDA"
-*   } 
-*
-*/
-
+    * 
+    * @api {get} /publicadora Informações da publicadora
+    * @apiName InfoPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cnpj": "11111111111",
+            "tipoUser": 2
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
     @Authorized("PUBLICADORA")
     @Get("/")
     async get(
@@ -164,25 +167,24 @@ export default class PublicadoraController {
     }
 
     /**
-* 
-* @api {delete} /publicadora Remover publicadora
-* @apiName RemoverPublicadora
-* @apiGroup Publicadora
-* 
-* @apiParam  {String} token Json Web Token
-* @apiParamExample  {String} Request-Example:
-*    https://utfmusic.me/v1/admin?token=deadbeef
-* @apiSuccessExample {json} Resposta bem sucessida:
-*    {
-*        "sucesso": true
-*    }
-* @apiErrorExample {json} Resposta com erro:
-*   {
-*        "erro": "PUBLICADORA_INVALIDA"
-*   } 
-*
-*/
-
+    * 
+    * @api {delete} /publicadora Remover publicadora
+    * @apiName RemoverPublicadora
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *    {
+    *        "sucesso": true
+    *    }
+    * @apiErrorExample {json} Resposta com erro:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
     @Authorized("PUBLICADORA")
     @Delete("/")
     async delete(
@@ -237,5 +239,20 @@ export default class PublicadoraController {
         const token = sign(admin.email, "supersecret");
 
         return { "token": token };
+    }
+
+    @Get("/albuns/:id")
+    async getAlbuns(
+        @Param("id") id: number
+    ) {
+
+        const publicadora = await this.publicadoraRepository.getById(id);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        const albuns = await this.albumRepository.getByPublicadora(id);
+        return {
+            "albuns": albuns
+        }
     }
 }

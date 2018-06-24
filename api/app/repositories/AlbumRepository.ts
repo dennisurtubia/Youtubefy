@@ -11,6 +11,16 @@ export default class AlbumRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
+    async getByPublicadora(id: number): Promise<Entity[]> {
+        const query = `
+            SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
+            FROM Album a
+            WHERE a.idPublicadora = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [])
+    }
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
             SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora

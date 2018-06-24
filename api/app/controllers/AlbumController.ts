@@ -1,10 +1,11 @@
 import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
-import { Authorized, Body, CurrentUser, JsonController, Post, Delete, BodyParam, Put } from "routing-controllers";
+import { Authorized, Body, BodyParam, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Album from "../models/Album";
 import MusicaNaoAvaliada from "../models/MusicaNaoAvaliada";
 import AlbumRepository from "../repositories/AlbumRepository";
 import GeneroRepository from "../repositories/GeneroRepository";
+import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
 
@@ -23,7 +24,7 @@ class InsertMusica {
     duracao: number = 0;
 
     @IsBoolean()
-    explicto: boolean = false;
+    explicito: boolean = false;
 
     @IsNumber()
     genero: number = 0;
@@ -64,6 +65,131 @@ export default class AlbumController {
     @Inject()
     private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
 
+    @Inject()
+    private musicaAprovadaRepository!: MusicaAprovadaRepository;
+
+    /**
+    * 
+    * @api {get} /album/ Todos os álbuns
+    * @apiName ListarAlbum
+    * @apiGroup Album
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "albuns": [
+    *           {
+    *               "id": "5",
+    *               "nome": "Album",
+    *               "capa": "url capa",
+    *               "nomeArtista": "rafa moreira",
+    *               "descricao": "bro"
+    *           },
+    *           {
+    *               "id": "6",
+    *               "nome": "Album",
+    *               "capa": "url capa",
+    *               "nomeArtista": "rafa moreira",
+    *               "descricao": "bro"
+    *           }
+    *       ]
+    *   {  
+    *
+    *   }
+    *
+    */
+    @Get("/")
+    async getAll(
+    ) {
+
+        const albums = await this.albumRepository.getAll();
+
+        return {
+            "albuns": albums
+        }
+    }
+
+
+    /**
+    * 
+    * @api {get} /album/:id Informações do album
+    * @apiName InfoAlbum
+    * @apiGroup Album
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/5}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "5",
+    *       "nome": "Album",
+    *       "capa": "url capa",
+    *       "nomeArtista": "rafa moreira",
+    *       "descricao": "bro"
+    *   }
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *        "erro": "ALBUM_INVALIDO"
+    *   } 
+    *
+    */
+    @Get("/:id")
+    async get(
+        @Param("id") id: number
+    ) {
+
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+
+        return {
+            "id": album.id,
+            "nome": album.nome,
+            "capa": album.capa,
+            "nomeArtista": album.nomeArtista,
+            "descricao": album.descricao
+        }
+    }
+
+
+    /**
+    * 
+    * @api {get} /album/:id/musicas Músicas disponíveis do album
+    * @apiName MusicasAlbum
+    * @apiGroup Album
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/5/musicas}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "5",
+    *       "nome": "Album",
+    *       "capa": "url capa",
+    *       "nomeArtista": "rafa moreira",
+    *       "descricao": "bro"
+    *   }
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *        "erro": "ALBUM_INVALIDO"
+    *   } 
+    *
+    */
+    @Get("/:id/musicas")
+    async getMusicas(
+        @Param("id") id: number
+    ) {
+
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+
+        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
+        console.log(musicas);
+
+        return {
+            "id": album.id,
+            "musicas": musicas
+        }
+    }
 
     /**
     * 
@@ -140,10 +266,14 @@ export default class AlbumController {
 
             let genero = await this.generoRepository.getById(it.genero);
             if (genero !== null) {
-                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicto);
+                console.log(it);
+
+                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito);
                 musica.idAlbum = album.id;
                 musica.idGenero = genero.id;
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
+                console.log('test:' + musica.id);
+
                 musicasAdicionadas.push(it.nome);
             } else {
                 musicasNaoAdicionadas.push(it.nome);
@@ -154,49 +284,47 @@ export default class AlbumController {
             "musicasAdicionadas": musicasAdicionadas,
             "musicasNaoAdicionadas": musicasNaoAdicionadas
         };
-    }   
+    }
 
     @Authorized("PUBLICADORA")
     @Put("/")
-    async update (
-        @CurrentUser({required: true}) id: number,
-        @Body({validate: true}) req: InsertRequest
-    ){
+    async update(
+        @CurrentUser({ required: true }) id: number,
+        @Body({ validate: true }) req: InsertRequest
+    ) {
 
         const album = await this.albumRepository.getById(id);
         if (album === null)
-            return{"erro": "ALBUM_INVALIDO"};
-        
+            return { "erro": "ALBUM_INVALIDO" };
+
         album.nome = req.nome;
         album.descricao = req.descricao;
         album.nomeArtista = req.nomeArtista;
         album.capa = req.capa;
-            
-        return {"sucesso": true};  
+
+        return { "sucesso": true };
     }
 
     @Authorized("PUBLICADORA")
     @Delete("/")
     async delete(
-        @CurrentUser({required: true}) email: string,
+        @CurrentUser({ required: true }) email: string,
         @BodyParam("id") id: number
     ) {
         const album = await this.albumRepository.getById(id);
-        if(album === null)
-            return{"erro": "ALBUM_INVALIDO"};
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
 
         const publicadora = await this.publicadoraRepository.getByEmail(email);
-        if(publicadora === null)
-            return {"erro": "PUBLICADORA_INVALIDA"};
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
 
-        if(publicadora.id !== album.idPublicadora)
-            return {"erro": "ACESSO_NEGADO"};
-    
-            await this.albumRepository.delete(id);
-        
-        return {"sucesso": true};
+        if (publicadora.id !== album.idPublicadora)
+            return { "erro": "ACESSO_NEGADO" };
+
+        await this.albumRepository.delete(id);
+
+        return { "sucesso": true };
     }
 
-    
-    
 }

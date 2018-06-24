@@ -103,9 +103,6 @@ let GeneroController = class GeneroController {
     * @apiName ListarGeneros
     * @apiGroup Genero
     *
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/genero?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "generos":
@@ -120,19 +117,8 @@ let GeneroController = class GeneroController {
     *               }
     *           ]
     *   }
-    * @apiErrorExample {json} Admin inválido:
-    *   {
-    *       "erro": "ADMIN_INVALIDO"
-    *   }
-    * @apiErrorExample {json} Acesso negado:
-    *   {
-    *        "erro": "ACESSO_NEGADO"
-    *   }
     */
-    async getAll(email) {
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
+    async getAll() {
         const generos = await this.generoRepository.getAll();
         return { "generos": generos.map((_a) => {
                 var { idAdministrador } = _a, attrs = __rest(_a, ["idAdministrador"]);
@@ -180,8 +166,7 @@ let GeneroController = class GeneroController {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
-        const genero = new Genero_1.default(0, nome);
-        genero.idAdministrador = admin.id;
+        const genero = new Genero_1.default(0, nome, admin.id);
         await this.generoRepository.add(genero);
         return { "sucesso": true };
     }
@@ -295,11 +280,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "get", null);
 __decorate([
-    routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/"),
-    __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "getAll", null);
 __decorate([

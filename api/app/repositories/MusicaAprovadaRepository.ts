@@ -11,10 +11,36 @@ export default class MusicaAprovadaRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
+    async getByAlbum(id: number): Promise<Entity[]> {
+
+        const query = `
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            FROM MusicaAprovada ma
+            INNER JOIN Musica m ON m.id = ma.id
+            WHERE m.idAlbum = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [id]);
+    }
+
+    async getByAdmin(id: number): Promise<Entity[]> {
+
+        const query = `
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            FROM MusicaAprovada ma
+            INNER JOIN Musica m ON m.id = ma.id
+            WHERE ma.idAdministrador = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [id]);
+    }
+
+
     async getById(id: number): Promise<Entity | null> {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito
-            FROM MusicaAprovada m
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            FROM MusicaAprovada ma
+            INNER JOIN Musica m ON m.id = ma.id
             WHERE m.id = ?
         `;
 
@@ -24,8 +50,9 @@ export default class MusicaAprovadaRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito
-            FROM MusicaAprovada m
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            FROM MusicaAprovada ma
+            INNER JOIN Musica m ON m.id = ma.id
         `;
 
         return await this.database.queryAll<Entity>(query, [])
@@ -35,40 +62,58 @@ export default class MusicaAprovadaRepository implements IRepository<Entity> {
 
         const query1 = `
             INSERT INTO Musica
-            VALUES (0, ?, ?, ?, ?)
+            VALUES (0, ?, ?, ?, ?, ?)
         `;
 
-        const insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero]);
+        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
+
+        if (insertId === -1)
+            return -1;
 
         const query2 = `
             INSERT INTO MusicaAprovada
-            VALUES (?);
+            VALUES (?, ?, ?, ?);
         `;
 
-        return await this.database.query(query2, [insertId]);
+        let insertId2 = await this.database.query(query2, [insertId, object.dataAprov, object.plays, object.idAdministrador]);
+
+        if (insertId2 === -1) {
+            await this.database.query('DELETE FROM Musica WHERE id = ?', [insertId]);
+            return -1;
+        }
+
+        return insertId;
     }
 
     async update(id: number, object: MusicaAprovada): Promise<void> {
         const query = `
-            UPDATE MusicaAprovada m
-            SET m.nome = ?, m.duracao = ?, m.explicito = ?
+            UPDATE MusicaAprovada ma
+            SET ma.dataAprov = ?, ma.plays = ?
+            WHERE ma.id = ?
+        `;
+
+        await this.database.query(query, [object.dataAprov, object.plays, id]);
+
+        const query2 = `
+            UPDATE Musica m
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?, m.idGenero = ?, m.idAlbum = ?
             WHERE m.id = ?
         `;
 
-        await this.database.query(query, [object.nome, object.duracao, object.explicito, id]);
+        await this.database.query(query2, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum, id]);
     }
 
     async delete(id: number): Promise<void> {
         const query = `
-            DELETE FROM MusicaAprovada m
-            WHERE m.id = ?
+            DELETE FROM MusicaAprovada
+            WHERE id = ?
         `;
 
         await this.database.query(query, [id]);
 
         const query2 = `
-            DELETE FROM Musica m
-            WHERE m.id = ?
+            DELETE FROM Musica
+            WHERE id = ?
         `;
 
         await this.database.query(query2, [id]);

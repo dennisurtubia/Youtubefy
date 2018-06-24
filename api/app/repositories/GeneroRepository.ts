@@ -60,7 +60,6 @@ export default class GeneroRepository implements IRepository<Entity> {
             SET g.nome = ?, g.idAdministrador = ?
             WHERE g.id = ?
         `;
-        console.log(object.nome);
 
         await this.database.query(query1, [object.nome, object.idAdministrador, id]);
     }

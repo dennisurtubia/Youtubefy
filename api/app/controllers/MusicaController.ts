@@ -1,4 +1,4 @@
-import { IsEnum, IsNumber } from "class-validator";
+import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 import { Authorized, Body, CurrentUser, Get, JsonController, Post } from "routing-controllers";
 import { Inject } from "typedi";
 import MusicaAprovada from "../models/MusicaAprovada";
@@ -20,6 +20,10 @@ class AvaliarRequest {
 
     @IsEnum(Avaliacao)
     avaliacao: Avaliacao = Avaliacao.Reprovado;
+
+    @IsOptional()
+    @IsString()
+    observacao: string = "";
 }
 
 // TODO:
@@ -73,6 +77,8 @@ export default class MusicaController {
             return { "erro": "ADMIN_INVALIDO" };
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
+        console.log(musicas);
+        
         return {
             "naoAvaliadas": musicas.map((m) => m.id)
         };
@@ -84,31 +90,14 @@ export default class MusicaController {
     * @apiName ListarMusicasAprovadas
     * @apiGroup Musica
     * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "aprovadas": []
     *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "ADMIN_INVALIDO"
-    *   } 
-    * @apiErrorExample {json} Acesso negado:
-    *   {
-    *        "erro": "ACESSO_NEGADO"
-    *   } 
     */
-    @Authorized("ADMIN")
     @Get("/aprovadas")
     async getAprovadas(
-        @CurrentUser({ required: true }) email: string,
     ) {
-        const admin = await this.adminRepository.getByEmail(email);
-        if (admin === null)
-            return { "erro": "ADMIN_INVALIDO" };
-
         const musicas = await this.musicaAprovadaRepository.getAll();
         return {
             "aprovadas": musicas
@@ -171,6 +160,8 @@ export default class MusicaController {
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
 
+
+
         let musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
         if (musica === null) {
             musica = await this.musicaAprovadaRepository.getById(req.musica);
@@ -181,14 +172,14 @@ export default class MusicaController {
 
                 if (req.avaliacao === Avaliacao.Aprovado) {
                     await this.musicaNaoAprovadaRepository.delete(musica.id);
-                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_REPROVADA" };
                 }
             } else {
                 if (req.avaliacao === Avaliacao.Reprovado) {
                     await this.musicaAprovadaRepository.delete(musica.id);
-                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_APROVADA" };
                 }
@@ -196,9 +187,9 @@ export default class MusicaController {
         } else {
             await this.musicaNaoAvaliadaRepository.delete(musica.id);
             if (req.avaliacao === Avaliacao.Aprovado)
-                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
             else if (req.avaliacao === Avaliacao.Reprovado)
-                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito));
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
         }
 
         return { "sucesso": true };

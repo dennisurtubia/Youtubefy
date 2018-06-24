@@ -3,10 +3,14 @@ import Administrador from "../../models/Administrador";
 import AdminRepository from "../AdminRepository";
 import Database from "../Database";
 import UsuarioRepository from "../UsuarioRepository";
+import MusicaAprovadaRepository from "../MusicaAprovadaRepository";
+import MusicaNaoAprovadaRepository from "../MusicaNaoAprovadaRepository";
 
 const database = Container.get(Database);
 const adminRepository = Container.get(AdminRepository);
 const usuarioRepository = Container.get(UsuarioRepository);
+const musicaAprovadaRepository = Container.get(MusicaAprovadaRepository);
+const musicaNaoAprovadaRepository = Container.get(MusicaNaoAprovadaRepository);
 
 beforeEach(async () => {
     await database.query('DELETE FROM Administrador', []);
@@ -146,6 +150,10 @@ test('remove um administrador', async () => {
     await adminRepository.delete(insertId);
     admin = await adminRepository.getById(insertId);
     expect(admin).toBeNull();
+});
+
+test('recebe musicas do administrador', async () => {
+
 });
 
 afterAll(async () => {
