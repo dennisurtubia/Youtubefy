@@ -90,7 +90,8 @@ let OuvinteController = class OuvinteController {
     *       "id": "1",
     *       "nome": "Doravante",
     *       "email": "a@a.com",
-    *       "cpf": "11111111111"
+    *       "cpf": "11111111111",
+    *       "tipoUser": 1
     *   }
     * @apiErrorExample {json} Admin inválido:
     *   {
@@ -109,7 +110,8 @@ let OuvinteController = class OuvinteController {
             "id": ouvinte.id,
             "nome": ouvinte.nome,
             "email": ouvinte.email,
-            "cpf": ouvinte.cpf
+            "cpf": ouvinte.cpf,
+            "tipoUser": 1
         };
     }
     /**

@@ -66,7 +66,8 @@ export default class AdminController {
     *       "id": "1",
     *       "nome": "Doravante",
     *       "email": "a@a.com",
-    *       "cpf": "11111111111"
+    *       "cpf": "11111111111",
+    *       "tipoUser": 3
     *   }
     * @apiErrorExample {json} Acesso negado:
     *   {
@@ -88,7 +89,8 @@ export default class AdminController {
             "id": admin.id,
             "nome": admin.nome,
             "email": admin.email,
-            "cpf": admin.cpf
+            "cpf": admin.cpf,
+            "tipoUser": 3
         }
     }
 

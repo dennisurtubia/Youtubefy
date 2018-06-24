@@ -130,7 +130,8 @@ let PublicadoraController = class PublicadoraController {
 *       "id": "1",
 *       "nome": "Doravante",
 *       "email": "a@a.com",
-*       "cnpj": "11111111111"
+*       "cnpj": "11111111111",
+        "tipoUser": 2
 *   }
 * @apiErrorExample {json} Admin inválido:
 *   {
@@ -147,7 +148,8 @@ let PublicadoraController = class PublicadoraController {
                 "id": publicadora.id,
                 "nome": publicadora.nome,
                 "email": publicadora.email,
-                "cnpj": publicadora.cnpj
+                "cnpj": publicadora.cnpj,
+                "tipoUser": 2
             }
         };
     }

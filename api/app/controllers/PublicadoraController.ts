@@ -49,36 +49,36 @@ export default class PublicadoraController {
     @Inject()
     private publicadoraRepository!: PublicadoraRepository;
 
- /**
-    * 
-    * @api {post} /publicadora/signup Cadastrar publicadora
-    * @apiName CadastrarPublicadora
-    * @apiGroup Publicadora
-    * 
-    * @apiParam  {String} nome Nome
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParam  {String} cnpj CNPJ
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "nome": "Doravante",
-    *       "email": "a@a.com",
-    *       "senha": "9876",
-    *       "cnpj": "11111111111"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "sucesso": true
-    *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "EMAIL_EXISTENTE"
-    *   } 
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "ERRO_BD"
-    *   } 
-    */
+    /**
+       * 
+       * @api {post} /publicadora/signup Cadastrar publicadora
+       * @apiName CadastrarPublicadora
+       * @apiGroup Publicadora
+       * 
+       * @apiParam  {String} nome Nome
+       * @apiParam  {String} email Email
+       * @apiParam  {String} senha Senha
+       * @apiParam  {String} cnpj CNPJ
+       * @apiParamExample  {json} Exemplo:
+       *   {
+       *       "nome": "Doravante",
+       *       "email": "a@a.com",
+       *       "senha": "9876",
+       *       "cnpj": "11111111111"
+       *   }
+       * @apiSuccessExample {json} Resposta bem sucessida:
+       *   {
+       *       "sucesso": true
+       *   }
+       * @apiErrorExample {json} Email já existe:
+       *   {
+       *       "erro": "EMAIL_EXISTENTE"
+       *   } 
+       * @apiErrorExample {json} Email já existe:
+       *   {
+       *       "erro": "ERRO_BD"
+       *   } 
+       */
 
     @Post("/signup")
     async insert(
@@ -99,28 +99,29 @@ export default class PublicadoraController {
         return { "sucesso": true };
     }
 
-        /**
-    * 
-    * @api {get} /publicadora Informações da publicadora
-    * @apiName InfoPublicadora
-    * @apiGroup Publicadora
-    * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "id": "1",
-    *       "nome": "Doravante",
-    *       "email": "a@a.com",
-    *       "cnpj": "11111111111"
-    *   }
-    * @apiErrorExample {json} Admin inválido:
-    *   {
-    *        "erro": "PUBLICADORA_INVALIDA"
-    *   } 
-    *
-    */
+    /**
+* 
+* @api {get} /publicadora Informações da publicadora
+* @apiName InfoPublicadora
+* @apiGroup Publicadora
+* 
+* @apiParam  {String} token Json Web Token
+* @apiParamExample  {String} Request-Example:
+*    https://utfmusic.me/v1/admin?token=deadbeef
+* @apiSuccessExample {json} Resposta bem sucessida:
+*   {
+*       "id": "1",
+*       "nome": "Doravante",
+*       "email": "a@a.com",
+*       "cnpj": "11111111111",
+        "tipoUser": 2
+*   }
+* @apiErrorExample {json} Admin inválido:
+*   {
+*        "erro": "PUBLICADORA_INVALIDA"
+*   } 
+*
+*/
 
     @Authorized("PUBLICADORA")
     @Get("/")
@@ -138,7 +139,8 @@ export default class PublicadoraController {
                 "id": publicadora.id,
                 "nome": publicadora.nome,
                 "email": publicadora.email,
-                "cnpj": publicadora.cnpj
+                "cnpj": publicadora.cnpj,
+                "tipoUser": 2
             }
         };
     }
@@ -163,41 +165,41 @@ export default class PublicadoraController {
         return { "sucesso": true };
     }
 
-        /**
-    * 
-    * @api {delete} /publicadora Remover publicadora
-    * @apiName RemoverPublicadora
-    * @apiGroup Publicadora
-    * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "PUBLICADORA_INVALIDA"
-    *   } 
-    *
-    */
-    
+    /**
+* 
+* @api {delete} /publicadora Remover publicadora
+* @apiName RemoverPublicadora
+* @apiGroup Publicadora
+* 
+* @apiParam  {String} token Json Web Token
+* @apiParamExample  {String} Request-Example:
+*    https://utfmusic.me/v1/admin?token=deadbeef
+* @apiSuccessExample {json} Resposta bem sucessida:
+*    {
+*        "sucesso": true
+*    }
+* @apiErrorExample {json} Resposta com erro:
+*   {
+*        "erro": "PUBLICADORA_INVALIDA"
+*   } 
+*
+*/
+
     @Authorized("PUBLICADORA")
     @Delete("/")
     async delete(
-        @CurrentUser({required: true}) email: string,
+        @CurrentUser({ required: true }) email: string,
     ) {
-        
+
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
-        return {"erro": "PUBLICADORA_INVALIDA"};
-        
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
         await this.publicadoraRepository.delete(publicadora.id);
-        
+
         return { "sucesso": true };
     }
-    
+
     /**
     * 
     * @api {post} /publicadora/signin Login publicadora
