@@ -46,11 +46,8 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], UpdateRequest.prototype, "nome", void 0);
-// TODO:
-/*
-    Listar músicas pertencentes ao gênero. 1:n
-*/
 let GeneroController = class GeneroController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
     *
     * @api {get} /genero/:id Informações do gênero

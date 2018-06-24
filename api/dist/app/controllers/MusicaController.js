@@ -49,13 +49,8 @@ __decorate([
     class_validator_1.IsString(),
     __metadata("design:type", String)
 ], AvaliarRequest.prototype, "observacao", void 0);
-// TODO:
-/*
-    Documentar
-    Exluir, atualizar. CRUD simples
-
-*/
 let MusicaController = class MusicaController {
+    // ------------------------------------------------------ REGRAS DE NEGOCIO ------------------------------------------------------
     /**
     *
     * @api {get} /musica/naoavaliadas Listar músicas não avaliadas

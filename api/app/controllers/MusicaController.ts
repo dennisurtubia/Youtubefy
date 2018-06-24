@@ -26,12 +26,6 @@ class AvaliarRequest {
     observacao: string = "";
 }
 
-// TODO:
-/*
-    Documentar
-    Exluir, atualizar. CRUD simples
-
-*/
 
 @JsonController("/musica")
 export default class MusicaController {
@@ -48,6 +42,7 @@ export default class MusicaController {
     @Inject()
     private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
 
+    // ------------------------------------------------------ REGRAS DE NEGOCIO ------------------------------------------------------
 
     /**
     * 

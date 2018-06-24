@@ -15,11 +15,6 @@ class UpdateRequest {
     nome: string = "";
 }
 
-// TODO:
-/*
-    Listar músicas pertencentes ao gênero. 1:n
-*/
-
 @JsonController("/genero")
 export default class GeneroController {
 
@@ -28,6 +23,8 @@ export default class GeneroController {
 
     @Inject()
     private adminRepository!: AdminRepository;
+
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
 
     /**
     * 
@@ -85,7 +82,6 @@ export default class GeneroController {
             "nome": genero.nome
         };
     }
-
 
     /**
     * 
@@ -283,4 +279,8 @@ export default class GeneroController {
 
         return { "sucesso": true };
     }
+
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+
+    // listar musicas do gênero
 }

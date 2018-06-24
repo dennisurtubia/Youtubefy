@@ -67,15 +67,8 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], LoginRequest.prototype, "senha", void 0);
-// TODO: 
-/*
-    Adicionar jwt
-    Documentar
-    Listar, adicionar, remover músicas. n:n
-    Listar, adicionar, remover playlists privadas. n:n
-    Listar, seguir, deixar de seguir playlists públicas. n:n
-*/
 let OuvinteController = class OuvinteController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
     *
     * @api {get} /ouvinte Informações do ouvinte
@@ -148,7 +141,7 @@ let OuvinteController = class OuvinteController {
     *        "erro": "ERRO_BODY"
     *   }
     */
-    async insert(req) {
+    async signup(req) {
         let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
         if (ouvinte !== null)
             return { "erro": "EMAIL_EXISTENTE" };
@@ -158,42 +151,6 @@ let OuvinteController = class OuvinteController {
         if (insertId === -1)
             return { "erro": "ERRO_BD" };
         return { "sucesso": true };
-    }
-    /**
-    *
-    * @api {post} /ouvinte/signin Login ouvinte
-    * @apiName LoginOuvinte
-    * @apiGroup Ouvinte
-    *
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "email": "a@a.com",
-    *       "senha": "9876"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "token": "deadbeef"
-    *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "INFORMACOES_INCORRETAS"
-    *   }
-    * @apiErrorExample {json} Erro body:
-    *   {
-    *        "erro": "ERRO_BODY"
-    *   }
-    */
-    async signin(req) {
-        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
-        if (ouvinte === null)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-        const match = await bcrypt_1.compare(req.senha, ouvinte.senha);
-        if (!match)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-        const token = jsonwebtoken_1.sign(ouvinte.email, "supersecret");
-        return { "token": token };
     }
     /**
     *
@@ -243,6 +200,43 @@ let OuvinteController = class OuvinteController {
         await this.ouvinteRepository.update(ouvinte.id, ouvinte);
         return { "sucesso": true };
     }
+    // ------------------------------------------------------ REGRAS DE NEGOCIO ------------------------------------------------------
+    /**
+    *
+    * @api {post} /ouvinte/signin Login ouvinte
+    * @apiName LoginOuvinte
+    * @apiGroup Ouvinte
+    *
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
+    async signin(req) {
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
+        if (ouvinte === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const match = await bcrypt_1.compare(req.senha, ouvinte.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const token = jsonwebtoken_1.sign(ouvinte.email, "supersecret");
+        return { "token": token };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -262,14 +256,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [InsertRequest]),
     __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "insert", null);
-__decorate([
-    routing_controllers_1.Post("/signin"),
-    __param(0, routing_controllers_1.Body({ validate: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [LoginRequest]),
-    __metadata("design:returntype", Promise)
-], OuvinteController.prototype, "signin", null);
+], OuvinteController.prototype, "signup", null);
 __decorate([
     routing_controllers_1.Authorized("OUVINTE"),
     routing_controllers_1.Put("/"),
@@ -279,6 +266,13 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], OuvinteController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Post("/signin"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [LoginRequest]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "signin", null);
 OuvinteController = __decorate([
     routing_controllers_1.JsonController("/ouvinte")
 ], OuvinteController);

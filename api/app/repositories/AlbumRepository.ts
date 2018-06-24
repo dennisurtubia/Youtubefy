@@ -18,7 +18,7 @@ export default class AlbumRepository implements IRepository<Entity> {
             WHERE a.idPublicadora = ?
         `;
 
-        return await this.database.queryAll<Entity>(query, [])
+        return await this.database.queryAll<Entity>(query, [id])
     }
 
     async getById(id: number): Promise<Entity | null> {

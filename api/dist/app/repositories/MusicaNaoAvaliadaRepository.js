@@ -47,7 +47,6 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
             VALUES (0, ?, ?, ?, ?, ?)
         `;
         let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
-        console.log(insertId);
         if (insertId === -1)
             return -1;
         const query2 = `

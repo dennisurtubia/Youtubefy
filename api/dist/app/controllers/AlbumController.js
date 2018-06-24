@@ -87,6 +87,7 @@ __decorate([
     __metadata("design:type", Array)
 ], InsertRequest.prototype, "musicas", void 0);
 let AlbumController = class AlbumController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
     *
     * @api {get} /album/ Todos os álbuns
@@ -155,39 +156,6 @@ let AlbumController = class AlbumController {
             "capa": album.capa,
             "nomeArtista": album.nomeArtista,
             "descricao": album.descricao
-        };
-    }
-    /**
-    *
-    * @api {get} /album/:id/musicas Músicas disponíveis do album
-    * @apiName MusicasAlbum
-    * @apiGroup Album
-    * @apiParam  {number} id ID
-    * @apiParamExample  {json} Request-Example:
-    *    {https://utfmusic.me/v1/album/5/musicas}
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "id": "5",
-    *       "nome": "Album",
-    *       "capa": "url capa",
-    *       "nomeArtista": "rafa moreira",
-    *       "descricao": "bro"
-    *   }
-    * @apiErrorExample {json} Album inválido:
-    *   {
-    *        "erro": "ALBUM_INVALIDO"
-    *   }
-    *
-    */
-    async getMusicas(id) {
-        const album = await this.albumRepository.getById(id);
-        if (album === null)
-            return { "erro": "ALBUM_INVALIDO" };
-        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
-        console.log(musicas);
-        return {
-            "id": album.id,
-            "musicas": musicas
         };
     }
     /**
@@ -294,6 +262,40 @@ let AlbumController = class AlbumController {
         await this.albumRepository.delete(id);
         return { "sucesso": true };
     }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+    /**
+    *
+    * @api {get} /album/:id/musicas Músicas disponíveis do album
+    * @apiName MusicasAlbum
+    * @apiGroup Album
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/5/musicas}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "5",
+    *       "nome": "Album",
+    *       "capa": "url capa",
+    *       "nomeArtista": "rafa moreira",
+    *       "descricao": "bro"
+    *   }
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *        "erro": "ALBUM_INVALIDO"
+    *   }
+    *
+    */
+    async getMusicas(id) {
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
+        console.log(musicas);
+        return {
+            "id": album.id,
+            "musicas": musicas
+        };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -329,13 +331,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AlbumController.prototype, "get", null);
 __decorate([
-    routing_controllers_1.Get("/:id/musicas"),
-    __param(0, routing_controllers_1.Param("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], AlbumController.prototype, "getMusicas", null);
-__decorate([
     routing_controllers_1.Authorized("PUBLICADORA"),
     routing_controllers_1.Post("/"),
     __param(0, routing_controllers_1.CurrentUser({ required: true })),
@@ -362,6 +357,13 @@ __decorate([
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], AlbumController.prototype, "delete", null);
+__decorate([
+    routing_controllers_1.Get("/:id/musicas"),
+    __param(0, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], AlbumController.prototype, "getMusicas", null);
 AlbumController = __decorate([
     routing_controllers_1.JsonController("/album")
 ], AlbumController);

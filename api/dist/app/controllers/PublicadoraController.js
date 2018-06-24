@@ -11,6 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -68,64 +77,43 @@ __decorate([
     class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], LoginRequest.prototype, "senha", void 0);
-// TODO:
-/*
-    Adicionar jwt
-    Documentar
-    Listar albuns da publicadora. 1:n
-
-*/
 let PublicadoraController = class PublicadoraController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
-       *
-       * @api {post} /publicadora/signup Cadastrar publicadora
-       * @apiName CadastrarPublicadora
-       * @apiGroup Publicadora
-       *
-       * @apiParam  {String} nome Nome
-       * @apiParam  {String} email Email
-       * @apiParam  {String} senha Senha
-       * @apiParam  {String} cnpj CNPJ
-       * @apiParamExample  {json} Exemplo:
-       *   {
-       *       "nome": "Doravante",
-       *       "email": "a@a.com",
-       *       "senha": "9876",
-       *       "cnpj": "11111111111"
-       *   }
-       * @apiSuccessExample {json} Resposta bem sucessida:
-       *   {
-       *       "sucesso": true
-       *   }
-       * @apiErrorExample {json} Email já existe:
-       *   {
-       *       "erro": "EMAIL_EXISTENTE"
-       *   }
-       * @apiErrorExample {json} Email já existe:
-       *   {
-       *       "erro": "ERRO_BD"
-       *   }
-       */
-    async insert(req) {
-        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
-        if (publicadora !== null)
-            return { "erro": "EMAIL_EXISTENTE" };
-        const hashSenha = await bcrypt_1.hash(req.senha, 1024);
-        publicadora = new Publicadora_1.default(0, req.cnpj, req.nome, req.email, hashSenha);
-        const insertId = await this.publicadoraRepository.add(publicadora);
-        if (insertId === -1)
-            return { "erro": "ERRO_BD" };
-        return { "sucesso": true };
+    *
+    * @api {get} /publicadora Lista de Publicadoras
+    * @apiName ListaPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    * {
+    *   "publicadoras": [
+    *       {
+    *           "id": 86,
+    *           "nome": "admin"
+    *       }
+    *   ]
+    * }
+    *
+    */
+    async getAll() {
+        const publicadoras = await this.publicadoraRepository.getAll();
+        return {
+            "publicadoras": publicadoras.map((_a) => {
+                var { cnpj, email, senha } = _a, params = __rest(_a, ["cnpj", "email", "senha"]);
+                return params;
+            })
+        };
     }
     /**
     *
-    * @api {get} /publicadora Informações da publicadora
+    * @api {get} /publicadora/info Informações da publicadora
     * @apiName InfoPublicadora
     * @apiGroup Publicadora
     *
     * @apiParam  {String} token Json Web Token
     * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
+    *    https://utfmusic.me/v1/publicadora/info?token=deadbeef
     * @apiSuccessExample {json} Resposta bem sucessida:
     *   {
     *       "id": "1",
@@ -152,6 +140,77 @@ let PublicadoraController = class PublicadoraController {
             "tipoUser": 2
         };
     }
+    /**
+    *
+    * @api {post} /publicadora/signup Cadastrar publicadora
+    * @apiName CadastrarPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParam  {String} cnpj CNPJ
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cnpj": "11111111111"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "EMAIL_EXISTENTE"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "ERRO_BD"
+    *   }
+    */
+    async signup(req) {
+        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
+        if (publicadora !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+        const hashSenha = await bcrypt_1.hash(req.senha, 1024);
+        publicadora = new Publicadora_1.default(0, req.cnpj, req.nome, req.email, hashSenha);
+        const insertId = await this.publicadoraRepository.add(publicadora);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+        return { "sucesso": true };
+    }
+    /**
+    *
+    * @api {put} /publicadora/update Atualizar dados publicadora
+    * @apiName AtualizarPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParam  {String} cnpj CNPJ
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "senha": "9876",
+    *       "cnpj": "11111111111"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Publicadora inválida
+    *   {
+    *       "erro": "PUBLICADORA_INVALIDA"
+    *   }
+    * @apiErrorExample {json} Erro BD:
+    *   {
+    *       "erro": "ERRO_BD"
+    *   }
+    */
     async update(email, req) {
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
@@ -162,32 +221,7 @@ let PublicadoraController = class PublicadoraController {
         await this.publicadoraRepository.update(publicadora.id, publicadora);
         return { "sucesso": true };
     }
-    /**
-    *
-    * @api {delete} /publicadora Remover publicadora
-    * @apiName RemoverPublicadora
-    * @apiGroup Publicadora
-    *
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "PUBLICADORA_INVALIDA"
-    *   }
-    *
-    */
-    async delete(email) {
-        const publicadora = await this.publicadoraRepository.getByEmail(email);
-        if (publicadora === null)
-            return { "erro": "PUBLICADORA_INVALIDA" };
-        await this.publicadoraRepository.delete(publicadora.id);
-        return { "sucesso": true };
-    }
+    // ------------------------------------------------------ REGRAS DE NEGÓCIO ------------------------------------------------------
     /**
     *
     * @api {post} /publicadora/signin Login publicadora
@@ -220,6 +254,30 @@ let PublicadoraController = class PublicadoraController {
         const token = jsonwebtoken_1.sign(admin.email, "supersecret");
         return { "token": token };
     }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+    /**
+    *
+    * @api {get} /publicadora/:id/albuns Albuns da publicadora
+    * @apiName AlbunsPublicadora
+    * @apiGroup Publicadora
+    *
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    https://utfmusic.me/v1/publicadora/1/albuns
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cnpj": "11111111111",
+            "tipoUser": 2
+    *   }
+    * @apiErrorExample {json} Admin inválido:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   }
+    *
+    */
     async getAlbuns(id) {
         const publicadora = await this.publicadoraRepository.getById(id);
         if (publicadora === null)
@@ -239,20 +297,26 @@ __decorate([
     __metadata("design:type", AlbumRepository_1.default)
 ], PublicadoraController.prototype, "albumRepository", void 0);
 __decorate([
-    routing_controllers_1.Post("/signup"),
-    __param(0, routing_controllers_1.Body({ validate: true })),
+    routing_controllers_1.Get("/"),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InsertRequest]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], PublicadoraController.prototype, "insert", null);
+], PublicadoraController.prototype, "getAll", null);
 __decorate([
     routing_controllers_1.Authorized("PUBLICADORA"),
-    routing_controllers_1.Get("/"),
+    routing_controllers_1.Get("/info"),
     __param(0, routing_controllers_1.CurrentUser({ required: true })),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "get", null);
+__decorate([
+    routing_controllers_1.Post("/signup"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [InsertRequest]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "signup", null);
 __decorate([
     routing_controllers_1.Authorized("PUBLICADORA"),
     routing_controllers_1.Put("/"),
@@ -263,14 +327,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "update", null);
 __decorate([
-    routing_controllers_1.Authorized("PUBLICADORA"),
-    routing_controllers_1.Delete("/"),
-    __param(0, routing_controllers_1.CurrentUser({ required: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], PublicadoraController.prototype, "delete", null);
-__decorate([
     routing_controllers_1.Post("/signin"),
     __param(0, routing_controllers_1.Body({ validate: true })),
     __metadata("design:type", Function),
@@ -278,7 +334,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "signin", null);
 __decorate([
-    routing_controllers_1.Get("/albuns/:id"),
+    routing_controllers_1.Get("/:id/albuns"),
     __param(0, routing_controllers_1.Param("id")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

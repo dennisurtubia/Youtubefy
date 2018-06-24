@@ -55,9 +55,9 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
         `;
 
         let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
-        console.log(insertId);
-        
-        
+       
+
+
         if (insertId === -1)
             return -1;
 
@@ -66,9 +66,13 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
             VALUES (?);
         `;
 
+
+
+
         let insertId2 = await this.database.query(query2, [insertId]);
         console.log(insertId2);
-        
+
+
         if (insertId2 === -1) {
             await this.database.query('DELETE FROM Musica WHERE id = ?', [insertId]);
             return -1;
