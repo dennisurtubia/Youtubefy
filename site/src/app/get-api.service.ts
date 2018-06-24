@@ -197,7 +197,18 @@ export class GetApiService {
       }
     );
   }
-
+  updateGender(id:number, nome:string) {
+    this.http.request('put', this.apiUrl + 'genero?token=' + this.localSt.retrieve('token').token, { body: {id:id, nome:nome} })
+    .subscribe(
+      res => {
+        console.log(res);
+        this.localSt.store('registered', res);
+      },
+      err => {
+        console.log("Erro");
+      }
+    );
+  }
   deleteGender(id:number){
     this.http.request('delete', this.apiUrl + 'genero?token=' + this.localSt.retrieve('token').token, { body: {id:id} })
     .subscribe(
@@ -207,6 +218,16 @@ export class GetApiService {
       err => {
         console.log("Erro");
       }
-    );;
+    );
+  }
+  getMusicaAprovada() {
+    this.http.get(this.apiUrl + 'musica/aprovadas?token=' + this.localSt.retrieve('token').token).subscribe(data => {
+      this.localSt.store('musicasAprovadas', data);
+    });
+  }
+  getNaoAvaliadas() {
+    this.http.get(this.apiUrl + 'musica/naoavaliadas?token=' + this.localSt.retrieve('token').token).subscribe(data => {
+      this.localSt.store('musicasNaoAvaliadas', data);
+    });
   }
 }
