@@ -28,7 +28,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item">Playlists</a>
-                        <a class="dropdown-item">Gêneros</a>
+                        <a class="dropdown-item" (click)="setPage(4);">Gêneros</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item">Conta</a>
                         <a (click)=quit(); class="dropdown-item">Sair</a>
@@ -125,4 +125,72 @@
             </tbody>
         </table>
     </div>
+    <div class="container" *ngIf="this.localSt.retrieve('page') === 4">
+            <!-- Button trigger modal -->
+            
+            
+            <!-- Modal -->
+            <div class="modal fade" id="addGenero" tabindex="-1" role="dialog" aria-labelledby="addGeneroLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="addGeneroLabel">Adicionar novo gênero</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    
+                    </div>
+                    <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
+                        Necessário preencher todos os campos
+                    </div>
+                    <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
+                        Gênero cadastrado com sucesso
+                    </div>
+                    <form class="registroForm whiteBG" novalidate [formGroup]="form">
+                        <div class="form-group">
+                            <label for="generoInput">De um nome para o gênero:</label>
+                            <input formControlName="nome" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
+                        </div>
+                        
+                    </form>
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button (click)=addGender() type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <h1>Gêneros</h1>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addGenero">
+                <i class="fas fa-plus"></i> Adicionar Gênero
+                </button>
+                <button type="button" class="btn btn-success" (click)=refresh();>
+                    <i class="fas fa-sync"></i> Atualizar
+                </button>
+            <table class="table table-bordered table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Genero</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let genero of this.localSt.retrieve('genero')">
+                        <th scope="row">{{genero.id}}</th>
+                        <td>{{genero.nome}}</td>
+                        <td>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn btn-success" (click)="deleteGender(genero.id, index);">
+                                <i class="fas fa-trash"></i> Excluir</button>
+                        </td>
+                    </tr>
+    
+                </tbody>
+            </table>
+        </div>
 </body>

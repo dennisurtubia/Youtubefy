@@ -46,7 +46,7 @@ const appRoutes: Routes = [
     AlbumComponent,
     CardMusicComponent,
     MyMusicComponent,
-    GlobalsComponent
+    GlobalsComponent,
   ],
   imports: [
     BrowserModule,

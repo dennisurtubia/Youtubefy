@@ -151,36 +151,6 @@ let PublicadoraController = class PublicadoraController {
             }
         };
     }
-    /**
-    *
-    * @api {put} /publicadora Atualizar publicadora
-    * @apiName AtualizarPublicadora
-    * @apiGroup Publicadora
-    *
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiParam  {String} nome Novo nome
-    * @apiParam  {String} email Novo email
-    * @apiParam  {String} senha Nova senha
-    * @apiParam  {String} cnpj Novo CNPJ
-    * @apiParamExample  {json} Exemplo:
-    *    {
-    *       "nome": "Doravante",
-    *       "email": "a@a.com",
-    *       "senha": "9876",
-    *       "cnpj": "11111111111"
-    *    }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "PUBLICADORA_INVALIDA"
-    *   }
-    *
-    */
     async update(email, req) {
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
@@ -249,6 +219,24 @@ let PublicadoraController = class PublicadoraController {
         const token = jsonwebtoken_1.sign(admin.email, "supersecret");
         return { "token": token };
     }
+    async insert(req) {
+        let publicadora = await this.publicadoraRepository.getByEmail(req.email);
+        if (publicadora !== null)
+            return { "erro": "EMAIL_EXISTENTE" };
+        const hashSenha = await bcrypt_1.hash(req.senha, 1024);
+        publicadora = new Publicadora_1.default(0, req.cnpj, req.nome, req.email, hashSenha);
+        const insertId = await this.publicadoraRepository.add(publicadora);
+        if (insertId === -1)
+            return { "erro": "ERRO_BD" };
+        return { "sucesso": true };
+    }
+    async delete(email) {
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+        await this.publicadoraRepository.delete(publicadora.id);
+        return { "sucesso": true };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -293,6 +281,21 @@ __decorate([
     __metadata("design:paramtypes", [LoginRequest]),
     __metadata("design:returntype", Promise)
 ], PublicadoraController.prototype, "signin", null);
+__decorate([
+    routing_controllers_1.Post("/signup"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [InsertRequest]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "insert", null);
+__decorate([
+    routing_controllers_1.Authorized("PUBLICADORA"),
+    routing_controllers_1.Delete("/"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PublicadoraController.prototype, "delete", null);
 PublicadoraController = __decorate([
     routing_controllers_1.JsonController("/publicadora")
 ], PublicadoraController);

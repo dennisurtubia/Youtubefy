@@ -141,42 +141,7 @@ export default class PublicadoraController {
                 "cnpj": publicadora.cnpj
             }
         };
-<<<<<<< HEAD
-    }  
-    
-    /**
-    * 
-    * @api {put} /publicadora Atualizar publicadora
-    * @apiName AtualizarPublicadora 
-    * @apiGroup Publicadora
-    * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/admin?token=deadbeef
-    * @apiParam  {String} nome Novo nome
-    * @apiParam  {String} email Novo email
-    * @apiParam  {String} senha Nova senha
-    * @apiParam  {String} cnpj Novo CNPJ
-    * @apiParamExample  {json} Exemplo:
-    *    {
-    *       "nome": "Doravante",
-    *       "email": "a@a.com",
-    *       "senha": "9876",
-    *       "cnpj": "11111111111"
-    *    }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *    {
-    *        "sucesso": true
-    *    }
-    * @apiErrorExample {json} Resposta com erro:
-    *   {
-    *        "erro": "PUBLICADORA_INVALIDA"
-    *   } 
-    *
-    */
-=======
     }
->>>>>>> a1634ac6bdb285dc9642431a64c92ef32b80913f
 
     @Authorized("PUBLICADORA")
     @Put("/")
@@ -273,8 +238,6 @@ export default class PublicadoraController {
 
         return { "token": token };
     }
-<<<<<<< HEAD
-=======
 
     @Post("/signup")
     async insert(
@@ -309,5 +272,4 @@ export default class PublicadoraController {
 
         return { "sucesso": true };
     }
->>>>>>> a1634ac6bdb285dc9642431a64c92ef32b80913f
 }
