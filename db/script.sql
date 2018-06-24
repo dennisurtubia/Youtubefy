@@ -16,24 +16,21 @@ CREATE TABLE IF NOT EXISTS Publicadora (
   id INTEGER, 
   cnpj CHAR(18) NOT NULL, 
   
-  PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES Usuario(id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Ouvinte (
   id INTEGER, 
-  cpf CHAR(14) NOT NULL, 
+  cpf CHAR(11) NOT NULL, 
  
-  PRIMARY KEY (id),
-    FOREIGN KEY (id) REFERENCES Usuario(id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Administrador (
   id INTEGER, 
-  cpf CHAR(14) NOT NULL, 
+  cpf CHAR(11) NOT NULL, 
   
-  PRIMARY KEY (id),
-  FOREIGN KEY (id) REFERENCES Usuario(id)
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Album (
@@ -159,4 +156,4 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
 );
 
 
-select * from Administrador;
+select * from Usuario;
