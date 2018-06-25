@@ -191,14 +191,14 @@ export default class MusicaController {
 
                 if (req.avaliacao === Avaliacao.Aprovado) {
                     await this.musicaNaoAprovadaRepository.delete(musica.id);
-                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_REPROVADA" };
                 }
             } else {
                 if (req.avaliacao === Avaliacao.Reprovado) {
                     await this.musicaAprovadaRepository.delete(musica.id);
-                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_APROVADA" };
                 }
@@ -206,9 +206,9 @@ export default class MusicaController {
         } else {
             await this.musicaNaoAvaliadaRepository.delete(musica.id);
             if (req.avaliacao === Avaliacao.Aprovado)
-                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
+                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
             else if (req.avaliacao === Avaliacao.Reprovado)
-                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
         }
 
         return { "sucesso": true };

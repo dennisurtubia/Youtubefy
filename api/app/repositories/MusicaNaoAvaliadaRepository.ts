@@ -15,7 +15,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
     async getByAdmin(id: number): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito,m.url, m.idGenero, m.idAlbum
             FROM MusicaNaoAvaliada mn
             INNER JOIN Musica m ON m.id = mr.id
             WHERE mr.idAdministrador = ?
@@ -27,7 +27,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
 
     async getById(id: number): Promise<Entity | null> {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito,m.url, m.idGenero, m.idAlbum
             FROM MusicaNaoAvaliada mn
             INNER JOIN Musica m ON m.id = mr.id
             WHERE mr.id = ?
@@ -39,7 +39,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito,m.url, m.idGenero, m.idAlbum
             FROM MusicaNaoAvaliada mn
             INNER JOIN Musica m ON m.id = mr.id
         `;
@@ -51,10 +51,10 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
 
         const query1 = `
             INSERT INTO Musica
-            VALUES (0, ?, ?, ?, ?, ?)
+            VALUES (0, ?, ?, ?, ?, ?, ?)
         `;
 
-        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
+        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum]);
        
 
 

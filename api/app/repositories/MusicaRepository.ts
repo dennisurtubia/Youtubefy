@@ -13,7 +13,7 @@ export default class MusicaRepository implements IRepository<Entity> {
 
     async getById(id: number): Promise<Entity | null> {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum
             FROM Musica m
             WHERE m.id = ?
         `;
@@ -24,7 +24,7 @@ export default class MusicaRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum
             FROM Musica m
         `;
 
@@ -35,10 +35,10 @@ export default class MusicaRepository implements IRepository<Entity> {
 
         const query1 = `
             INSERT INTO Musica
-            VALUES (0, ?, ?, ?, ?, ?)
+            VALUES (0, ?, ?, ?, ?, ?, ?)
         `;
 
-        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
+        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum]);
 
         if (insertId === -1)
             return -1;
@@ -50,11 +50,11 @@ export default class MusicaRepository implements IRepository<Entity> {
 
         const query2 = `
             UPDATE Musica m
-            SET m.nome = ?, m.duracao = ?, m.explicito = ?, m.idGenero = ?, m.idAlbum = ?
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?, m.url = ?, m.idGenero = ?, m.idAlbum = ?
             WHERE m.id = ?
         `;
 
-        await this.database.query(query2, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum, id]);
+        await this.database.query(query2, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum, id]);
     }
 
     async delete(id: number): Promise<void> {

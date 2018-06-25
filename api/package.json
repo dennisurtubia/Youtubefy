@@ -7,8 +7,9 @@
     "build": "tsc",
     "start": "tsc --watch | nodemon --inspect ./dist/app.js --watch dist",
     "docgen": "npm run-script build && apidoc app/controllers/ -e node_modules/ -e app/controllers/tests/  -o ../docs/api/",
-    "deploy": "npm run-script build && we deploy -p projectbd",
-    "test": "jest --runInBand"
+    "deploy": "npm run-script build && cd dist && we deploy -p projectbd",
+    "test": "jest --runInBand",
+    "duo": "duo --use duo-typescript app.ts"
   },
   "keywords": [],
   "author": "",
@@ -31,9 +32,7 @@
     "reflect-metadata": "^0.1.12",
     "routing-controllers": "^0.7.7",
     "typedi": "^0.7.3",
-    "typescript": "^2.9.2"
-  },
-  "devDependencies": {
+    "typescript": "^2.9.2",
     "@types/bcrypt": "^2.0.0",
     "@types/cors": "^2.8.4",
     "@types/faker": "^4.1.2",
@@ -48,5 +47,8 @@
     "request-promise": "^4.2.2",
     "ts-jest": "^22.4.6",
     "ts-node": "^6.1.0"
+  },
+  "devDependencies": {
+
   }
 }

@@ -26,6 +26,9 @@ class InsertMusica {
     @IsBoolean()
     explicito: boolean = false;
 
+    @IsString()
+    url: string = "";
+
     @IsNumber()
     genero: number = 0;
 }
@@ -226,11 +229,10 @@ export default class AlbumController {
             if (genero !== null) {
                 console.log(it);
 
-                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito);
-                musica.idAlbum = album.id;
-                musica.idGenero = genero.id;
+                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
+
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
-                console.log('test:' + musica.id);
+
 
                 musicasAdicionadas.push(it.nome);
             } else {

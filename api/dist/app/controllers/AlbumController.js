@@ -35,6 +35,7 @@ class InsertMusica {
         this.nome = "";
         this.duracao = 0;
         this.explicito = false;
+        this.url = "";
         this.genero = 0;
     }
 }
@@ -51,6 +52,10 @@ __decorate([
     class_validator_1.IsBoolean(),
     __metadata("design:type", Boolean)
 ], InsertMusica.prototype, "explicito", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    __metadata("design:type", String)
+], InsertMusica.prototype, "url", void 0);
 __decorate([
     class_validator_1.IsNumber(),
     __metadata("design:type", Number)
@@ -224,11 +229,8 @@ let AlbumController = class AlbumController {
             let genero = await this.generoRepository.getById(it.genero);
             if (genero !== null) {
                 console.log(it);
-                const musica = new MusicaNaoAvaliada_1.default(0, it.nome, it.duracao, it.explicito);
-                musica.idAlbum = album.id;
-                musica.idGenero = genero.id;
+                const musica = new MusicaNaoAvaliada_1.default(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
-                console.log('test:' + musica.id);
                 musicasAdicionadas.push(it.nome);
             }
             else {
