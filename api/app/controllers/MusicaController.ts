@@ -73,7 +73,7 @@ export default class MusicaController {
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         console.log(musicas);
-        
+
         return {
             "naoAvaliadas": musicas.map((m) => m.id)
         };
@@ -96,6 +96,30 @@ export default class MusicaController {
         const musicas = await this.musicaAprovadaRepository.getAll();
         return {
             "aprovadas": musicas
+        };
+    }
+
+    /**
+    * 
+    * @api {get} /musica/reprovadas Listar músicas reprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    */
+    @Authorized("ADMIN")
+    @Get("/reprovadas")
+    async getReprovadas(
+    ) {
+        const musicas = await this.musicaNaoAprovadaRepository.getAll();
+        return {
+            "reprovadas": musicas
         };
     }
 
