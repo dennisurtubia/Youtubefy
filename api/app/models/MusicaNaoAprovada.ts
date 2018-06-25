@@ -7,8 +7,8 @@ export default class MusicaNaoAprovada extends Musica {
     private _observacao: string = "";
     private _idAdministrador: number = 0;
 
-    constructor(id: number, nome: string, duracao: number, explicito: boolean, dataReprov: Date, observacao: string, idAdministrador: number, idGenero: number, idAlbum: number) {
-        super(id, nome, duracao, explicito, idGenero, idAlbum);
+    constructor(id: number, nome: string, duracao: number, explicito: boolean, url:string, dataReprov: Date, observacao: string, idAdministrador: number, idGenero: number, idAlbum: number) {
+        super(id, nome, duracao, explicito, url, idGenero, idAlbum);
         this._dataReprov = dataReprov;
         this._observacao = observacao;
         this._idAdministrador = idAdministrador;

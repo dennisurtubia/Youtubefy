@@ -21,7 +21,7 @@ let AlbumRepository = class AlbumRepository {
             FROM Album a
             WHERE a.idPublicadora = ?
         `;
-        return await this.database.queryAll(query, []);
+        return await this.database.queryAll(query, [id]);
     }
     async getById(id) {
         const query = `

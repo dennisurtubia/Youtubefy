@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS Musica (
   nome CHAR(30) NOT NULL, 
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL,
+  url CHAR(300),
 
   idGenero INTEGER NOT NULL,
   idAlbum INTEGER,

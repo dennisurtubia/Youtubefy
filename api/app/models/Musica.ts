@@ -3,14 +3,16 @@ export default class Musica {
     private _nome: string = "";
     private _duracao: number = 0;
     private _explicito: boolean = false;
+    private _url: string = "";
     private _idGenero: number = 0;
     private _idAlbum: number = 0;
 
-    constructor(id: number, nome: string, duracao: number, explicito: boolean, idGenero: number, idAlbum: number) {
+    constructor(id: number, nome: string, duracao: number, explicito: boolean, url:string, idGenero: number, idAlbum: number) {
         this._id = id;
         this._nome = nome;
         this._duracao = duracao;
         this._explicito = explicito;
+        this._url = url;
         this._idGenero = idGenero;
         this._idAlbum = idAlbum;
     }
@@ -42,6 +44,14 @@ export default class Musica {
     public set explicito(value: boolean) {
         this._explicito = value;
     }
+
+    public get url(): string {
+        return this._url;
+    }
+    public set url(value: string) {
+        this._url = value;
+    }
+
 
     public get idGenero(): number {
         return this._idGenero;

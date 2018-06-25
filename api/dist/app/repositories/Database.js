@@ -55,6 +55,8 @@ let Database = class Database {
         }
         try {
             const result = await this.connection.execute(str, args).catch(e => { throw e; });
+            console.log(str);
+            console.log(result);
             return result["0"].insertId;
         }
         catch (err) {

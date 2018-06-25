@@ -9,13 +9,6 @@ import GeneroRepository from "../repositories/GeneroRepository";
 import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 import MusicaNaoAprovadaRepository from "../repositories/MusicaNaoAprovadaRepository";
 
-
-// TODO:
-/*
-    Listar playlists administradas pelo admin. 1:n
-    Listar músicas avaliadas pelo admin. 1:n
-*/
-
 class InsertRequest {
 
     @IsString()
@@ -63,6 +56,7 @@ export default class AdminController {
     @Inject()
     private musicaNaoAprovadaRepository!: MusicaNaoAprovadaRepository;
 
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
 
     /**
     * 
@@ -140,7 +134,7 @@ export default class AdminController {
     *   } 
     */
     @Post("/signup")
-    async insert(
+    async signup(
         @Body({ validate: true }) req: InsertRequest
     ) {
 
@@ -156,50 +150,6 @@ export default class AdminController {
             return { "erro": "ERRO_BD" };
 
         return { "sucesso": true };
-    }
-
-    /**
-    * 
-    * @api {post} /admin/signin Login administrador
-    * @apiName LoginAdmin
-    * @apiGroup Admin
-    * 
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "email": "a@a.com",
-    *       "senha": "9876"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "token": "deadbeef"
-    *   }
-    * @apiErrorExample {json} Email/senha incorretos:
-    *   {
-    *       "erro": "INFORMACOES_INCORRETAS"
-    *   } 
-    * @apiErrorExample {json} Erro body:
-    *   {
-    *        "erro": "ERRO_BODY"
-    *   } 
-    */
-    @Post("/signin")
-    async signin(
-        @Body({ validate: true }) req: LoginRequest
-    ) {
-
-        let admin = await this.adminRepository.getByEmail(req.email);
-        if (admin === null)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-
-        const match = await compare(req.senha, admin.senha);
-        if (!match)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-
-        const token = sign(admin.email, "supersecret");
-
-        return { "token": token };
     }
 
     /**
@@ -254,6 +204,55 @@ export default class AdminController {
 
         return { "sucesso": true };
     }
+
+
+    // ------------------------------------------------------ REGRAS DE NEGÓCIO ------------------------------------------------------
+
+    /**
+    * 
+    * @api {post} /admin/signin Login administrador
+    * @apiName LoginAdmin
+    * @apiGroup Admin
+    * 
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email/senha incorretos:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   } 
+    */
+    @Post("/signin")
+    async signin(
+        @Body({ validate: true }) req: LoginRequest
+    ) {
+
+        let admin = await this.adminRepository.getByEmail(req.email);
+        if (admin === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const match = await compare(req.senha, admin.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const token = sign(admin.email, "supersecret");
+
+        return { "token": token };
+    }
+
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
 
     @Authorized("ADMIN")
     @Get("/generos")

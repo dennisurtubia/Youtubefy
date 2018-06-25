@@ -35,6 +35,7 @@ class InsertMusica {
         this.nome = "";
         this.duracao = 0;
         this.explicito = false;
+        this.url = "";
         this.genero = 0;
     }
 }
@@ -51,6 +52,10 @@ __decorate([
     class_validator_1.IsBoolean(),
     __metadata("design:type", Boolean)
 ], InsertMusica.prototype, "explicito", void 0);
+__decorate([
+    class_validator_1.IsString(),
+    __metadata("design:type", String)
+], InsertMusica.prototype, "url", void 0);
 __decorate([
     class_validator_1.IsNumber(),
     __metadata("design:type", Number)
@@ -87,6 +92,7 @@ __decorate([
     __metadata("design:type", Array)
 ], InsertRequest.prototype, "musicas", void 0);
 let AlbumController = class AlbumController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
     *
     * @api {get} /album/ Todos os álbuns
@@ -159,39 +165,6 @@ let AlbumController = class AlbumController {
     }
     /**
     *
-    * @api {get} /album/:id/musicas Músicas disponíveis do album
-    * @apiName MusicasAlbum
-    * @apiGroup Album
-    * @apiParam  {number} id ID
-    * @apiParamExample  {json} Request-Example:
-    *    {https://utfmusic.me/v1/album/5/musicas}
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "id": "5",
-    *       "nome": "Album",
-    *       "capa": "url capa",
-    *       "nomeArtista": "rafa moreira",
-    *       "descricao": "bro"
-    *   }
-    * @apiErrorExample {json} Album inválido:
-    *   {
-    *        "erro": "ALBUM_INVALIDO"
-    *   }
-    *
-    */
-    async getMusicas(id) {
-        const album = await this.albumRepository.getById(id);
-        if (album === null)
-            return { "erro": "ALBUM_INVALIDO" };
-        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
-        console.log(musicas);
-        return {
-            "id": album.id,
-            "musicas": musicas
-        };
-    }
-    /**
-    *
     * @api {post} /album Submeter album
     * @apiName SubmitAlbum
     * @apiGroup Album
@@ -256,11 +229,8 @@ let AlbumController = class AlbumController {
             let genero = await this.generoRepository.getById(it.genero);
             if (genero !== null) {
                 console.log(it);
-                const musica = new MusicaNaoAvaliada_1.default(0, it.nome, it.duracao, it.explicito);
-                musica.idAlbum = album.id;
-                musica.idGenero = genero.id;
+                const musica = new MusicaNaoAvaliada_1.default(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
-                console.log('test:' + musica.id);
                 musicasAdicionadas.push(it.nome);
             }
             else {
@@ -293,6 +263,40 @@ let AlbumController = class AlbumController {
             return { "erro": "ACESSO_NEGADO" };
         await this.albumRepository.delete(id);
         return { "sucesso": true };
+    }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+    /**
+    *
+    * @api {get} /album/:id/musicas Músicas disponíveis do album
+    * @apiName MusicasAlbum
+    * @apiGroup Album
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/5/musicas}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "5",
+    *       "nome": "Album",
+    *       "capa": "url capa",
+    *       "nomeArtista": "rafa moreira",
+    *       "descricao": "bro"
+    *   }
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *        "erro": "ALBUM_INVALIDO"
+    *   }
+    *
+    */
+    async getMusicas(id) {
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
+        console.log(musicas);
+        return {
+            "id": album.id,
+            "musicas": musicas
+        };
     }
 };
 __decorate([
@@ -329,13 +333,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AlbumController.prototype, "get", null);
 __decorate([
-    routing_controllers_1.Get("/:id/musicas"),
-    __param(0, routing_controllers_1.Param("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], AlbumController.prototype, "getMusicas", null);
-__decorate([
     routing_controllers_1.Authorized("PUBLICADORA"),
     routing_controllers_1.Post("/"),
     __param(0, routing_controllers_1.CurrentUser({ required: true })),
@@ -362,6 +359,13 @@ __decorate([
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], AlbumController.prototype, "delete", null);
+__decorate([
+    routing_controllers_1.Get("/:id/musicas"),
+    __param(0, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], AlbumController.prototype, "getMusicas", null);
 AlbumController = __decorate([
     routing_controllers_1.JsonController("/album")
 ], AlbumController);

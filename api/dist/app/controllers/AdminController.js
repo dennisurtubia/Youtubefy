@@ -34,11 +34,6 @@ const AdminRepository_1 = __importDefault(require("../repositories/AdminReposito
 const GeneroRepository_1 = __importDefault(require("../repositories/GeneroRepository"));
 const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
 const MusicaNaoAprovadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAprovadaRepository"));
-// TODO:
-/*
-    Listar playlists administradas pelo admin. 1:n
-    Listar músicas avaliadas pelo admin. 1:n
-*/
 class InsertRequest {
     constructor() {
         this.cpf = "";
@@ -87,6 +82,7 @@ __decorate([
     __metadata("design:type", String)
 ], LoginRequest.prototype, "senha", void 0);
 let AdminController = class AdminController {
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
     /**
     *
     * @api {get} /admin Informações do administrador
@@ -155,7 +151,7 @@ let AdminController = class AdminController {
     *        "erro": "ERRO_BODY"
     *   }
     */
-    async insert(req) {
+    async signup(req) {
         let admin = await this.adminRepository.getByEmail(req.email);
         if (admin !== null)
             return { "erro": "EMAIL_EXISTENTE" };
@@ -165,42 +161,6 @@ let AdminController = class AdminController {
         if (insertId === -1)
             return { "erro": "ERRO_BD" };
         return { "sucesso": true };
-    }
-    /**
-    *
-    * @api {post} /admin/signin Login administrador
-    * @apiName LoginAdmin
-    * @apiGroup Admin
-    *
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "email": "a@a.com",
-    *       "senha": "9876"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "token": "deadbeef"
-    *   }
-    * @apiErrorExample {json} Email/senha incorretos:
-    *   {
-    *       "erro": "INFORMACOES_INCORRETAS"
-    *   }
-    * @apiErrorExample {json} Erro body:
-    *   {
-    *        "erro": "ERRO_BODY"
-    *   }
-    */
-    async signin(req) {
-        let admin = await this.adminRepository.getByEmail(req.email);
-        if (admin === null)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-        const match = await bcrypt_1.compare(req.senha, admin.senha);
-        if (!match)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-        const token = jsonwebtoken_1.sign(admin.email, "supersecret");
-        return { "token": token };
     }
     /**
     *
@@ -246,6 +206,44 @@ let AdminController = class AdminController {
         await this.adminRepository.update(admin.id, admin);
         return { "sucesso": true };
     }
+    // ------------------------------------------------------ REGRAS DE NEGÓCIO ------------------------------------------------------
+    /**
+    *
+    * @api {post} /admin/signin Login administrador
+    * @apiName LoginAdmin
+    * @apiGroup Admin
+    *
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email/senha incorretos:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   }
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }
+    */
+    async signin(req) {
+        let admin = await this.adminRepository.getByEmail(req.email);
+        if (admin === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const match = await bcrypt_1.compare(req.senha, admin.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+        const token = jsonwebtoken_1.sign(admin.email, "supersecret");
+        return { "token": token };
+    }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
     async generosAdministrados(email) {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
@@ -298,14 +296,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [InsertRequest]),
     __metadata("design:returntype", Promise)
-], AdminController.prototype, "insert", null);
-__decorate([
-    routing_controllers_1.Post("/signin"),
-    __param(0, routing_controllers_1.Body({ validate: true })),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [LoginRequest]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "signin", null);
+], AdminController.prototype, "signup", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Put("/"),
@@ -315,6 +306,13 @@ __decorate([
     __metadata("design:paramtypes", [String, InsertRequest]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "update", null);
+__decorate([
+    routing_controllers_1.Post("/signin"),
+    __param(0, routing_controllers_1.Body({ validate: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [LoginRequest]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "signin", null);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/generos"),

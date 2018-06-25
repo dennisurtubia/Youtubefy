@@ -26,12 +26,6 @@ class AvaliarRequest {
     observacao: string = "";
 }
 
-// TODO:
-/*
-    Documentar
-    Exluir, atualizar. CRUD simples
-
-*/
 
 @JsonController("/musica")
 export default class MusicaController {
@@ -48,6 +42,7 @@ export default class MusicaController {
     @Inject()
     private musicaNaoAvaliadaRepository!: MusicaNaoAvaliadaRepository;
 
+    // ------------------------------------------------------ REGRAS DE NEGOCIO ------------------------------------------------------
 
     /**
     * 
@@ -78,7 +73,7 @@ export default class MusicaController {
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         console.log(musicas);
-        
+
         return {
             "naoAvaliadas": musicas.map((m) => m.id)
         };
@@ -101,6 +96,30 @@ export default class MusicaController {
         const musicas = await this.musicaAprovadaRepository.getAll();
         return {
             "aprovadas": musicas
+        };
+    }
+
+    /**
+    * 
+    * @api {get} /musica/reprovadas Listar músicas reprovadas
+    * @apiName ListarMusicasAprovadas
+    * @apiGroup Musica
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/admin?token=deadbeef
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "aprovadas": []
+    *   }
+    */
+    @Authorized("ADMIN")
+    @Get("/reprovadas")
+    async getReprovadas(
+    ) {
+        const musicas = await this.musicaNaoAprovadaRepository.getAll();
+        return {
+            "reprovadas": musicas
         };
     }
 
@@ -172,14 +191,14 @@ export default class MusicaController {
 
                 if (req.avaliacao === Avaliacao.Aprovado) {
                     await this.musicaNaoAprovadaRepository.delete(musica.id);
-                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
+                    await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_REPROVADA" };
                 }
             } else {
                 if (req.avaliacao === Avaliacao.Reprovado) {
                     await this.musicaAprovadaRepository.delete(musica.id);
-                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
+                    await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
                 } else {
                     return { "erro": "MUSICA_ESTA_APROVADA" };
                 }
@@ -187,9 +206,9 @@ export default class MusicaController {
         } else {
             await this.musicaNaoAvaliadaRepository.delete(musica.id);
             if (req.avaliacao === Avaliacao.Aprovado)
-                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
+                await this.musicaAprovadaRepository.add(new MusicaAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), 0, admin.id, musica.idGenero, musica.idAlbum));
             else if (req.avaliacao === Avaliacao.Reprovado)
-                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
+                await this.musicaNaoAprovadaRepository.add(new MusicaNaoAprovada(musica.id, musica.nome, musica.duracao, musica.explicito, musica.url, new Date(), req.observacao, admin.id, musica.idGenero, musica.idAlbum));
         }
 
         return { "sucesso": true };

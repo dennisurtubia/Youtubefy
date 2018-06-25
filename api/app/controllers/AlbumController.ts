@@ -26,6 +26,9 @@ class InsertMusica {
     @IsBoolean()
     explicito: boolean = false;
 
+    @IsString()
+    url: string = "";
+
     @IsNumber()
     genero: number = 0;
 }
@@ -68,6 +71,8 @@ export default class AlbumController {
     @Inject()
     private musicaAprovadaRepository!: MusicaAprovadaRepository;
 
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
+
     /**
     * 
     * @api {get} /album/ Todos os álbuns
@@ -99,16 +104,13 @@ export default class AlbumController {
     *
     */
     @Get("/")
-    async getAll(
-    ) {
-
+    async getAll() {
         const albums = await this.albumRepository.getAll();
 
         return {
             "albuns": albums
         }
     }
-
 
     /**
     * 
@@ -147,47 +149,6 @@ export default class AlbumController {
             "capa": album.capa,
             "nomeArtista": album.nomeArtista,
             "descricao": album.descricao
-        }
-    }
-
-
-    /**
-    * 
-    * @api {get} /album/:id/musicas Músicas disponíveis do album
-    * @apiName MusicasAlbum
-    * @apiGroup Album
-    * @apiParam  {number} id ID
-    * @apiParamExample  {json} Request-Example:
-    *    {https://utfmusic.me/v1/album/5/musicas}
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "id": "5",
-    *       "nome": "Album",
-    *       "capa": "url capa",
-    *       "nomeArtista": "rafa moreira",
-    *       "descricao": "bro"
-    *   }
-    * @apiErrorExample {json} Album inválido:
-    *   {
-    *        "erro": "ALBUM_INVALIDO"
-    *   } 
-    *
-    */
-    @Get("/:id/musicas")
-    async getMusicas(
-        @Param("id") id: number
-    ) {
-
-        const album = await this.albumRepository.getById(id);
-        if (album === null)
-            return { "erro": "ALBUM_INVALIDO" };
-
-        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
-        console.log(musicas);
-
-        return {
-            "id": album.id,
-            "musicas": musicas
         }
     }
 
@@ -268,11 +229,10 @@ export default class AlbumController {
             if (genero !== null) {
                 console.log(it);
 
-                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito);
-                musica.idAlbum = album.id;
-                musica.idGenero = genero.id;
+                const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
+
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
-                console.log('test:' + musica.id);
+
 
                 musicasAdicionadas.push(it.nome);
             } else {
@@ -327,4 +287,46 @@ export default class AlbumController {
         return { "sucesso": true };
     }
 
+
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+
+    /**
+    * 
+    * @api {get} /album/:id/musicas Músicas disponíveis do album
+    * @apiName MusicasAlbum
+    * @apiGroup Album
+    * @apiParam  {number} id ID
+    * @apiParamExample  {json} Request-Example:
+    *    {https://utfmusic.me/v1/album/5/musicas}
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "id": "5",
+    *       "nome": "Album",
+    *       "capa": "url capa",
+    *       "nomeArtista": "rafa moreira",
+    *       "descricao": "bro"
+    *   }
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *        "erro": "ALBUM_INVALIDO"
+    *   } 
+    *
+    */
+    @Get("/:id/musicas")
+    async getMusicas(
+        @Param("id") id: number
+    ) {
+
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
+
+        const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
+        console.log(musicas);
+
+        return {
+            "id": album.id,
+            "musicas": musicas
+        }
+    }
 }

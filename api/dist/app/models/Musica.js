@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Musica {
-    constructor(id, nome, duracao, explicito, idGenero, idAlbum) {
+    constructor(id, nome, duracao, explicito, url, idGenero, idAlbum) {
         this._id = 0;
         this._nome = "";
         this._duracao = 0;
         this._explicito = false;
+        this._url = "";
         this._idGenero = 0;
         this._idAlbum = 0;
         this._id = id;
         this._nome = nome;
         this._duracao = duracao;
         this._explicito = explicito;
+        this._url = url;
         this._idGenero = idGenero;
         this._idAlbum = idAlbum;
     }
@@ -38,6 +40,12 @@ class Musica {
     }
     set explicito(value) {
         this._explicito = value;
+    }
+    get url() {
+        return this._url;
+    }
+    set url(value) {
+        this._url = value;
     }
     get idGenero() {
         return this._idGenero;

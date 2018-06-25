@@ -17,7 +17,7 @@ const Database_1 = __importDefault(require("./Database"));
 let MusicNaoaAprovadaRepository = class MusicNaoaAprovadaRepository {
     async getByAdmin(id) {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
             FROM MusicaNaoAprovada mr
             INNER JOIN Musica m ON m.id = mr.id
             WHERE mr.idAdministrador = ?
@@ -26,7 +26,7 @@ let MusicNaoaAprovadaRepository = class MusicNaoaAprovadaRepository {
     }
     async getById(id) {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
             FROM MusicaNaoAprovada mr
             INNER JOIN Musica m ON m.id = mr.id
             WHERE mr.id = ?
@@ -35,7 +35,7 @@ let MusicNaoaAprovadaRepository = class MusicNaoaAprovadaRepository {
     }
     async getAll() {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, mr.dataReprov, mr.observacao, mr.idAdministrador
             FROM MusicaNaoAprovada mr
             INNER JOIN Musica m ON m.id = mr.id
         `;
@@ -44,9 +44,9 @@ let MusicNaoaAprovadaRepository = class MusicNaoaAprovadaRepository {
     async add(object) {
         const query1 = `
             INSERT INTO Musica
-            VALUES (0, ?, ?, ?, ?, ?)
+            VALUES (0, ?, ?, ?, ?, ?, ?)
         `;
-        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum]);
+        let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum]);
         if (insertId === -1)
             return -1;
         const query2 = `
@@ -69,10 +69,10 @@ let MusicNaoaAprovadaRepository = class MusicNaoaAprovadaRepository {
         await this.database.query(query, [object.dataReprov, object.observacao, id]);
         const query2 = `
             UPDATE Musica m
-            SET m.nome = ?, m.duracao = ?, m.explicito = ?, m.idGenero = ?, m.idAlbum = ?
+            SET m.nome = ?, m.duracao = ?, m.explicito = ?, m.url = ?, m.idGenero = ?, m.idAlbum = ?
             WHERE m.id = ?
         `;
-        await this.database.query(query2, [object.nome, object.duracao, object.explicito, object.idGenero, object.idAlbum, id]);
+        await this.database.query(query2, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum, id]);
     }
     async delete(id) {
         const query = `

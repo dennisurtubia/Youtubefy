@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Musica_1 = __importDefault(require("./Musica"));
 class MusicaNaoAprovada extends Musica_1.default {
-    constructor(id, nome, duracao, explicito, dataReprov, observacao, idAdministrador, idGenero, idAlbum) {
-        super(id, nome, duracao, explicito, idGenero, idAlbum);
+    constructor(id, nome, duracao, explicito, url, dataReprov, observacao, idAdministrador, idGenero, idAlbum) {
+        super(id, nome, duracao, explicito, url, idGenero, idAlbum);
         this._observacao = "";
         this._idAdministrador = 0;
         this._dataReprov = dataReprov;

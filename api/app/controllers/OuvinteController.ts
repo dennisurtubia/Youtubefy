@@ -37,23 +37,13 @@ class LoginRequest {
     senha: string = "";
 }
 
-
-// TODO: 
-/*
-    Adicionar jwt
-    Documentar
-    Listar, adicionar, remover músicas. n:n
-    Listar, adicionar, remover playlists privadas. n:n
-    Listar, seguir, deixar de seguir playlists públicas. n:n
-*/
-
-
 @JsonController("/ouvinte")
 export default class OuvinteController {
 
     @Inject()
     private ouvinteRepository!: OuvinteRepository;
 
+    // ------------------------------------------------------ CRUD ------------------------------------------------------
 
     /**
     * 
@@ -135,7 +125,7 @@ export default class OuvinteController {
     *   }  
     */
     @Post("/signup")
-    async insert(
+    async signup(
         @Body({ validate: true }) req: InsertRequest
     ) {
         let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
@@ -150,50 +140,6 @@ export default class OuvinteController {
             return { "erro": "ERRO_BD" };
 
         return { "sucesso": true };
-    }
-
-    /**
-    * 
-    * @api {post} /ouvinte/signin Login ouvinte
-    * @apiName LoginOuvinte
-    * @apiGroup Ouvinte
-    * 
-    * @apiParam  {String} email Email
-    * @apiParam  {String} senha Senha
-    * @apiParamExample  {json} Exemplo:
-    *   {
-    *       "email": "a@a.com",
-    *       "senha": "9876"
-    *   }
-    * @apiSuccessExample {json} Resposta bem sucessida:
-    *   {
-    *       "token": "deadbeef"
-    *   }
-    * @apiErrorExample {json} Email já existe:
-    *   {
-    *       "erro": "INFORMACOES_INCORRETAS"
-    *   } 
-    * @apiErrorExample {json} Erro body:
-    *   {
-    *        "erro": "ERRO_BODY"
-    *   }  
-    */
-    @Post("/signin")
-    async signin(
-        @Body({ validate: true }) req: LoginRequest
-    ) {
-
-        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
-        if (ouvinte === null)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-
-        const match = await compare(req.senha, ouvinte.senha);
-        if (!match)
-            return { "erro": "INFORMACOES_INCORRETAS" };
-
-        const token = sign(ouvinte.email, "supersecret");
-
-        return { "token": token };
     }
 
     /**
@@ -253,4 +199,63 @@ export default class OuvinteController {
         return { "sucesso": true };
     }
 
+    // ------------------------------------------------------ REGRAS DE NEGOCIO ------------------------------------------------------
+
+    /**
+    * 
+    * @api {post} /ouvinte/signin Login ouvinte
+    * @apiName LoginOuvinte
+    * @apiGroup Ouvinte
+    * 
+    * @apiParam  {String} email Email
+    * @apiParam  {String} senha Senha
+    * @apiParamExample  {json} Exemplo:
+    *   {
+    *       "email": "a@a.com",
+    *       "senha": "9876"
+    *   }
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "token": "deadbeef"
+    *   }
+    * @apiErrorExample {json} Email já existe:
+    *   {
+    *       "erro": "INFORMACOES_INCORRETAS"
+    *   } 
+    * @apiErrorExample {json} Erro body:
+    *   {
+    *        "erro": "ERRO_BODY"
+    *   }  
+    */
+    @Post("/signin")
+    async signin(
+        @Body({ validate: true }) req: LoginRequest
+    ) {
+
+        let ouvinte = await this.ouvinteRepository.getByEmail(req.email);
+        if (ouvinte === null)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const match = await compare(req.senha, ouvinte.senha);
+        if (!match)
+            return { "erro": "INFORMACOES_INCORRETAS" };
+
+        const token = sign(ouvinte.email, "supersecret");
+
+        return { "token": token };
+    }
+
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+
+    // listar playlists privadas
+
+    // ------------------------------------------------------ N:N ------------------------------------------------------
+
+    // listar músicas
+    // adicionar músicas
+    // remover músicas
+
+    // listar playlists publicas seguidas
+    // seguir playlist publica
+    // des-seguir playlist publica
 }

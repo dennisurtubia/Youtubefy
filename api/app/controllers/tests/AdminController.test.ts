@@ -171,7 +171,7 @@ describe('signin', () => {
     });
 });
 
-describe.only('info', () => {
+describe('info', () => {
     const url = 'http://127.0.0.1:3000/v1/admin';
 
     it('retorna as informações se informar um token válido', async () => {
