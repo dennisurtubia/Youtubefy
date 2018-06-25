@@ -10,12 +10,12 @@
 .bg-dark {
   background-color: rgb(34, 34, 34) !important;
 }
-.publisher * input,
+.black-rounded,
 .publisher * button {
   border-radius: 100px;
 }
-.publisher * input,
-.publisher * input:focus {
+.black-rounded,
+.black-rounded:focus {
   background-color: rgb(34, 34, 34);
   border: 0;
   padding: 8px;
@@ -23,6 +23,12 @@
 }
 .formSearch {
   margin-top: 20px;
+}
+.form-group, .form-row {
+  margin-top: 7px;
+}
+.addMusic {
+  margin-top: 32px;
 }
 .cardMusic {
   margin-bottom: 10px;
