@@ -54,6 +54,7 @@ const appRoutes: Routes = [
     Ng2Webstorage,
     YoutubePlayerModule,
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule
   ],

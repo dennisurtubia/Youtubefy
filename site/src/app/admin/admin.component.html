@@ -11,8 +11,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Músicas
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -22,8 +21,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Gerenciar
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -38,7 +36,7 @@
         </div>
     </nav>
     <div class="container" *ngIf="this.localSt.retrieve('page') === 1">
-            <h1>Músicas aguardando aprovação</h1>
+        <h1>Músicas aguardando aprovação</h1>
         <table class="table table-bordered table-dark">
             <thead>
                 <tr>
@@ -50,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr  *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
+                <tr *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
                     <th scope="row">1</th>
                     <td>Anoter Brick In The Wall</td>
                     <td>Pink Floyd</td>
@@ -126,21 +124,21 @@
         </table>
     </div>
     <div class="container" *ngIf="this.localSt.retrieve('page') === 4">
-            <!-- Button trigger modal -->
-            
-            
-            <!-- Modal -->
-            <div class="modal fade" id="addGenero" tabindex="-1" role="dialog" aria-labelledby="addGeneroLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
+        <!-- Button trigger modal -->
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="addGenero" tabindex="-1" role="dialog" aria-labelledby="addGeneroLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
                         <h5 class="modal-title" id="addGeneroLabel">Adicionar novo gênero</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        
-                        </div>
-                        <div class="modal-body">
+
+                    </div>
+                    <div class="modal-body">
                         <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
                             Necessário preencher todos os campos
                         </div>
@@ -153,79 +151,81 @@
                                 <input formControlName="nome" type="text" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
                             </div>
                         </form>
-                        
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button (click)=addGender() type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button (click)=addGender() type="button" class="btn btn-primary">Adicionar</button>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="updateGenero" tabindex="-1" role="dialog" aria-labelledby="updateGeneroLabel" aria-hidden="true" *ngIf="this.currentEdit">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title" id="updateGeneroLabel">Atualizar gênero</h5>
-                            <button type="button" class="close" (click)="close();" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            
-                            </div>
-                            <div class="modal-body">
-                            <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
-                                Necessário preencher todos os campos
-                            </div>
-                            <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
-                                Gênero atualizado com sucesso
-                            </div>
-                            <form class="registroForm whiteBG" novalidate [formGroup]="form">
-                                <div class="form-group">
-                                    <label for="generoInput">De um nome para o gênero:</label>
-                                    <input formControlName="nome" type="text" [value]="this.currentEdit.nome" class="form-control" id="generoInput" aria-describedby="generoHelp" placeholder="Nome do gênero">
-                                </div>
-                            </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" (click)="close();" data-dismiss="modal">Fechar</button>
-                                <button (click)=updateGender() type="button" class="btn btn-primary">Editar</button>
-                            </div>
+        </div>
+        <div class="modal fade" id="updateGenero" tabindex="-1" role="dialog" aria-labelledby="updateGeneroLabel" aria-hidden="true"
+            *ngIf="this.currentEdit">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateGeneroLabel">Atualizar gênero</h5>
+                        <button type="button" class="close" (click)="close();" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').erro === 'NOME_INVALIDO'">
+                            Necessário preencher todos os campos
                         </div>
+                        <div class="alert alert-success" role="alert" *ngIf="this.localSt.retrieve('registered') && this.localSt.retrieve('registered').sucesso === true">
+                            Gênero atualizado com sucesso
+                        </div>
+                        <form class="registroForm whiteBG" novalidate [formGroup]="form">
+                            <div class="form-group">
+                                <label for="generoInput">De um nome para o gênero:</label>
+                                <input formControlName="nome" type="text" [value]="this.currentEdit.nome" class="form-control" id="generoInput" aria-describedby="generoHelp"
+                                    placeholder="Nome do gênero">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" (click)="close();" data-dismiss="modal">Fechar</button>
+                        <button (click)=updateGender() type="button" class="btn btn-primary">Editar</button>
                     </div>
                 </div>
-            <h1>Gêneros</h1>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addGenero">
-                <i class="fas fa-plus"></i> Adicionar Gênero
-            </button>
-            <button type="button" class="btn btn-success" (click)=refresh();>
-                <i class="fas fa-sync"></i> Atualizar
-            </button>
-            <table class="table table-bordered table-dark">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Genero</th>
-                        <th scope="col">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let genero of this.localSt.retrieve('genero'); let i of index">
-                        <th scope="row">{{genero.id}}</th>
-                        <td>{{genero.nome}}</td>
-                        <td>
-                            <button class="btn btn-primary" (click)="this.currentEdit = genero"  data-toggle="modal" data-target="#updateGenero">
-                                <i class="fas fa-edit"></i> Editar
-                            </button>
-                            <button class="btn btn-danger" (click)="deleteGender(genero.id, i);"  *ngIf="this.currentBtn !== i || this.loading === false">
-                                <i class="fas fa-trash"></i> Excluir
-                            </button>
-                            <button class="btn btn-danger btn-disabled" *ngIf="this.currentBtn === i && this.loading === true">
-                                <i class="fas fa-spinner fa-spin"></i> Excluir
-                            </button>
-                        </td>
-                    </tr>
-    
-                </tbody>
-            </table>
+            </div>
         </div>
+        <h1>Gêneros</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addGenero">
+            <i class="fas fa-plus"></i> Adicionar Gênero
+        </button>
+        <button type="button" class="btn btn-success" (click)=refresh();>
+            <i class="fas fa-sync"></i> Atualizar
+        </button>
+        <table class="table table-bordered table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Genero</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let genero of this.localSt.retrieve('genero'); let i of index">
+                    <th scope="row">{{genero.id}}</th>
+                    <td>{{genero.nome}}</td>
+                    <td>
+                        <button class="btn btn-primary" (click)="this.currentEdit = genero" data-toggle="modal" data-target="#updateGenero">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-danger" (click)="deleteGender(genero.id, i);" *ngIf="this.currentBtn !== i || this.loading === false">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                        <button class="btn btn-danger btn-disabled" *ngIf="this.currentBtn === i && this.loading === true">
+                            <i class="fas fa-spinner fa-spin"></i> Excluir
+                        </button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
 </body>

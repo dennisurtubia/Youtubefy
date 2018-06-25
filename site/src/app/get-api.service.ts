@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import {Router} from "@angular/router";
 import { catchError, retry } from 'rxjs/operators';
+import {Musica} from "./musica";
 
 interface Object{
   nome?:string;
@@ -16,6 +17,13 @@ interface Object{
   id?:number;
   generos?:any[];
   cnpj?:number;
+  capa?:string;
+  descricao?:string;
+  nomeArtista?:string;
+  explicito?:boolean;
+  url?:string;
+  genero?:number;
+  duracao?:number;
 }
 
 const httpOptions = {
@@ -29,7 +37,6 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class GetApiService {
-  
   constructor(
     private http:HttpClient,
     private localSt: LocalStorageService,
@@ -180,10 +187,34 @@ export class GetApiService {
       this.localSt.store('data', data);
     });
   }
+  getGenderInfo(id:number) {
+    this.http.get(this.apiUrl + 'genero/' + id + '?token=' + this.localSt.retrieve('token').token).subscribe(data => {
+    });
+  }
   getGender(token:string){
     this.http.get(this.apiUrl + 'genero?token=' + token).subscribe(data => {
       this.localSt.store('genero', data['generos']);
     });
+  }
+  postAlbum(form:Object, musicas:Array<Musica>){
+    console.log(form);
+    console.log(musicas);
+    const req = this.http.post(this.apiUrl + 'album?token=' + this.localSt.retrieve('token').token, {
+      nome: form.nome,
+      nomeArtista: form.nomeArtista,
+      capa: form.capa,
+      descricao: form.descricao,
+      musicas: musicas
+    })
+    .subscribe(
+      res => {
+        console.log(res);
+        this.localSt.store('registered', res);
+      },
+      err => {
+        console.log("Erro");
+      }
+    );
   }
   postGender(token:string, form:Object){
     const req = this.http.post(this.apiUrl + 'genero?token=' + token, {
