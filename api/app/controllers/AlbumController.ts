@@ -1,4 +1,5 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, Length, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
+import { IsBoolean, IsNotEmpty, IsNumber, IsString, Length, ValidateNested } from "class-validator";
 import { Authorized, Body, BodyParam, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Album from "../models/Album";
@@ -8,7 +9,6 @@ import GeneroRepository from "../repositories/GeneroRepository";
 import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
-import { Type } from "class-transformer";
 
 // TODO:
 /*
@@ -51,7 +51,7 @@ class InsertRequest {
     @IsString()
     descricao: string = "";
 
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     @Type(() => InsertMusica)
     musicas!: InsertMusica[];
 }

@@ -15,6 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
@@ -25,7 +26,6 @@ const GeneroRepository_1 = __importDefault(require("../repositories/GeneroReposi
 const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
 const MusicaNaoAvaliadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAvaliadaRepository"));
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
-const class_transformer_1 = require("class-transformer");
 // TODO:
 /*
     Listar, atualizar, CRUD simples

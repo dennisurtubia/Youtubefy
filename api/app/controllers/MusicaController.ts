@@ -73,8 +73,9 @@ export default class MusicaController {
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
 
+
         return {
-            "naoAvaliadas": musicas
+            "naoAvaliadas": musicas.map((m) => m.nome)
         };
     }
 
