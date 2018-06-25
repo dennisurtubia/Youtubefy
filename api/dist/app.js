@@ -48,7 +48,6 @@ const app = routing_controllers_1.createExpressServer({
             const decoded = jsonwebtoken_1.verify(token, "supersecret");
             if (roles.includes('ADMIN')) {
                 const admin = await typedi_1.Container.get(AdminRepository_1.default).getByEmail(decoded);
-                console.log(admin);
                 return admin !== null;
             }
             if (roles.includes('OUVINTE')) {

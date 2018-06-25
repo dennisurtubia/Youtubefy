@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, Length, ValidateNested } from "class-validator";
 import { Authorized, Body, BodyParam, CurrentUser, Delete, Get, JsonController, Param, Post, Put } from "routing-controllers";
 import { Inject } from "typedi";
 import Album from "../models/Album";
@@ -8,6 +8,7 @@ import GeneroRepository from "../repositories/GeneroRepository";
 import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 import MusicaNaoAvaliadaRepository from "../repositories/MusicaNaoAvaliadaRepository";
 import PublicadoraRepository from "../repositories/PublicadoraRepository";
+import { Type } from "class-transformer";
 
 // TODO:
 /*
@@ -27,6 +28,7 @@ class InsertMusica {
     explicito: boolean = false;
 
     @IsString()
+    @Length(1, 300)
     url: string = "";
 
     @IsNumber()
@@ -35,6 +37,7 @@ class InsertMusica {
 
 class InsertRequest {
     @IsString()
+    @IsNotEmpty()
     capa: string = "";
 
     @IsString()
@@ -48,8 +51,8 @@ class InsertRequest {
     @IsString()
     descricao: string = "";
 
-    @IsArray()
-    @ValidateNested()
+    @ValidateNested({each: true})
+    @Type(() => InsertMusica)
     musicas!: InsertMusica[];
 }
 
@@ -178,13 +181,15 @@ export default class AlbumController {
     *                   "nome": "Música 1",
     *                   "duracao": 240,
     *                   "explicito": true,
-    *                   "genero": 1
+    *                   "genero": 1,
+    *                   "url": "url"
     *               }, 
     *               {
     *                   "nome": "Música 2",
     *                   "duracao": 230,
     *                   "explicito": false,
-    *                   "genero": 2
+    *                   "genero": 2,
+    *                   "url": "url"
     *               } 
     *           ]
     *   }
@@ -227,7 +232,7 @@ export default class AlbumController {
 
             let genero = await this.generoRepository.getById(it.genero);
             if (genero !== null) {
-                console.log(it);
+
 
                 const musica = new MusicaNaoAvaliada(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
 
@@ -322,7 +327,7 @@ export default class AlbumController {
             return { "erro": "ALBUM_INVALIDO" };
 
         const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
-        console.log(musicas);
+
 
         return {
             "id": album.id,

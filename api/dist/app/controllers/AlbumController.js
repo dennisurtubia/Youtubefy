@@ -25,6 +25,7 @@ const GeneroRepository_1 = __importDefault(require("../repositories/GeneroReposi
 const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
 const MusicaNaoAvaliadaRepository_1 = __importDefault(require("../repositories/MusicaNaoAvaliadaRepository"));
 const PublicadoraRepository_1 = __importDefault(require("../repositories/PublicadoraRepository"));
+const class_transformer_1 = require("class-transformer");
 // TODO:
 /*
     Listar, atualizar, CRUD simples
@@ -54,6 +55,7 @@ __decorate([
 ], InsertMusica.prototype, "explicito", void 0);
 __decorate([
     class_validator_1.IsString(),
+    class_validator_1.Length(1, 300),
     __metadata("design:type", String)
 ], InsertMusica.prototype, "url", void 0);
 __decorate([
@@ -70,6 +72,7 @@ class InsertRequest {
 }
 __decorate([
     class_validator_1.IsString(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", String)
 ], InsertRequest.prototype, "capa", void 0);
 __decorate([
@@ -87,8 +90,8 @@ __decorate([
     __metadata("design:type", String)
 ], InsertRequest.prototype, "descricao", void 0);
 __decorate([
-    class_validator_1.IsArray(),
-    class_validator_1.ValidateNested(),
+    class_validator_1.ValidateNested({ each: true }),
+    class_transformer_1.Type(() => InsertMusica),
     __metadata("design:type", Array)
 ], InsertRequest.prototype, "musicas", void 0);
 let AlbumController = class AlbumController {
@@ -189,13 +192,15 @@ let AlbumController = class AlbumController {
     *                   "nome": "Música 1",
     *                   "duracao": 240,
     *                   "explicito": true,
-    *                   "genero": 1
+    *                   "genero": 1,
+    *                   "url": "url"
     *               },
     *               {
     *                   "nome": "Música 2",
     *                   "duracao": 230,
     *                   "explicito": false,
-    *                   "genero": 2
+    *                   "genero": 2,
+    *                   "url": "url"
     *               }
     *           ]
     *   }
@@ -228,7 +233,6 @@ let AlbumController = class AlbumController {
         for (let it of req.musicas) {
             let genero = await this.generoRepository.getById(it.genero);
             if (genero !== null) {
-                console.log(it);
                 const musica = new MusicaNaoAvaliada_1.default(0, it.nome, it.duracao, it.explicito, it.url, genero.id, album.id);
                 musica.id = await this.musicaNaoAvaliadaRepository.add(musica);
                 musicasAdicionadas.push(it.nome);
@@ -292,7 +296,6 @@ let AlbumController = class AlbumController {
         if (album === null)
             return { "erro": "ALBUM_INVALIDO" };
         const musicas = await this.musicaAprovadaRepository.getByAlbum(id);
-        console.log(musicas);
         return {
             "id": album.id,
             "musicas": musicas

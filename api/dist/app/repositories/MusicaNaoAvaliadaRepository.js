@@ -35,9 +35,9 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
     }
     async getAll() {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito,m.url, m.idGenero, m.idAlbum
-            FROM MusicaNaoAvaliada mn
-            INNER JOIN Musica m ON m.id = mr.id
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum
+            FROM Musica m
+            INNER JOIN MusicaNaoAvaliada mn ON m.id = mn.id
         `;
         return await this.database.queryAll(query, []);
     }
@@ -47,6 +47,7 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
             VALUES (0, ?, ?, ?, ?, ?, ?)
         `;
         let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum]);
+        console.log(insertId);
         if (insertId === -1)
             return -1;
         const query2 = `
@@ -54,7 +55,6 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
             VALUES (?);
         `;
         let insertId2 = await this.database.query(query2, [insertId]);
-        console.log(insertId2);
         if (insertId2 === -1) {
             await this.database.query('DELETE FROM Musica WHERE id = ?', [insertId]);
             return -1;

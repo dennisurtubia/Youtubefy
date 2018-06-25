@@ -44,7 +44,6 @@ const app = createExpressServer({
 
             if (roles.includes('ADMIN')) {
                 const admin = await Container.get(AdminRepository).getByEmail(decoded as string);
-                console.log(admin);
 
                 return admin !== null;
             }

@@ -1,5 +1,5 @@
-import { post, get } from "request-promise";
 import * as faker from "faker/locale/pt_BR";
+import { get, post } from "request-promise";
 
 
 const emailAdmin = faker.internet.email();
@@ -52,19 +52,17 @@ describe('adicionar album', () => {
 
     it('deve cadastrar um ambum com algumas musicas', async () => {
 
-        // let res = await post('http://127.0.0.1:3000/v1/genero?token=' + tokenAdmin, {
-        //     json: {
-        //         nome: "Generroooo"
-        //     }
-        // });
-        // expect(res.sucesso).toBeTruthy()
+        let res = await post('http://127.0.0.1:3000/v1/genero?token=' + tokenAdmin, {
+            json: {
+                nome: "Generroooo"
+            }
+        });
+        expect(res.sucesso).toBeTruthy()
 
         // let generos = await get('http://127.0.0.1:3000/v1/genero/');
         // console.log(generos);
 
-
-
-        let res = await post(url + '?token=' + tokenPublicadora, {
+        res = await post(url + '?token=' + tokenPublicadora, {
             json: {
                 capa: faker.name.firstName(),
                 nome: faker.name.firstName(),
@@ -72,19 +70,22 @@ describe('adicionar album', () => {
                 descricao: faker.lorem.word(),
                 musicas: [
                     {
-                        nome: "musica",
+                        nome: "dolindo",
                         duracao: 100,
                         explicito: false,
-                        genero: 1
+                        genero: 1,
+                        url: 'aaaa'
                     }
                 ]
             }
         });
-
-        res = await get('http://127.0.0.1:3000/v1/musica/naoavaliadas?token=' + tokenAdmin);
         console.log(res);
-        
 
+        expect(res.erro).toBeUndefined();
+        //console.log(res);
+
+
+        res = JSON.parse(await get('http://127.0.0.1:3000/v1/musica/naoavaliadas?token=' + tokenAdmin));
+        expect(res.naoAvaliadas.length).toBeGreaterThan(0);
     })
-
 });

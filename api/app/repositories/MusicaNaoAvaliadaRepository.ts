@@ -39,9 +39,9 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito,m.url, m.idGenero, m.idAlbum
-            FROM MusicaNaoAvaliada mn
-            INNER JOIN Musica m ON m.id = mr.id
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum
+            FROM Musica m
+            INNER JOIN MusicaNaoAvaliada mn ON m.id = mn.id
         `;
 
         return await this.database.queryAll<Entity>(query, [])
@@ -55,8 +55,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
         `;
 
         let insertId = await this.database.query(query1, [object.nome, object.duracao, object.explicito, object.url, object.idGenero, object.idAlbum]);
-       
-
+        console.log(insertId);
 
         if (insertId === -1)
             return -1;
@@ -66,11 +65,7 @@ export default class MusicaNaoAvaliadaRepository implements IRepository<Entity> 
             VALUES (?);
         `;
 
-
-
-
         let insertId2 = await this.database.query(query2, [insertId]);
-        console.log(insertId2);
 
 
         if (insertId2 === -1) {

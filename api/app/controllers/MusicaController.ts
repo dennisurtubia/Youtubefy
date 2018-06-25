@@ -72,10 +72,9 @@ export default class MusicaController {
             return { "erro": "ADMIN_INVALIDO" };
 
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
-        console.log(musicas);
 
         return {
-            "naoAvaliadas": musicas.map((m) => m.id)
+            "naoAvaliadas": musicas
         };
     }
 

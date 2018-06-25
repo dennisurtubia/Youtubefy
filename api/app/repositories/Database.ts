@@ -61,8 +61,7 @@ export default class Database {
 
         try {
             const result: [OkPacket, FieldPacket[]] = await this.connection.execute<OkPacket>(str, args).catch(e => { throw e });
-            console.log(str);
-            console.log(result);
+    
             
             return result["0"].insertId;
         } catch (err) {
