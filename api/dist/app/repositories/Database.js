@@ -15,7 +15,7 @@ let Database = class Database {
             host: process.env.MYSQL_HOST || "localhost",
             user: process.env.MYSQL_USER || "fjorg",
             password: process.env.MYSQL_ROOT_PASSWORD || "1234",
-            database: process.env.DATABASE || "ProjectBD"
+            database: process.env.DATABASE || "projectbd"
         });
     }
     async disconnect() {

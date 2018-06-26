@@ -54,11 +54,31 @@ let AlbumRepository = class AlbumRepository {
         await this.database.query(query1, [object.capa, object.nome, object.nomeArtista, object.descricao, id]);
     }
     async delete(id) {
-        const query = `
+        const query1 = `
+            DELETE FROM MusicaAprovada
+            WHERE idAlbum = ?
+        `;
+        await this.database.query(query1, [id]);
+        const query2 = `
+            DELETE FROM MusicaNaoAprovada
+            WHERE idAlbum = ?
+        `;
+        await this.database.query(query2, [id]);
+        const query3 = `
+            DELETE FROM MusicaNaoAvaliada
+            WHERE idAlbum = ?
+        `;
+        await this.database.query(query3, [id]);
+        const query4 = `
+            DELETE FROM Musica
+            WHERE idAlbum = ?
+        `;
+        await this.database.query(query4, [id]);
+        const query5 = `
             DELETE FROM Album
             WHERE id = ?
         `;
-        await this.database.query(query, [id]);
+        await this.database.query(query5, [id]);
     }
 };
 __decorate([

@@ -35,9 +35,10 @@ let MusicaNaoAvaliadaRepository = class MusicaNaoAvaliadaRepository {
     }
     async getAll() {
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, a.nomeArtista, a.nome as nomeAlbum
             FROM Musica m
             INNER JOIN MusicaNaoAvaliada mn ON m.id = mn.id
+            INNER JOIN Album a on a.id = m.idAlbum
         `;
         return await this.database.queryAll(query, []);
     }

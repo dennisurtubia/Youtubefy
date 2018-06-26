@@ -75,7 +75,7 @@ let MusicaController = class MusicaController {
             return { "erro": "ADMIN_INVALIDO" };
         const musicas = await this.musicaNaoAvaliadaRepository.getAll();
         return {
-            "naoAvaliadas": musicas.map((m) => m.nome)
+            "naoAvaliadas": musicas
         };
     }
     /**

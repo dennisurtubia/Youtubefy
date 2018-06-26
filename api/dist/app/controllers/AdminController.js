@@ -265,6 +265,8 @@ let AdminController = class AdminController {
             "reprovadas": reprovadas
         };
     }
+    async playlistsPublicas(email) {
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -329,6 +331,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "musicasAvaliadas", null);
+__decorate([
+    routing_controllers_1.Authorized("ADMIN"),
+    routing_controllers_1.Get("/playlists-publicas"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "playlistsPublicas", null);
 AdminController = __decorate([
     routing_controllers_1.JsonController("/admin")
 ], AdminController);

@@ -31,6 +31,7 @@ const util_1 = require("util");
 const Genero_1 = __importDefault(require("../models/Genero"));
 const AdminRepository_1 = __importDefault(require("../repositories/AdminRepository"));
 const GeneroRepository_1 = __importDefault(require("../repositories/GeneroRepository"));
+const MusicaAprovadaRepository_1 = __importDefault(require("../repositories/MusicaAprovadaRepository"));
 class UpdateRequest {
     constructor() {
         this.id = 0;
@@ -258,6 +259,15 @@ let GeneroController = class GeneroController {
         await this.generoRepository.delete(id);
         return { "sucesso": true };
     }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+    // listar musicas do gênero
+    async getMusicas(id) {
+        const genero = await this.generoRepository.getById(id);
+        if (genero === null)
+            return { "erro": "GENERO_INVALIDO" };
+        const musicas = await this.musicaAprovadaRepository.getByGenero(genero.id);
+        return { "musicas": musicas };
+    }
 };
 __decorate([
     typedi_1.Inject(),
@@ -267,6 +277,10 @@ __decorate([
     typedi_1.Inject(),
     __metadata("design:type", AdminRepository_1.default)
 ], GeneroController.prototype, "adminRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", MusicaAprovadaRepository_1.default)
+], GeneroController.prototype, "musicaAprovadaRepository", void 0);
 __decorate([
     routing_controllers_1.Authorized("ADMIN"),
     routing_controllers_1.Get("/:id"),
@@ -309,6 +323,13 @@ __decorate([
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)
 ], GeneroController.prototype, "delete", null);
+__decorate([
+    routing_controllers_1.Get("/:id/musicas"),
+    __param(0, routing_controllers_1.Param("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], GeneroController.prototype, "getMusicas", null);
 GeneroController = __decorate([
     routing_controllers_1.JsonController("/genero")
 ], GeneroController);
