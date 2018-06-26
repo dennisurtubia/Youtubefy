@@ -16,7 +16,7 @@ enum Avaliacao {
 class AvaliarRequest {
 
     @IsNumber()
-    musica: number = 0;
+    id: number = 0;
 
     @IsEnum(Avaliacao)
     avaliacao: Avaliacao = Avaliacao.Reprovado;
@@ -136,7 +136,7 @@ export default class MusicaController {
     * @apiParam  {String} avaliacao "aprovado" | "reprovado"
     * @apiParamExample  {json} Exemplo:
     *   {
-    *       "id": "1",
+    *       "id": 1,
     *       "avaliacao": "reprovado"
     *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
@@ -180,12 +180,16 @@ export default class MusicaController {
             return { "erro": "ADMIN_INVALIDO" };
 
 
+        let musica = await this.musicaNaoAvaliadaRepository.getById(req.id);
+        console.log('id: ' + req.id);
+        console.log(musica);
 
-        let musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
         if (musica === null) {
-            musica = await this.musicaAprovadaRepository.getById(req.musica);
+            musica = await this.musicaAprovadaRepository.getById(req.id);
             if (musica === null) {
-                musica = await this.musicaNaoAprovadaRepository.getById(req.musica);
+
+
+                musica = await this.musicaNaoAprovadaRepository.getById(req.id);
                 if (musica === null)
                     return { "erro": "MUSICA_INVALIDA" };
 

@@ -39,10 +39,11 @@ CREATE TABLE IF NOT EXISTS Album (
     nome CHAR(30) NOT NULL,
     nomeArtista CHAR(100) NOT NULL,
     descricao CHAR(200),
+    
     idPublicadora INTEGER NOT NULL,
+    
     PRIMARY KEY (id),
-    FOREIGN KEY (idPublicadora)
-        REFERENCES Publicadora (id)
+    FOREIGN KEY (idPublicadora) REFERENCES Publicadora (id)
 );
 
 CREATE TABLE IF NOT EXISTS Playlist (
