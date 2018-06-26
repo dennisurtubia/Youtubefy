@@ -56,9 +56,9 @@
                     <td>
                         <button class="btn btn-primary">
                             <i class="fas fa-play"></i> Ouvir</button>
-                        <button class="btn btn-success" (click)="avaliaMusica(musica.id, 'aprovado')">
+                        <button class="btn btn-success" (click)="this.getApi.avaliaMusica(musica.id, 'aprovado')">
                             <i class="fas fa-thumbs-up"></i> Aprovar</button>
-                        <button class="btn btn-danger" (click)="avaliaMusica(musica.id, 'reprovado')">
+                        <button class="btn btn-danger" (click)="this.getApi.avaliaMusica(musica.id, 'reprovado')">
                             <i class="fas fa-thumbs-down"></i> Reprovar</button>
                     </td>
                 </tr>
