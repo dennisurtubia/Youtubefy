@@ -31,7 +31,7 @@ var Avaliacao;
 })(Avaliacao || (Avaliacao = {}));
 class AvaliarRequest {
     constructor() {
-        this.musica = 0;
+        this.id = 0;
         this.avaliacao = Avaliacao.Reprovado;
         this.observacao = "";
     }
@@ -39,7 +39,7 @@ class AvaliarRequest {
 __decorate([
     class_validator_1.IsNumber(),
     __metadata("design:type", Number)
-], AvaliarRequest.prototype, "musica", void 0);
+], AvaliarRequest.prototype, "id", void 0);
 __decorate([
     class_validator_1.IsEnum(Avaliacao),
     __metadata("design:type", String)
@@ -128,7 +128,7 @@ let MusicaController = class MusicaController {
     * @apiParam  {String} avaliacao "aprovado" | "reprovado"
     * @apiParamExample  {json} Exemplo:
     *   {
-    *       "id": "1",
+    *       "id": 1,
     *       "avaliacao": "reprovado"
     *   }
     * @apiSuccessExample {json} Resposta bem sucessida:
@@ -164,11 +164,13 @@ let MusicaController = class MusicaController {
         const admin = await this.adminRepository.getByEmail(email);
         if (admin === null)
             return { "erro": "ADMIN_INVALIDO" };
-        let musica = await this.musicaNaoAvaliadaRepository.getById(req.musica);
+        let musica = await this.musicaNaoAvaliadaRepository.getById(req.id);
+        console.log('id: ' + req.id);
+        console.log(musica);
         if (musica === null) {
-            musica = await this.musicaAprovadaRepository.getById(req.musica);
+            musica = await this.musicaAprovadaRepository.getById(req.id);
             if (musica === null) {
-                musica = await this.musicaNaoAprovadaRepository.getById(req.musica);
+                musica = await this.musicaNaoAprovadaRepository.getById(req.id);
                 if (musica === null)
                     return { "erro": "MUSICA_INVALIDA" };
                 if (req.avaliacao === Avaliacao.Aprovado) {
