@@ -3,6 +3,7 @@ import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import { GetApiService } from '../get-api.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {Router} from "@angular/router";
+import { forEach } from "@angular/router/src/utils/collection";
 
 @Component({
   selector: "app-admin",
@@ -16,6 +17,7 @@ export class AdminComponent implements OnInit {
   currentBtn: number;
   currentEdit: any[];
   listGender: any[];
+  album: Object;
   constructor(
     private localSt: LocalStorageService,
     private fb: FormBuilder,
@@ -96,8 +98,15 @@ export class AdminComponent implements OnInit {
     this.localSt.clear('page');
     this.router.navigate(['/login']);
   }
+  getAlbumInfo(id:number){
 
+  }
   ngOnInit() {
+    this.getAlbumInfo(2);
+    //this.getAlbumInfo(2)
+    // this.localSt.retrieve('naoAvaliadas').forEach(element => {
+    //   element.nomeArtista = this.getApi.getAlbum(element['albumId'])
+    // });
     this.localSt.clear('registered');
     if(!this.localSt.retrieve('token')) {
       this.router.navigate(['/login']);

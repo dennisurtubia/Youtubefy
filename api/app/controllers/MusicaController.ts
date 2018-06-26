@@ -75,7 +75,7 @@ export default class MusicaController {
 
 
         return {
-            "naoAvaliadas": musicas.map((m) => m.nome)
+            "naoAvaliadas": musicas
         };
     }
 

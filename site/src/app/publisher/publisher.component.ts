@@ -48,12 +48,19 @@ export class PublisherComponent implements OnInit {
     this.getApi.postAlbum(this.form.value, this.musicas);
   }
   addMusic(){
+    console.log(this.musica.value.explicito);
+    if(this.musica.value.explicito == "true") {
+      this.musica.value.explicito = true;
+    } else {
+      this.musica.value.explicito = false;
+    }
+    console.log(this.musica.value.explicito);
     this.musicas.push({
       'nome':this.musica.value.nome,
-      'duracao':this.musica.value.duracao,
+      'duracao':+this.musica.value.duracao,
       'url':this.musica.value.url,
       'explicito':this.musica.value.explicito,
-      'genero':this.musica.value.genero
+      'genero':+this.musica.value.genero
     });
     if (this.musica.valid) {
       console.log("Form Submitted!");

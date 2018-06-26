@@ -49,16 +49,16 @@
             </thead>
             <tbody>
                 <tr *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
-                    <th scope="row">1</th>
-                    <td>Anoter Brick In The Wall</td>
-                    <td>Pink Floyd</td>
-                    <td>Dark Side Of The Moon</td>
+                    <th scope="row">{{musica.id}}</th>
+                    <td>{{musica.nome}}</td>
+                    <td></td>
+                    <td>{{musica.nomeAlbum}}</td>
                     <td>
                         <button class="btn btn-primary">
                             <i class="fas fa-play"></i> Ouvir</button>
-                        <button class="btn btn-success">
+                        <button class="btn btn-success" (click)="avaliaMusica(musica.id, 'aprovado')">
                             <i class="fas fa-thumbs-up"></i> Aprovar</button>
-                        <button class="btn btn-danger">
+                        <button class="btn btn-danger" (click)="avaliaMusica(musica.id, 'reprovado')">
                             <i class="fas fa-thumbs-down"></i> Reprovar</button>
                     </td>
                 </tr>
