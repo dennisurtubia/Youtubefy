@@ -5,6 +5,7 @@ import { isNumber, isString } from "util";
 import Genero from "../models/Genero";
 import AdminRepository from "../repositories/AdminRepository";
 import GeneroRepository from "../repositories/GeneroRepository";
+import MusicaAprovadaRepository from "../repositories/MusicaAprovadaRepository";
 
 class UpdateRequest {
     @IsNumber()
@@ -23,6 +24,9 @@ export default class GeneroController {
 
     @Inject()
     private adminRepository!: AdminRepository;
+
+    @Inject()
+    private musicaAprovadaRepository!: MusicaAprovadaRepository;
 
     // ------------------------------------------------------ CRUD ------------------------------------------------------
 
@@ -283,4 +287,17 @@ export default class GeneroController {
     // ------------------------------------------------------ 1:N ------------------------------------------------------
 
     // listar musicas do gênero
+
+    @Get("/:id/musicas")
+    async getMusicas(
+        @Param("id") id: number
+    ) {
+        const genero = await this.generoRepository.getById(id);
+        if (genero === null)
+            return { "erro": "GENERO_INVALIDO" };
+
+        const musicas = await this.musicaAprovadaRepository.getByGenero(genero.id);
+
+        return { "musicas": musicas };
+    }
 }

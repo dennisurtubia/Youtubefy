@@ -11,6 +11,18 @@ export default class MusicaAprovadaRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
+    async getByGenero(id: number): Promise<Entity[]> {
+
+        const query = `
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            FROM MusicaAprovada ma
+            INNER JOIN Musica m ON m.id = ma.id
+            WHERE m.idGenero = ?
+        `;
+
+        return await this.database.queryAll<Entity>(query, [id]);
+    }
+
     async getByAlbum(id: number): Promise<Entity[]> {
 
         const query = `

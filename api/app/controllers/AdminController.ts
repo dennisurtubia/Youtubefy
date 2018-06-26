@@ -283,4 +283,12 @@ export default class AdminController {
             "reprovadas": reprovadas
         }
     }
+
+    @Authorized("ADMIN")
+    @Get("/playlists-publicas")
+    async playlistsPublicas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+
+    }
 }

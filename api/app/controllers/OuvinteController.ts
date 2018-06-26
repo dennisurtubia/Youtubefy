@@ -206,7 +206,7 @@ export default class OuvinteController {
     * @api {post} /ouvinte/signin Login ouvinte
     * @apiName LoginOuvinte
     * @apiGroup Ouvinte
-    * 
+    *   
     * @apiParam  {String} email Email
     * @apiParam  {String} senha Senha
     * @apiParamExample  {json} Exemplo:

@@ -251,12 +251,33 @@ export default class AlbumController {
         };
     }
 
+    /**
+    * 
+    * @api {put} /album/:id Atualizar album  
+    * @apiName AtualizarAlbum
+    * @apiGroup Album
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/album/5?token=deadbeef
+    * @apiParam  {String} capa URL da capa
+    * @apiParam  {String} nome Nome
+    * @apiParam  {String} nomeArtista Nome do artista
+    * @apiParam  {String} descricao Descrição
+    */
+
     @Authorized("PUBLICADORA")
-    @Put("/")
+    @Put("/:id")
     async update(
-        @CurrentUser({ required: true }) id: number,
+        @CurrentUser({ required: true }) email: string,
+        @Param("id") id: number,
         @Body({ validate: true }) req: InsertRequest
     ) {
+
+
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
 
         const album = await this.albumRepository.getById(id);
         if (album === null)
@@ -266,23 +287,52 @@ export default class AlbumController {
         album.descricao = req.descricao;
         album.nomeArtista = req.nomeArtista;
         album.capa = req.capa;
+        // ATUALIZAR MUSICAS?
 
         return { "sucesso": true };
     }
 
+    /**
+    * 
+    * @api {delete} /album/:id Remover album  
+    * @apiName RemoverAlbum
+    * @apiGroup Album
+    * 
+    * @apiParam  {String} token Json Web Token
+    * @apiParamExample  {String} Request-Example:
+    *    https://utfmusic.me/v1/album/5?token=deadbeef
+    * @apiParam  {number} id ID
+    * @apiSuccessExample {json} Resposta bem sucessida:
+    *   {
+    *       "sucesso": true
+    *   }
+    * @apiErrorExample {json} Publicadora inválida:
+    *   {
+    *       "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    * @apiErrorExample {json} Album inválido:
+    *   {
+    *       "erro": "ALBUM_INVALIDO"
+    *   }     
+    * @apiErrorExample {json} Acesso negado:
+    *   {
+    *       "erro": "ACESSO_NEGADO"
+    *   }      
+    */
     @Authorized("PUBLICADORA")
-    @Delete("/")
+    @Delete("/:id")
     async delete(
         @CurrentUser({ required: true }) email: string,
         @BodyParam("id") id: number
     ) {
-        const album = await this.albumRepository.getById(id);
-        if (album === null)
-            return { "erro": "ALBUM_INVALIDO" };
 
         const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
+
+        const album = await this.albumRepository.getById(id);
+        if (album === null)
+            return { "erro": "ALBUM_INVALIDO" };
 
         if (publicadora.id !== album.idPublicadora)
             return { "erro": "ACESSO_NEGADO" };
