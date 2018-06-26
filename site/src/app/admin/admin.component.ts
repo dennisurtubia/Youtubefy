@@ -18,6 +18,7 @@ export class AdminComponent implements OnInit {
   currentEdit: any[];
   listGender: any[];
   album: Object;
+  reprovadas: Object;
   constructor(
     private localSt: LocalStorageService,
     private fb: FormBuilder,
@@ -34,6 +35,17 @@ export class AdminComponent implements OnInit {
     this.listGender = this.localSt.retrieve('genero');
     this.loading = false;
     this.currentBtn = -1;
+  }
+
+  player: YT.Player;
+  private id: string = 'qDuKsiwS5xw';
+ 
+  savePlayer(player) {
+    this.player = player;
+    console.log('player instance', player);
+  }
+  onStateChange(event) {
+    console.log('player state', event.data);
   }
 
   createForm() {
@@ -98,15 +110,14 @@ export class AdminComponent implements OnInit {
     this.localSt.clear('page');
     this.router.navigate(['/login']);
   }
-  getAlbumInfo(id:number){
 
+  getReprovadas() {
+    this.getApi.getReprovadas().then (data => {
+      this.reprovadas = data;
+    }) 
   }
+
   ngOnInit() {
-    this.getAlbumInfo(2);
-    //this.getAlbumInfo(2)
-    // this.localSt.retrieve('naoAvaliadas').forEach(element => {
-    //   element.nomeArtista = this.getApi.getAlbum(element['albumId'])
-    // });
     this.localSt.clear('registered');
     if(!this.localSt.retrieve('token')) {
       this.router.navigate(['/login']);

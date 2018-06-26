@@ -35,6 +35,11 @@
             </ul>
         </div>
     </nav>
+    <youtube-player
+      [videoId]="id"
+      (ready)="savePlayer($event)"
+      (change)="onStateChange($event)"
+    ></youtube-player>
     <div class="container" *ngIf="this.localSt.retrieve('page') === 1">
         <h1>Músicas aguardando aprovação</h1>
         <table class="table table-bordered table-dark">
@@ -51,7 +56,7 @@
                 <tr *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
                     <th scope="row">{{musica.id}}</th>
                     <td>{{musica.nome}}</td>
-                    <td></td>
+                    <td>{{musica.nomeArtista}}</td>
                     <td>{{musica.nomeAlbum}}</td>
                     <td>
                         <button class="btn btn-primary">
@@ -107,11 +112,11 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Anoter Brick In The Wall</td>
-                    <td>Pink Floyd</td>
-                    <td>Dark Side Of The Moon</td>
+                <tr *ngFor="let musica of reprovadas">
+                    <th scope="row">{{musica.id}}</th>
+                    <td>{{musica.nome}}</td>
+                    <td>{{musica.nomeArtista}}</td>
+                    <td>{{musica.nomeAlbum}}</td>
                     <td>
                         <button class="btn btn-primary">
                             <i class="fas fa-play"></i> Ouvir</button>

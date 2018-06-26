@@ -227,11 +227,13 @@ export class GetApiService {
     });
   }
   avaliaMusica(id:number, avaliacao:string){
+    console.log(id);
+    console.log(avaliacao);
     const req = this.http
       .post(
         this.apiUrl + "musica/avaliar?token=" + this.localSt.retrieve("token").token,
         {
-          id: id,
+          id: 1,
           avaliacao: avaliacao
         }
       )
@@ -338,5 +340,18 @@ export class GetApiService {
       .subscribe(data => {
         this.localSt.store("musicasNaoAvaliadas", data);
       });
+  }
+  getReprovadas() {
+    return new Promise((resolve, reject) => {
+      this.http.get( this.apiUrl + "musica/reprovadas?token=" + this.localSt.retrieve("token").token)
+      .subscribe(
+        data => {
+          resolve(data);
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
   }
 }
