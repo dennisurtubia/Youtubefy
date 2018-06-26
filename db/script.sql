@@ -159,4 +159,4 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
 );
 
 
-select * from Usuario;
+select * from MusicaNaoAvaliada;
