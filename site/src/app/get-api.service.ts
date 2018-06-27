@@ -56,9 +56,9 @@ export class GetApiService {
     const req = this.http
       .post(this.apiUrl + "admin/signup", {
         nome: form.nome,
+        email: form.email,
         senha: form.senha,
-        cpf: form.cpf,
-        email: form.email
+        cpf: form.cpf
       })
       .subscribe(
         res => {

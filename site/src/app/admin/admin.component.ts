@@ -21,7 +21,7 @@ export class AdminComponent implements OnInit {
   reprovadas: Object;
   player: YT.Player;
   currPlaying: number;
-  private id: string = 'qDuKsiwS5xw';
+  private id: string = '0';
   constructor(
     private localSt: LocalStorageService,
     private fb: FormBuilder,
@@ -50,7 +50,6 @@ export class AdminComponent implements OnInit {
     console.log('player state', event.data);
   }
   play(id:string, index:number) {
-    this.player.destroy;
     if(this.player.getVideoUrl() === "https://www.youtube.com/watch?v=" + id) {
       this.player.playVideo();
     } else {

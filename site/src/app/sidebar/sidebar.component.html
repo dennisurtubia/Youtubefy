@@ -36,9 +36,9 @@
     </div>
     <div class="row" *ngIf="this.localSt.retrieve('currPlaying')">
         <div class=" AlbumCover col-md-2 ">
-            <img [src]="this.localSt.retrieve('currplaying').img" alt=" ">
-            <p>{{this.localSt.retrieve("currplaying").title}}</p>
-            <p>{{this.localSt.retrieve("currplaying").author}}</p>
+            <img [src]="this.localSt.retrieve('currplaying').capa" alt=" ">
+            <p>{{this.localSt.retrieve("currplaying").nome}}</p>
+            <p>{{this.localSt.retrieve("currplaying").nomeArtista}}</p>
         </div>
     </div>
 </div>

@@ -1,7 +1,5 @@
 <div class="player">
-  <audio id="musica" controls autoplay hidden>
-    <source [src]="music" type="audio/mpeg" >
-  </audio>
+  <youtube-player class="playerYT" height="200" witdh="200" [videoId]="this.localSt.retrieve('currPlaying').url" (ready)="savePlayer($event)" (change)="onStateChange($event)"></youtube-player>
   <div class="col-md-6 offset-md-4 ">
     <div class="row">
       <input type="range" name="musiclength" id="">

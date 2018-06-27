@@ -60,6 +60,8 @@ const appRoutes: Routes = [
   ],
   exports: [
     CommonModule,
+    YoutubePlayerModule,
+    PlayerComponent,
     FormsModule,
     ReactiveFormsModule
   ],

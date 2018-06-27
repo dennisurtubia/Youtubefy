@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { GetApiService } from "../get-api.service";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
-import {Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 interface myData {
   obj:Object;
@@ -30,20 +30,7 @@ export class HomeComponent implements OnInit {
     } else {
       this.page = this.localSt.retrieve("page");
     }
-    this.current = [
-      {
-        img:
-          "http://www.punknet.com.br/wp-content/uploads/arctic-monkeys-am-300x300.jpg",
-        title: "Speak to Me / Breathe",
-        url: "http://youtube.com/whatch?",
-        author: "Pink Floyd"
-      }
-    ];
-
-    
   }
-
-
   savePlayer(player) {
     this.player = player;
     console.log("player instance", player);
@@ -51,6 +38,24 @@ export class HomeComponent implements OnInit {
   onStateChange(event) {
     console.log("player state", event.data);
   }
+
+  play(musica:Object){
+    this.getApi.getAlbum(musica['idAlbum']).then(data=>{
+      this.localSt.store('currPlaying', {
+        nome: musica['nome'],
+        capa: data['capa'],
+        nomeArtista: data['nomeArtista'],
+        url: musica['url']
+      });
+      this.player.playVideo();
+    });
+  }
+  pause() {
+    //this.currPlaying = -1;
+    this.player.pauseVideo();
+  }
+
+  
   changePage(pageNumber: number) {
     this.page = pageNumber;
   }

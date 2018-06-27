@@ -35,6 +35,7 @@ export class SignupComponent implements OnInit {
     this.localSt.clear('registered');
   }
   submitRegister(form:FormData) {
+    console.log(form);
     if(this.form.value.opcao === "admin") {
       this.getApi.addAdmin(this.form.value);
     } else if(this.form.value.opcao === "user") {
