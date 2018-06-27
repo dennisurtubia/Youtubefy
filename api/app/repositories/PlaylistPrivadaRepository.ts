@@ -60,6 +60,8 @@ export default class PlaylistPrivadaRepository implements IRepository<Entity> {
 
         if(insertId2 === -1)
             return -1;
+        
+        return insertId;
     }
     async update(id: number, object: Playlist): Promise<void> {
 
