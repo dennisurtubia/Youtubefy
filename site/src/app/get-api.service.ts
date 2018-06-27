@@ -42,13 +42,15 @@ const httpOptions = {
 })
 export class GetApiService {
   album: Object;
+  infoPublicadora: Object;
+  albums: Object;
   constructor(
     private http: HttpClient,
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
     private router: Router
   ) {}
-  private apiUrl = "http://localhost:3000/v1/";
+  private apiUrl = "http://35.198.13.13/v1/";
 
   addAdmin(form: Object) {
     const req = this.http
@@ -233,13 +235,14 @@ export class GetApiService {
       .post(
         this.apiUrl + "musica/avaliar?token=" + this.localSt.retrieve("token").token,
         {
-          id: 1,
+          id: id,
           avaliacao: avaliacao
         }
       )
       .subscribe(
         res => {
           console.log(res);
+          this.getNaoAvaliadas();
           this.localSt.store("registered", res);
         },
         err => {
@@ -352,6 +355,43 @@ export class GetApiService {
           reject(error);
         }
       );
+    });
+  }
+  getInfoPublicadora() {
+    return new Promise((resolve, reject) => {
+      this.http.get( this.apiUrl + "publicadora?token=" + this.localSt.retrieve("token").token)
+      .subscribe(
+        data => {
+          resolve(data);
+          console.log(data);
+        },
+        error => {
+          reject(error);
+          console.log(error);
+        }
+      );
+    });
+  }
+  getAlbumPublicadora() {
+    this.getInfoPublicadora().then(data => {
+      this.infoPublicadora = data;
+      console.log(this.infoPublicadora);
+    })
+    return new Promise((resolve, reject) => {
+      this.http.get( this.apiUrl + "publicadora/" + this.infoPublicadora.id + "/albuns?token=" + this.localSt.retrieve("token").token)
+      .subscribe(
+        data => {
+          resolve(data);
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  }
+  getListAlbum(){
+    this.http.get(this.apiUrl + "album").subscribe(data => {
+      this.localSt.store('albuns', data['albuns']); 
     });
   }
 }
