@@ -5,40 +5,40 @@ USE projectbd;
 
 CREATE TABLE IF NOT EXISTS Usuario (
     id INTEGER AUTO_INCREMENT,
-    nome CHAR(30) NOT NULL,
-    email CHAR(30) NOT NULL ,
-    senha CHAR(200) NOT NULL,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL ,
+    senha VARCHAR(200) NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (email)
 );
 
 CREATE TABLE IF NOT EXISTS Publicadora (
   id INTEGER, 
-  cnpj CHAR(18) NOT NULL, 
+  cnpj VARCHAR(18) NOT NULL, 
   
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Ouvinte (
   id INTEGER, 
-  cpf CHAR(11) NOT NULL, 
+  cpf VARCHAR(11) NOT NULL, 
  
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Administrador (
   id INTEGER, 
-  cpf CHAR(11) NOT NULL, 
+  cpf VARCHAR(11) NOT NULL, 
   
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS Album (
     id INTEGER AUTO_INCREMENT,
-    capa CHAR(200),
-    nome CHAR(30) NOT NULL,
-    nomeArtista CHAR(100) NOT NULL,
-    descricao CHAR(200),
+    capa VARCHAR(200),
+    nome VARCHAR(100) NOT NULL,
+    nomeArtista VARCHAR(100) NOT NULL,
+    descricao VARCHAR(200),
     
     idPublicadora INTEGER NOT NULL,
     
@@ -48,16 +48,15 @@ CREATE TABLE IF NOT EXISTS Album (
 
 CREATE TABLE IF NOT EXISTS Playlist (
   id INTEGER auto_increment, 
-  nome CHAR(30) NOT NULL,
+  nome VARCHAR(100) NOT NULL,
 
   PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS PlaylistPrivada (
   id INTEGER,
-  idOuvinte INTEGER NOT NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (idOuvinte) REFERENCES Ouvinte(id)
+
+  PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS PlaylistPublica (
@@ -71,7 +70,7 @@ CREATE TABLE IF NOT EXISTS PlaylistPublica (
 
 CREATE TABLE IF NOT EXISTS Genero (
   id INTEGER auto_increment, 
-  nome CHAR(30) NOT NULL,
+  nome VARCHAR(100) NOT NULL,
 
   idAdministrador INTEGER NOT NULL,
 
@@ -81,10 +80,10 @@ CREATE TABLE IF NOT EXISTS Genero (
 
 CREATE TABLE IF NOT EXISTS Musica (
   id INTEGER auto_increment, 
-  nome CHAR(30) NOT NULL, 
+  nome VARCHAR(100) NOT NULL, 
   duracao INTEGER NOT NULL, 
   explicito BOOLEAN NOT NULL,
-  url CHAR(200),
+  url VARCHAR(200),
 
   idGenero INTEGER NOT NULL,
   idAlbum INTEGER,
@@ -108,7 +107,7 @@ CREATE TABLE IF NOT EXISTS MusicaAprovada (
 CREATE TABLE IF NOT EXISTS MusicaNaoAprovada (
   id INTEGER, 
   dataReprov DATE NOT NULL,
-  observacao CHAR(200) NOT NULL,
+  observacao VARCHAR(200) NOT NULL,
 
   idAdministrador INTEGER,
   
@@ -158,6 +157,3 @@ CREATE TABLE IF NOT EXISTS PlaylistTemMusicaAprovada (
   FOREIGN KEY(idPlaylist) REFERENCES Playlist(id), 
   FOREIGN KEY(idMusicaAprovada) REFERENCES MusicaAprovada(id)
 );
-
-
-select * from MusicaNaoAvaliada;
