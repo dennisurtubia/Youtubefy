@@ -55,8 +55,9 @@ CREATE TABLE IF NOT EXISTS Playlist (
 
 CREATE TABLE IF NOT EXISTS PlaylistPrivada (
   id INTEGER,
-
-  PRIMARY KEY (id)
+  idOuvinte INTEGER NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (idOuvinte) REFERENCES Ouvinte(id)
 );
 
 CREATE TABLE IF NOT EXISTS PlaylistPublica (
