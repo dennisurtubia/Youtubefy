@@ -12,7 +12,7 @@ export default class PlaylistPublicaRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
-    async getById(id: number): Promise<Entity[]>{
+    async getById(id: number): Promise<Entity | null> {
 
         const query = `
             SELECT p.nome
@@ -45,12 +45,12 @@ export default class PlaylistPublicaRepository implements IRepository<Entity> {
         const query2 = `
             INSERT INTO PlaylistPublica
             VALUES (0, 0)
-        `;        
+        `;
         let insertId2 = await this.database.query(query2, []);
 
-        if(insertId2 === -1)
+        if (insertId2 === -1)
             return -1;
-        
+
         return insertId;
     }
     async update(id: number, object: Playlist): Promise<void> {
@@ -62,7 +62,7 @@ export default class PlaylistPublicaRepository implements IRepository<Entity> {
         `;
         await this.database.query(query, [object.nome, id]);
     }
-    async delete(id:number): Promise<void> {
+    async delete(id: number): Promise<void> {
         const query1 = `
             DELETE FROM Playlist
             WHERE id = ?
