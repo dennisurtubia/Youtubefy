@@ -28,9 +28,7 @@ export class AlbumComponent implements OnInit {
         nomeArtista: data['nomeArtista'],
         url: musica['url']
       });
-      this.playerYoutube.play(musica['url']);
     });
-    
   }
 
   ngOnInit() {
