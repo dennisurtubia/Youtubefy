@@ -48,7 +48,7 @@
             </div>
             <hr>
           </form>
-          <form class="registroForm whiteBG" novalidate [formGroup]="musica"  (ngSubmit)="addMusic()">
+          <form class="registroForm whiteBG" novalidate [formGroup]="musica" (ngSubmit)="addMusic()">
             <div class="form-row">
               <div class="col">
                 <label for="generoInput">Nome da Música</label>
@@ -86,22 +86,24 @@
           </form>
           <hr>
           <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Nome</th>
-                  <th scope="col">Duracao</th>
-                  <th scope="col">URL</th>
-                  
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let musica of musicas">
-                  <td>{{musica.nome}}</td>
-                  <td>{{musica.duracao}}</td>
-                  <td><a [href]="musica.url">{{musica.url}}</a></td>
-                </tr>
-              </tbody>
-            </table>
+            <thead>
+              <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Duracao</th>
+                <th scope="col" class="row">Remover</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let musica of musicas; let i of index">
+                <td>{{musica.nome}}</td>
+                <td>{{musica.duracao}}</td>
+                <td>
+                  <a (click)="remove(i);"><i class="far fa-trash-alt"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="modal-footer">
@@ -119,7 +121,7 @@
       <div class="col-md-8">
         <button class="btn btn-light bold float-right" data-toggle="modal" data-target="#addAlbum" (click)="this.getApi.getGender(this.localSt.retrieve('token').token)">Submeter Novo Álbum</button>
       </div>
-      <div class="cardMusic col-md-2" *ngFor="let album of albums">
+      <div class="cardMusic col-md-2" *ngFor="let album of albuns">
         <div class="itemsContainer">
           <div class="image">
             <a href="#">

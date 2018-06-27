@@ -33,7 +33,7 @@ export class PublisherComponent implements OnInit {
   form:FormGroup;
   musica: FormGroup;
   musicas: Array<Musica> =[];
-  albums:Object;
+  albuns:Object;
   
   constructor(
     private localSt: LocalStorageService,
@@ -56,22 +56,31 @@ export class PublisherComponent implements OnInit {
       this.musica.value.explicito = false;
     }
     console.log(this.musica.value.explicito);
-    this.musicas.push({
-      'nome':this.musica.value.nome,
-      'duracao':+this.musica.value.duracao,
-      'url':this.musica.value.url,
-      'explicito':this.musica.value.explicito,
-      'genero':+this.musica.value.genero
-    });
-    if (this.musica.valid) {
-      console.log("Form Submitted!");
-      this.musica.reset();
+    if(this.musica.valid){
+      this.musicas.push({
+        'nome':this.musica.value.nome,
+        'duracao':+this.musica.value.duracao,
+        'url':this.musica.value.url,
+        'explicito':this.musica.value.explicito,
+        'genero':+this.musica.value.genero
+      });
+      if (this.musica.valid) {
+        console.log("Form Submitted!");
+        this.musica.reset();
+      }
+    } else {
+      console.log("Insira todos os dados necessários");
     }
+    
+    
     // this.musicas[length].nome = this.musica.value.nome;
     // this.musicas[length].duracao = this.musica.value.duracao;
     // this.musicas[length].explicito = this.musica.value.explicito;
     // this.musicas[length].genero = this.musica.value.genero;
     // this.musicas[length].url = this.musica.value.url;
+  }
+  remove(i:number){
+    this.musicas.splice(i,1);
   }
   createForm() {
     this.form = this.fb.group({
@@ -91,6 +100,10 @@ export class PublisherComponent implements OnInit {
 
   ngOnInit() {
     this.getApi.getPublicadora(this.localSt.retrieve('token').token);
+    this.getApi.getListAlbumPublicadora(this.localSt.retrieve('data').id).then(data => {
+      this.albuns = data;
+      console.log(data);
+    });
     if(this.localSt.retrieve('token') === null) {
       this.router.navigate(['/login']);
     }
