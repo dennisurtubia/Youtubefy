@@ -34,7 +34,7 @@
             
         </ul>
     </div>
-    <div class="row" *ngIf="this.localSt.retrieve('currPlaying')">
+    <div class="row" *ngIf="this.localSt.retrieve('currPlaying').nome">
         <div class=" AlbumCover col-md-2 ">
             <img [src]="this.localSt.retrieve('currplaying').capa" alt=" ">
             <p>{{this.localSt.retrieve("currplaying").nome}}</p>
