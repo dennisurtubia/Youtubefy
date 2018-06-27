@@ -77,14 +77,11 @@ export default class PublicadoraController {
 
     /**
     * 
-    * @api {get} /publicadora/info Informações da publicadora
+    * @api {get} /publicadora/:id/info Informações da publicadora
     * @apiName InfoPublicadora
     * @apiGroup Publicadora
     * 
-    * @apiParam  {String} token Json Web Token
-    * @apiParamExample  {String} Request-Example:
-    *    https://utfmusic.me/v1/publicadora/info?token=deadbeef
-    * @apiSuccessExample {json} Resposta bem sucessida:
+    * @apiParam  {number} id ID
     *   {
     *       "id": "1",
     *       "nome": "Doravante",
@@ -92,19 +89,18 @@ export default class PublicadoraController {
     *       "cnpj": "11111111111",
             "tipoUser": 2
     *   }
-    * @apiErrorExample {json} Admin inválido:
+    * @apiErrorExample {json} Publicadora inválida:
     *   {
     *        "erro": "PUBLICADORA_INVALIDA"
     *   } 
     *
     */
-    @Authorized("PUBLICADORA")
-    @Get("/info")
+    @Get("/:id/info")
     async get(
-        @CurrentUser({ required: true }) email: string
+        @Param("id") id: number
     ) {
 
-        const publicadora = await this.publicadoraRepository.getByEmail(email);
+        const publicadora = await this.publicadoraRepository.getById(id);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
 

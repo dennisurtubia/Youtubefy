@@ -22,6 +22,7 @@ const routing_controllers_1 = require("routing-controllers");
 const typedi_1 = require("typedi");
 const Ouvinte_1 = __importDefault(require("../models/Ouvinte"));
 const OuvinteRepository_1 = __importDefault(require("../repositories/OuvinteRepository"));
+const OuvinteTemMusicaRepository_1 = __importDefault(require("../repositories/OuvinteTemMusicaRepository"));
 class InsertRequest {
     constructor() {
         this.cpf = "";
@@ -192,7 +193,7 @@ let OuvinteController = class OuvinteController {
     async update(email, req) {
         const ouvinte = await this.ouvinteRepository.getByEmail(email);
         if (ouvinte === null)
-            return { "erro": "ADMIN_INVALIDO" };
+            return { "erro": "OUVINTE_INVALIDO" };
         ouvinte.nome = req.nome;
         ouvinte.email = req.email;
         ouvinte.senha = await bcrypt_1.hash(req.senha, 1024);
@@ -237,11 +238,25 @@ let OuvinteController = class OuvinteController {
         const token = jsonwebtoken_1.sign(ouvinte.email, "supersecret");
         return { "token": token };
     }
+    // ------------------------------------------------------ 1:N ------------------------------------------------------
+    // listar playlists privadas
+    // ------------------------------------------------------ N:N ------------------------------------------------------
+    async getMusicas(email) {
+        const ouvinte = await this.ouvinteRepository.getByEmail(email);
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+        const musicas = await this.ouvinteTemMusicaRepository.getByOuvinte(ouvinte.id);
+        return { "musicas": musicas };
+    }
 };
 __decorate([
     typedi_1.Inject(),
     __metadata("design:type", OuvinteRepository_1.default)
 ], OuvinteController.prototype, "ouvinteRepository", void 0);
+__decorate([
+    typedi_1.Inject(),
+    __metadata("design:type", OuvinteTemMusicaRepository_1.default)
+], OuvinteController.prototype, "ouvinteTemMusicaRepository", void 0);
 __decorate([
     routing_controllers_1.Authorized("OUVINTE"),
     routing_controllers_1.Get("/"),
@@ -273,6 +288,14 @@ __decorate([
     __metadata("design:paramtypes", [LoginRequest]),
     __metadata("design:returntype", Promise)
 ], OuvinteController.prototype, "signin", null);
+__decorate([
+    routing_controllers_1.Authorized("OUVINTE"),
+    routing_controllers_1.Get("/musicas"),
+    __param(0, routing_controllers_1.CurrentUser({ required: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], OuvinteController.prototype, "getMusicas", null);
 OuvinteController = __decorate([
     routing_controllers_1.JsonController("/ouvinte")
 ], OuvinteController);

@@ -1,4 +1,4 @@
-    import { verify } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import "reflect-metadata";
 import { Action, createExpressServer, ExpressErrorMiddlewareInterface, Middleware, useContainer } from "routing-controllers";
 import { Container } from "typedi";
@@ -77,7 +77,7 @@ const app = createExpressServer({
     }
 });
 
-app.listen(3000, async () => {
-    console.log('Server running at port 3000');
+app.listen(8080, async () => {
+    console.log('Server running at port 8080');
 }
 );

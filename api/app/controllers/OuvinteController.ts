@@ -5,6 +5,7 @@ import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "r
 import { Inject } from "typedi";
 import Ouvinte from "../models/Ouvinte";
 import OuvinteRepository from "../repositories/OuvinteRepository";
+import OuvinteTemMusicaRepository from "../repositories/OuvinteTemMusicaRepository";
 
 
 class InsertRequest {
@@ -42,6 +43,9 @@ export default class OuvinteController {
 
     @Inject()
     private ouvinteRepository!: OuvinteRepository;
+
+    @Inject()
+    private ouvinteTemMusicaRepository!: OuvinteTemMusicaRepository;
 
     // ------------------------------------------------------ CRUD ------------------------------------------------------
 
@@ -260,7 +264,9 @@ export default class OuvinteController {
         const ouvinte = await this.ouvinteRepository.getByEmail(email)
         if (ouvinte === null)
             return { "erro": "OUVINTE_INVALIDO" };
-            
+
+        const musicas = await this.ouvinteTemMusicaRepository.getByOuvinte(ouvinte.id);
+        return { "musicas": musicas };
     }
 
     // listar músicas

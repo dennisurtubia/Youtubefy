@@ -75,7 +75,7 @@ const app = routing_controllers_1.createExpressServer({
         }
     }
 });
-app.listen(3000, async () => {
-    console.log('Server running at port 3000');
+app.listen(8080, async () => {
+    console.log('Server running at port 8080');
 });
 //# sourceMappingURL=app.js.map
