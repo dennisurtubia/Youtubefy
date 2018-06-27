@@ -10,7 +10,7 @@ import {
 } from "@angular/common/http";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import { Router } from "@angular/router";
-import { catchError, retry } from "rxjs/operators";
+
 import { Musica } from "./musica";
 
 interface Object {
@@ -115,6 +115,7 @@ export class GetApiService {
       .subscribe(
         res => {
           console.log(res);
+          this.localSt.store('usertype', 1);
           if (res["token"]) {
             this.localSt.store("token", res);
             if (this.localSt.retrieve("erro")) {
@@ -139,6 +140,7 @@ export class GetApiService {
       .subscribe(
         res => {
           console.log(res);
+          this.localSt.store('usertype', 3);
           if (res["token"]) {
             this.localSt.store("token", res);
             if (this.localSt.retrieve("erro")) {
@@ -163,6 +165,7 @@ export class GetApiService {
       .subscribe(
         res => {
           console.log(res);
+          this.localSt.store('usertype', 2);
           if (res["token"]) {
             this.localSt.store("token", res);
             if (this.localSt.retrieve("erro")) {
@@ -185,7 +188,7 @@ export class GetApiService {
   }
   getPublicadora(token: string) {
     this.http
-      .get(this.apiUrl + "publicadora?token=" + token)
+      .get(this.apiUrl + "publicadora/info?token=" + token)
       .subscribe(data => {
         this.localSt.store("data", data);
       });
@@ -360,7 +363,21 @@ export class GetApiService {
       this.localSt.store('albuns', data['albuns']); 
     });
   }
+  getListAlbumPublicadora(id:number){ 
+    return new Promise((resolve, reject) => {
+      this.http.get( this.apiUrl + "publicadora/" + id + "/albuns")
+      .subscribe(
+        data => {
+          resolve(data);
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+  }
   getAlbumMusics(id:number) {
+    console.log(id);
     this.http.get(this.apiUrl + "album/" + id + "/musicas").subscribe(data => {
       this.localSt.store('musicas', data);
     });
