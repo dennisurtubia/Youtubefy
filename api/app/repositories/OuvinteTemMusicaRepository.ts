@@ -1,8 +1,6 @@
 import { Inject, Service } from "typedi";
 import OuvinteTemMusicaAprovada from "../models/OuvinteTemMusicaAprovada";
 import Database from "./Database";
-import Ouvinte from "../models/Ouvinte";
-import MusicaAprovada from "../models/MusicaAprovada";
 
 type Entity = OuvinteTemMusicaAprovada;
 

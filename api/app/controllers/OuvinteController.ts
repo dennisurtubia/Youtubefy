@@ -5,6 +5,12 @@ import { Authorized, Body, CurrentUser, Get, JsonController, Post, Put } from "r
 import { Inject } from "typedi";
 import Ouvinte from "../models/Ouvinte";
 import OuvinteRepository from "../repositories/OuvinteRepository";
+<<<<<<< HEAD
+import PlaylistPrivada from "../models/PlaylistPrivada";
+import PlaylistPrivadaRepository from "../repositories/PlaylistPrivadaRepository";
+=======
+import OuvinteTemMusicaRepository from "../repositories/OuvinteTemMusicaRepository";
+>>>>>>> bd9b0e5dc067d3677cf8add2927b9cfe61a1260f
 
 
 class InsertRequest {
@@ -42,6 +48,10 @@ export default class OuvinteController {
 
     @Inject()
     private ouvinteRepository!: OuvinteRepository;
+    PlaylistPrivadaRepository: any;
+
+    @Inject()
+    private ouvinteTemMusicaRepository!: OuvinteTemMusicaRepository;
 
     // ------------------------------------------------------ CRUD ------------------------------------------------------
 
@@ -248,7 +258,20 @@ export default class OuvinteController {
     // ------------------------------------------------------ 1:N ------------------------------------------------------
 
     // listar playlists privadas
+    @Authorized("OUVINTE")
+    @Get("/plprivada-ouvinte")
+    async playlistsPrivadasOuvintes (
+        @CurrentUser({required: true}) email: string,
+    ) {
+        const ouvinte = await this.ouvinteRepository.getByEmail(email);
+        if(ouvinte === null)
+        return;
+        const playlistPrivada = await this.PlaylistPrivadaRepository.getByOuvinte(ouvinte.id);
 
+        return {
+            "PlaylistsPrivadas": playlistPrivada
+        }
+    }
     // ------------------------------------------------------ N:N ------------------------------------------------------
 
 
@@ -260,7 +283,9 @@ export default class OuvinteController {
         const ouvinte = await this.ouvinteRepository.getByEmail(email)
         if (ouvinte === null)
             return { "erro": "OUVINTE_INVALIDO" };
-            
+
+        const musicas = await this.ouvinteTemMusicaRepository.getByOuvinte(ouvinte.id);
+        return { "musicas": musicas };
     }
 
     // listar músicas
