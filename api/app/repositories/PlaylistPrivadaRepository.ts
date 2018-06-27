@@ -1,8 +1,8 @@
-import { Service, Inject } from "typedi";
-import IRepository from "./IRepository";
-import Database from "./Database";
-import PlaylistPrivada from "../models/PlaylistPrivada"
+import { Inject, Service } from "typedi";
 import Playlist from "../models/Playlist";
+import PlaylistPrivada from "../models/PlaylistPrivada";
+import Database from "./Database";
+import IRepository from "./IRepository";
 
 type Entity = PlaylistPrivada;
 
@@ -12,8 +12,8 @@ export default class PlaylistPrivadaRepository implements IRepository<Entity> {
     @Inject()
     database!: Database;
 
-    async getByOuvinte(id: number): Promise<Entity[]>{
-        
+    async getByOuvinte(id: number): Promise<Entity[]> {
+
         const query = `
             SELECT p.nome 
             FROM Playlist as p, PlaylistPrivada as p1
@@ -22,7 +22,7 @@ export default class PlaylistPrivadaRepository implements IRepository<Entity> {
         `;
         return await this.database.queryAll<Entity>(query, [id]);
     }
-    async getById(id: number): Promise<Entity[]>{
+    async getById(id: number): Promise<Entity | null> {
 
         const query = `
             SELECT p.nome
@@ -55,12 +55,12 @@ export default class PlaylistPrivadaRepository implements IRepository<Entity> {
         const query2 = `
             INSERT INTO PlaylistPrivada
             VALUES (0, 0)
-        `;        
+        `;
         let insertId2 = await this.database.query(query2, []);
 
-        if(insertId2 === -1)
+        if (insertId2 === -1)
             return -1;
-        
+
         return insertId;
     }
     async update(id: number, object: Playlist): Promise<void> {
@@ -72,7 +72,7 @@ export default class PlaylistPrivadaRepository implements IRepository<Entity> {
         `;
         await this.database.query(query, [object.nome, id]);
     }
-    async delete(id:number): Promise<void> {
+    async delete(id: number): Promise<void> {
         const query1 = `
             DELETE FROM Playlist
             WHERE id = ?

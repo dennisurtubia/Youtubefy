@@ -62,9 +62,10 @@ export default class MusicaAprovadaRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
 
         const query = `
-            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador
+            SELECT m.id, m.nome, m.duracao, m.explicito, m.url, m.idGenero, m.idAlbum, ma.dataAprov, ma.plays, ma.idAdministrador, a.nomeArtista, a.nome as nomeAlbum
             FROM MusicaAprovada ma
             INNER JOIN Musica m ON m.id = ma.id
+            INNER JOIN Album a on a.id = m.idAlbum
         `;
 
         return await this.database.queryAll<Entity>(query, [])
