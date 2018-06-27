@@ -22,7 +22,7 @@
     
         </div>
         <h4>Todos os albums</h4>
-        <app-card-music  *ngFor="let album of localSt.retrieve('albums')" [img]="album.capa" [author]="album.nomeArtista" [title]="album.nome" (click)="setAlbum(album.id)"></app-card-music>
+        <app-card-music  *ngFor="let album of localSt.retrieve('albuns')" [img]="album.capa" [author]="album.nomeArtista" [title]="album.nome" (click)="setAlbum(album)"></app-card-music>
       </div>
     
       <app-player *ngIf="this.localSt.retrieve('currPlaying')" [music]="this.localSt.retrieve('currPlaying').url"></app-player>

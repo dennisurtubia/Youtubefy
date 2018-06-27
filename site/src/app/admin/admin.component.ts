@@ -128,21 +128,18 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  getReprovadas() {
-    this.getApi.getReprovadas().then (data => {
-      this.reprovadas = data;
-    }) 
-  }
 
   ngOnInit() {
     this.localSt.clear('registered');
     if(!this.localSt.retrieve('token')) {
       this.router.navigate(['/login']);
     }
+
     this.getAdmin(this.localSt.retrieve('token').token);
     this.getApi.getGender(this.localSt.retrieve('token').token);
     this.listGender = this.localSt.retrieve('genero');
     this.getApi.getMusicaAprovada();
+    this.getApi.getReprovadas();
     this.getApi.getNaoAvaliadas();
   }
 

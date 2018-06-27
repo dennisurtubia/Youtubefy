@@ -60,8 +60,9 @@ export class HomeComponent implements OnInit {
     this.localSt.clear('token');
     this.router.navigate(['/login']);
   }
-  setAlbum(id:number) {
+  setAlbum(id:object) {
     this.localSt.store('page', 2);
+    this.localSt.store('currAlbum', id);
   }
   ngOnInit() {
     this.getApi.getListAlbum();

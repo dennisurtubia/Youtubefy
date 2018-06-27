@@ -345,53 +345,24 @@ export class GetApiService {
       });
   }
   getReprovadas() {
-    return new Promise((resolve, reject) => {
-      this.http.get( this.apiUrl + "musica/reprovadas?token=" + this.localSt.retrieve("token").token)
-      .subscribe(
-        data => {
-          resolve(data);
-        },
-        error => {
-          reject(error);
-        }
-      );
-    });
-  }
-  getInfoPublicadora() {
-    return new Promise((resolve, reject) => {
-      this.http.get( this.apiUrl + "publicadora?token=" + this.localSt.retrieve("token").token)
-      .subscribe(
-        data => {
-          resolve(data);
-          console.log(data);
-        },
-        error => {
-          reject(error);
-          console.log(error);
-        }
-      );
-    });
-  }
-  getAlbumPublicadora() {
-    this.getInfoPublicadora().then(data => {
-      this.infoPublicadora = data;
-      console.log(this.infoPublicadora);
-    })
-    return new Promise((resolve, reject) => {
-      this.http.get( this.apiUrl + "publicadora/" + this.infoPublicadora.id + "/albuns?token=" + this.localSt.retrieve("token").token)
-      .subscribe(
-        data => {
-          resolve(data);
-        },
-        error => {
-          reject(error);
-        }
-      );
-    });
+    this.http
+      .get(
+        this.apiUrl +
+          "musica/reprovadas?token=" +
+          this.localSt.retrieve("token").token
+      )
+      .subscribe(data => {
+        this.localSt.store("musicasReprovadas", data);
+      });
   }
   getListAlbum(){
     this.http.get(this.apiUrl + "album").subscribe(data => {
       this.localSt.store('albuns', data['albuns']); 
+    });
+  }
+  getAlbumMusics(id:number) {
+    this.http.get(this.apiUrl + "album/" + id + "/musicas").subscribe(data => {
+      this.localSt.store('musicas', data);
     });
   }
 }
