@@ -39,6 +39,46 @@ export default class PlaylistController {
         playlistPrivada.nome = req.nome;
         return{"sucesso": true};
     }
+    @Authorized("ADMIN")
+    @Put("/")
+    async delete1(
+        @CurrentUser({required: true}) email: string,
+        @BodyParam("id") id: number
+    ){
+        if (!isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "ADMIN_INVALIDO" };
+        
+        const playlistprivada = await this.PlaylistPrivadaRepository.getById(id);
+        if (playlistprivada === null)
+            return {"erro": "PlaylistPrivada_INVALIDA"};
+        
+        await this.PlaylistPrivadaRepository.delete(id);    
+        return {"sucesso": true};
+    }
+    @Authorized("OUVINTE")
+    @Put("/")
+    async delete2(
+        @CurrentUser({required: true}) email: string,
+        @BodyParam("id") id: number
+    ){
+        if (!isNumber(id))
+            return { "erro": "ID_INVALIDO" };
+
+        const ouvinte = await this.OuvinteRepository.getByEmail(email);
+        if (admin === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+        
+        const playlistpublica = await this.PlaylistPublicaRepository.getById(id);
+        if (playlistpublica === null)
+            return {"erro": "PlaylistPublica_INVALIDA"};
+        
+        await this.PlaylistPublicaRepository.delete(id);    
+        return {"sucesso": true};
+    }
 }
 
 // TODO:
