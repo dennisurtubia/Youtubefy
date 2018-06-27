@@ -188,7 +188,7 @@ export default class OuvinteController {
 
         const ouvinte = await this.ouvinteRepository.getByEmail(email)
         if (ouvinte === null)
-            return { "erro": "ADMIN_INVALIDO" };
+            return { "erro": "OUVINTE_INVALIDO" };
 
         ouvinte.nome = req.nome;
         ouvinte.email = req.email;
@@ -250,6 +250,18 @@ export default class OuvinteController {
     // listar playlists privadas
 
     // ------------------------------------------------------ N:N ------------------------------------------------------
+
+
+    @Authorized("OUVINTE")
+    @Get("/musicas")
+    async getMusicas(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const ouvinte = await this.ouvinteRepository.getByEmail(email)
+        if (ouvinte === null)
+            return { "erro": "OUVINTE_INVALIDO" };
+            
+    }
 
     // listar músicas
     // adicionar músicas
