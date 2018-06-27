@@ -1,25 +1,20 @@
-<div class="player">
-  <youtube-player class="playerYT" height="200" witdh="200" [videoId]="this.localSt.retrieve('currPlaying').url" (ready)="savePlayer($event)" (change)="onStateChange($event)"></youtube-player>
-  <div class="col-md-6 offset-md-4 ">
-    <div class="row">
-      <input type="range" name="musiclength" id="">
-      <div class="col-md-4 offset-md-4 ">
-        <i class="fas fa-backward "></i>
-        <i (click)="pause();" class="fas fa-play "></i>
-        <i class="fas fa-forward "></i>
+<div class="player" *ngIf="this.localSt.retrieve('currPlaying')">
+        
+    <div class="col-md-6 offset-md-4 ">
+      <div class="row">
+        <input type="range" name="musiclength" id="">
+        <div class="col-md-4 offset-md-4 ">
+          <i class="fas fa-backward "></i>
+          <i (click)="pause();" class="fas fa-play "></i>
+          <i class="fas fa-forward "></i>
+        </div>
+        <div class="col-md-2 offset-md-2 volume ">
+
+          <!-- <div class="row ">
+                    <i class="fas fa-volume-up "></i>
+                    <input type="range " name="volume " id=" ">
+                </div> -->
+        </div>
       </div>
-      <div class="col-md-2 offset-md-2 volume ">
-
-        <!-- <div class="row ">
-                <i class="fas fa-volume-up "></i>
-                <input type="range " name="volume " id=" ">
-            </div> -->
-
-      </div>
-
-
     </div>
-
   </div>
-
-</div>

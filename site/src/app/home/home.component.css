@@ -7,3 +7,9 @@
 h4 {
   color: rgb(245, 245, 245);
 }
+.active {
+  color: #007bff;
+}
+.buttonplayer {
+  text-align: center;
+}

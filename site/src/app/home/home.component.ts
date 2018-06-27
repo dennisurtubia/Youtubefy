@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
   items: any[];
   current: any[];
   page: number;
+  currentMusic: number;
   constructor(
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
@@ -30,6 +31,9 @@ export class HomeComponent implements OnInit {
     } else {
       this.page = this.localSt.retrieve("page");
     }
+    this.localSt.store('currPlaying', {
+      url: '8'
+    });
   }
   savePlayer(player) {
     this.player = player;
@@ -47,17 +51,28 @@ export class HomeComponent implements OnInit {
         nomeArtista: data['nomeArtista'],
         url: musica['url']
       });
+      this.player.cueVideoById(this.localSt.retrieve('currPlaying')['url']);
       this.player.playVideo();
+      this.currentMusic = musica['id'];
     });
   }
-  pause() {
-    //this.currPlaying = -1;
-    this.player.pauseVideo();
+  toggle() {
+    if(this.player.getPlayerState() === 2){
+      this.player.playVideo();
+    } else{
+      this.player.pauseVideo();
+    }
+  }
+  resume(){
+    
   }
 
   
   changePage(pageNumber: number) {
     this.page = pageNumber;
+    if(pageNumber!==2){
+      this.localSt.clear('currAlbum');
+    }
   }
   quit() {
     this.localSt.clear('page');
@@ -66,15 +81,26 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/login']);
   }
   setAlbum(id:object) {
+    this.getApi.getAlbum(id['idAlbum']).then(data=>{
+      this.localSt.store('currAlbum', id);
+    });
+    this.getApi.getAlbumMusics(id['id']);
     this.localSt.store('page', 2);
     this.localSt.store('currAlbum', id);
   }
   ngOnInit() {
+    if(this.localSt.retrieve('token') && this.localSt.retrieve('usertype') === 3) {
+      this.router.navigate(['/admin']);
+    } else if(this.localSt.retrieve('token') && this.localSt.retrieve('usertype') === 2) {
+      this.router.navigate(['/publicadora']);
+    } if(this.localSt.retrieve('token') && this.localSt.retrieve('usertype') === 1) {
+      this.router.navigate(['/']);
+    } else {
+      this.quit();
+      this.router.navigate(['login']);
+    }
     this.getApi.getListAlbum();
     this.getApi.getUser(this.localSt.retrieve('token').token);
-    if(!this.localSt.retrieve('token') || this.localSt.retrieve('data').erro === "ACESSO_NEGADO") {
-      this.quit();
-    }
   }
   ngOnDestroy() {
     this.localSt.clear('data');

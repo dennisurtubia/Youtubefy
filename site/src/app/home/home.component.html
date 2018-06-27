@@ -1,5 +1,7 @@
 <body *ngIf="this.localSt.retrieve('token') && this.localSt.retrieve('data')">
   <app-sidebar [current]="current" [playlists]="playlists"></app-sidebar>
+  <youtube-player class="playerYT" height="0" witdh="0" [videoId]="this.localSt.retrieve('currPlaying').url" (ready)="savePlayer($event)"
+          (change)="onStateChange($event)"></youtube-player>
   <div class="col-md-10 offset-md-2 main-content">
     <div *ngIf="localSt.retrieve('page') === 4">
       <app-my-music></app-my-music>
@@ -12,7 +14,7 @@
       <div *ngIf="this.localSt.retrieve('currAlbum')">
         <div class="topCover col-md-12">
           <div class="row">
-            <div class="imgTopCover col-md-12" style="background: url('https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg')">
+            <div class="imgTopCover col-md-12" [style.background-image]="'url(' + this.localSt.retrieve('currAlbum').capa + ')'">
               <p>Album</p>
             </div>
             <div class="titleTopCover">
@@ -69,16 +71,19 @@
           <app-card-music [img]="album.capa" [author]="album.nomeArtista" [title]="album.nome" (click)="setAlbum(album)"></app-card-music>
         </div>
       </div>
+      
+    </div>
       <div class="player" *ngIf="this.localSt.retrieve('currPlaying')">
-        <youtube-player class="playerYT" height="200" witdh="200" [videoId]="this.localSt.retrieve('currPlaying').url" (ready)="savePlayer($event)"
-          (change)="onStateChange($event)"></youtube-player>
+        
         <div class="col-md-6 offset-md-4 ">
           <div class="row">
             <input type="range" name="musiclength" id="">
-            <div class="col-md-4 offset-md-4 ">
-              <i class="fas fa-backward "></i>
-              <i (click)="pause();" class="fas fa-play "></i>
-              <i class="fas fa-forward "></i>
+          <div class="col-md-6 offset-md-3 ">
+            <div class="row">
+              <div class="col-md-4 buttonplayer" (click)="toggle();"><i class="fas fa-backward "></i></div>
+              <div class="col-md-4 buttonplayer" (click)="toggle();"><i class="fas fa-play "></i></div>
+              <div class="col-md-4 buttonplayer" (click)="toggle();"><i class="fas fa-forward "></i></div>
+            </div>
             </div>
             <div class="col-md-2 offset-md-2 volume ">
 
@@ -91,5 +96,4 @@
         </div>
       </div>
     </div>
-  </div>
 </body>
