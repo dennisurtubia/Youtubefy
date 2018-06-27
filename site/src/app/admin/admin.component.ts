@@ -19,6 +19,9 @@ export class AdminComponent implements OnInit {
   listGender: any[];
   album: Object;
   reprovadas: Object;
+  player: YT.Player;
+  currPlaying: number;
+  private id: string = 'qDuKsiwS5xw';
   constructor(
     private localSt: LocalStorageService,
     private fb: FormBuilder,
@@ -37,8 +40,7 @@ export class AdminComponent implements OnInit {
     this.currentBtn = -1;
   }
 
-  player: YT.Player;
-  private id: string = 'qDuKsiwS5xw';
+  
  
   savePlayer(player) {
     this.player = player;
@@ -46,6 +48,21 @@ export class AdminComponent implements OnInit {
   }
   onStateChange(event) {
     console.log('player state', event.data);
+  }
+  play(id:string, index:number) {
+    this.player.destroy;
+    if(this.player.getVideoUrl() === "https://www.youtube.com/watch?v=" + id) {
+      this.player.playVideo();
+    } else {
+      this.player.cueVideoById(id);
+      this.player.playVideo();
+    }
+    
+    this.currPlaying = index;
+  }
+  pause() {
+    this.currPlaying = -1;
+    this.player.pauseVideo();
   }
 
   createForm() {
