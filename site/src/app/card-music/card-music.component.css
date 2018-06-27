@@ -5,6 +5,7 @@
 }
 .cardMusic img {
   width: 100%;
+  height: auto;
 }
 
 .cardMusic p {

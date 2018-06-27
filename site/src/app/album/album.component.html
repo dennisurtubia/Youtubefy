@@ -5,7 +5,7 @@
     </div>
     <div class="titleTopCover">
 
-      <h1>Dark Side Of The Moon - Pink Floyd</h1>
+      <h1>{{this.localSt.retrieve('curralbum').nome}} - {{this.localSt.retrieve('curralbum').nomeArtista}}</h1>
       <p>Álbum</p>
     </div>
     <div class="saveSet">
@@ -17,187 +17,16 @@
     <tr>
       <th scope="col">Play</th>
       <th scope="col">Nome da música</th>
-      <th scope="col">Artista</th>
-      <th scope="col">Álbum</th>
+      <th scope="col">Tempo</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr *ngFor="let musica of localSt.retrieve('musicas').musicas">
       <th scope="row">
         <i class="fas fa-play"></i>
       </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
+      <td>{{musica.nome}} <span class="badge badge-secondary" *ngIf="musica.explicito === 1">Explícito</span></td>
+      <td>{{musica.duracao}}s</td>
     </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-    <tr>
-      <th scope="row">
-        <i class="fas fa-play"></i>
-      </th>
-      <td>Another Brick In The Wall</td>
-      <td>Pink Floyd</td>
-      <td>Dark Side Of The Moon</td>
-    </tr>
-
   </tbody>
 </table>

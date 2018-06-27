@@ -42,13 +42,15 @@ const httpOptions = {
 })
 export class GetApiService {
   album: Object;
+  infoPublicadora: Object;
+  albums: Object;
   constructor(
     private http: HttpClient,
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
     private router: Router
   ) {}
-  private apiUrl = "http://localhost:3000/v1/";
+  private apiUrl = "http://35.198.13.13/v1/";
 
   addAdmin(form: Object) {
     const req = this.http
@@ -227,6 +229,8 @@ export class GetApiService {
     });
   }
   avaliaMusica(id:number, avaliacao:string){
+    console.log(id);
+    console.log(avaliacao);
     const req = this.http
       .post(
         this.apiUrl + "musica/avaliar?token=" + this.localSt.retrieve("token").token,
@@ -238,6 +242,7 @@ export class GetApiService {
       .subscribe(
         res => {
           console.log(res);
+          this.getNaoAvaliadas();
           this.localSt.store("registered", res);
         },
         err => {
@@ -338,5 +343,26 @@ export class GetApiService {
       .subscribe(data => {
         this.localSt.store("musicasNaoAvaliadas", data);
       });
+  }
+  getReprovadas() {
+    this.http
+      .get(
+        this.apiUrl +
+          "musica/reprovadas?token=" +
+          this.localSt.retrieve("token").token
+      )
+      .subscribe(data => {
+        this.localSt.store("musicasReprovadas", data);
+      });
+  }
+  getListAlbum(){
+    this.http.get(this.apiUrl + "album").subscribe(data => {
+      this.localSt.store('albuns', data['albuns']); 
+    });
+  }
+  getAlbumMusics(id:number) {
+    this.http.get(this.apiUrl + "album/" + id + "/musicas").subscribe(data => {
+      this.localSt.store('musicas', data);
+    });
   }
 }

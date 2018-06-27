@@ -43,6 +43,7 @@ export class HomeComponent implements OnInit {
     
   }
 
+
   savePlayer(player) {
     this.player = player;
     console.log("player instance", player);
@@ -59,8 +60,12 @@ export class HomeComponent implements OnInit {
     this.localSt.clear('token');
     this.router.navigate(['/login']);
   }
-
+  setAlbum(id:object) {
+    this.localSt.store('page', 2);
+    this.localSt.store('currAlbum', id);
+  }
   ngOnInit() {
+    this.getApi.getListAlbum();
     this.getApi.getUser(this.localSt.retrieve('token').token);
     if(!this.localSt.retrieve('token') || this.localSt.retrieve('data').erro === "ACESSO_NEGADO") {
       this.quit();

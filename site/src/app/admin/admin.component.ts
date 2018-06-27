@@ -18,6 +18,10 @@ export class AdminComponent implements OnInit {
   currentEdit: any[];
   listGender: any[];
   album: Object;
+  reprovadas: Object;
+  player: YT.Player;
+  currPlaying: number;
+  private id: string = 'qDuKsiwS5xw';
   constructor(
     private localSt: LocalStorageService,
     private fb: FormBuilder,
@@ -34,6 +38,31 @@ export class AdminComponent implements OnInit {
     this.listGender = this.localSt.retrieve('genero');
     this.loading = false;
     this.currentBtn = -1;
+  }
+
+  
+ 
+  savePlayer(player) {
+    this.player = player;
+    console.log('player instance', player);
+  }
+  onStateChange(event) {
+    console.log('player state', event.data);
+  }
+  play(id:string, index:number) {
+    this.player.destroy;
+    if(this.player.getVideoUrl() === "https://www.youtube.com/watch?v=" + id) {
+      this.player.playVideo();
+    } else {
+      this.player.cueVideoById(id);
+      this.player.playVideo();
+    }
+    
+    this.currPlaying = index;
+  }
+  pause() {
+    this.currPlaying = -1;
+    this.player.pauseVideo();
   }
 
   createForm() {
@@ -98,23 +127,19 @@ export class AdminComponent implements OnInit {
     this.localSt.clear('page');
     this.router.navigate(['/login']);
   }
-  getAlbumInfo(id:number){
 
-  }
+
   ngOnInit() {
-    this.getAlbumInfo(2);
-    //this.getAlbumInfo(2)
-    // this.localSt.retrieve('naoAvaliadas').forEach(element => {
-    //   element.nomeArtista = this.getApi.getAlbum(element['albumId'])
-    // });
     this.localSt.clear('registered');
     if(!this.localSt.retrieve('token')) {
       this.router.navigate(['/login']);
     }
+
     this.getAdmin(this.localSt.retrieve('token').token);
     this.getApi.getGender(this.localSt.retrieve('token').token);
     this.listGender = this.localSt.retrieve('genero');
     this.getApi.getMusicaAprovada();
+    this.getApi.getReprovadas();
     this.getApi.getNaoAvaliadas();
   }
 

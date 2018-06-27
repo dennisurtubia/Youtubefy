@@ -35,6 +35,12 @@
             </ul>
         </div>
     </nav>
+    <youtube-player class="playerYT"
+        height="0" witdh="0"
+      [videoId]="id"
+      (ready)="savePlayer($event)"
+      (change)="onStateChange($event)"
+    ></youtube-player>
     <div class="container" *ngIf="this.localSt.retrieve('page') === 1">
         <h1>Músicas aguardando aprovação</h1>
         <table class="table table-bordered table-dark">
@@ -48,14 +54,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas">
+                <tr *ngFor="let musica of this.localSt.retrieve('musicasNaoAvaliadas').naoAvaliadas; let i of index">
                     <th scope="row">{{musica.id}}</th>
                     <td>{{musica.nome}}</td>
-                    <td></td>
+                    <td>{{musica.nomeArtista}}</td>
                     <td>{{musica.nomeAlbum}}</td>
                     <td>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() === 1" (click)="pause();">
+                            <i class="fas fa-pause"></i> Ouvir</button>
+                            <button class="btn btn-primary" *ngIf="currPlaying !== i" (click)="play(musica.url, i);">
+                                <i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() !== 1">
+                                    <i class="fas fa-spinner fa-spin"></i> Ouvir</button>
                         <button class="btn btn-success" (click)="this.getApi.avaliaMusica(musica.id, 'aprovado')">
                             <i class="fas fa-thumbs-up"></i> Aprovar</button>
                         <button class="btn btn-danger" (click)="this.getApi.avaliaMusica(musica.id, 'reprovado')">
@@ -78,14 +88,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let musica of this.localSt.retrieve('musicasaprovadas').aprovadas">
+                <tr *ngFor="let musica of this.localSt.retrieve('musicasaprovadas').aprovadas; let i of index">
                     <th scope="row">1</th>
-                    <td>Anoter Brick In The Wall</td>
-                    <td>Pink Floyd</td>
-                    <td>Dark Side Of The Moon</td>
+                    <td>{{musica.nome}}</td>
+                    <td>{{musica.nomeArtista}}</td>
+                    <td>{{musica.nomeAlbum}}</td>
                     <td>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() === 1" (click)="pause();">
+                            <i class="fas fa-pause"></i> Ouvir</button>
+                            <button class="btn btn-primary" *ngIf="currPlaying !== i" (click)="play(musica.url, i);">
+                                <i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() !== 1">
+                                    <i class="fas fa-spinner fa-spin"></i> Ouvir</button>
                         <button class="btn btn-danger">
                             <i class="fas fa-thumbs-down"></i> Reprovar</button>
                     </td>
@@ -107,14 +121,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Anoter Brick In The Wall</td>
-                    <td>Pink Floyd</td>
-                    <td>Dark Side Of The Moon</td>
+                <tr *ngFor="let musica of reprovadas; let i of index">
+                    <th scope="row">{{musica.id}}</th>
+                    <td>{{musica.nome}}</td>
+                    <td>{{musica.nomeArtista}}</td>
+                    <td>{{musica.nomeAlbum}}</td>
                     <td>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-play"></i> Ouvir</button>
+                        <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() === 1" (click)="pause();">
+                            <i class="fas fa-pause"></i> Ouvir</button>
+                            <button class="btn btn-primary" *ngIf="currPlaying !== i" (click)="play(musica.url, i);">
+                                <i class="fas fa-play"></i> Ouvir</button>
+                                <button class="btn btn-primary" *ngIf="currPlaying === i && player.getPlayerState() !== 1">
+                                    <i class="fas fa-spinner fa-spin"></i> Ouvir</button>
                         <button class="btn btn-success">
                             <i class="fas fa-thumbs-up"></i> Aprovar</button>
                     </td>

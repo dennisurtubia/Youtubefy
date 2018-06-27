@@ -1,13 +1,19 @@
-<div class="cardMusic">
-  <div class="itemsContainer">
-    <div class="image">
-      <a href="#">
-        <img [src]="img" /> </a>
-    </div>
-    <div class="play">
-      <i class="fas fa-play"></i>
+<div class="row">
+  <div class="cardMusic col-md-2">
+    <div class="row">
+      <div class="itemsContainer col-md-12">
+        <div class="image">
+          <a href="#">
+            <img [src]="img" /> </a>
+        </div>
+        <div class="play">
+          <i class="fas fa-play"></i>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <p class="bold">{{title}}</p>
+        <p>{{author}}</p>
+      </div>
     </div>
   </div>
-  <p class="bold">{{title}}</p>
-  <p>{{author}}</p>
 </div>
