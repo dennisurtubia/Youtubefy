@@ -33,6 +33,7 @@ export class PublisherComponent implements OnInit {
   form:FormGroup;
   musica: FormGroup;
   musicas: Array<Musica> =[];
+  albums:Object;
   
   constructor(
     private localSt: LocalStorageService,
@@ -87,8 +88,15 @@ export class PublisherComponent implements OnInit {
       url: ['', Validators.required],
     });
   }
+  getAlbum() {
+    this.getApi.getAlbumPublicadora().then(data=>{
+      this.albums = data;
+      console.log(this.albums);
+    });
+    
+  }
   ngOnInit() {
-
+    this.getAlbum();
     if(this.localSt.retrieve('token') === null) {
       this.router.navigate(['/login']);
     }

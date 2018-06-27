@@ -1,4 +1,4 @@
-<body *ngIf="this.localSt.retrieve('token') !== null && this.localSt.retrieve('data') !== null">
+<body *ngIf="this.localSt.retrieve('token') && this.localSt.retrieve('data')">
   <app-sidebar [current]="current" [playlists]="playlists"></app-sidebar>
     <div class="col-md-10 offset-md-2 main-content">
       <div *ngIf="localSt.retrieve('page') === 4">
@@ -21,10 +21,8 @@
         <div class="row ">
     
         </div>
-        <h4>Álbuns salvos</h4>
-        <div class="row ">
-    
-        </div>
+        <h4>Todos os albums</h4>
+        <app-card-music  *ngFor="let album of localSt.retrieve('albums')" [img]="album.capa" [author]="album.nomeArtista" [title]="album.nome" (click)="setAlbum(album.id)"></app-card-music>
       </div>
     
       <app-player *ngIf="this.localSt.retrieve('currPlaying')" [music]="this.localSt.retrieve('currPlaying').url"></app-player>
