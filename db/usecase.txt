@@ -25,9 +25,27 @@ Retorna ao passo 2a.2
 ------------------------
 Caso de uso: <<CRUD>> Gerenciar gênero
 1. O ator Administrador entra no menu de gêneros
-2. O sistema lista todos os gêneros cadastrados e para 
+2. O sistema lista todos os gêneros cadastrados e opções para Adicionar, Editar e Excluir Gêneros
+3. O ator Administrador escolhe uma das 3 variantes:
+	3.1 Variante: Adicionar Gênero
+	3.2 Variante: Editar
+	3.3 Variante: Excluir
 
+Variante 3.1: Adicionar Gênero
+3.1.1. O ator administrador clica em "Adicionar Gênero"
+3.1.2. O sistema mostra uma tela com os campos para adicionar um novo gênero
+3.1.3. O ator administrador preenche os campos e clica em adicionar
+3.1.4. O sistema salva novo gênero criado
 
+Variante 3.2: Editar
+3.2.1. O ator administrador clica em "Editar"
+3.2.2. O sistema mostra uma tela com os campos para atualizar um gênero
+3.2.3. O ator administrador preenche os campos para atualizar um gênero 
+3.2.4. O sistema salva as atualizações do gênero escolhido
+
+Variante 3.3: Excluir
+3.3.1. O ator administrador clica em "Excluir" do respectivo gênero desejado
+3.3.2. O sistema exclui o gênero desejado
 ------------------------
 Caso de uso: Avaliar música
 1. O ator administrador faz login no sistema
@@ -77,4 +95,43 @@ Caso de uso: <<CRUD>> Gerenciar álbum
 3.3.2. O sistema mostra os álbuns correspondentes à pesquisa
 
 ------------------------
+Caso de uso: <<CRUD>> Gerenciar músicas salvas
+1. O ator Ouvinte seleciona "Minhas músicas"
+2. O sistema mostra "Minhas músicas"
+3. O ator Ouvinte escolhe uma das 2 variantes:
+	3.1 Variante: Adicionar música 
+	3.2 Variante: Remover música
 
+3.1 Variante: Adicionar música
+3.1.1. O ator Ouvinte clica no ícone "+"
+3.1.2. O sistema mostra um campo de busca para o ator Ouvinte selecionar a música que deseja adicionar
+3.1.3. O ator faz a busca e seleciona a música desejada
+3.1.4. O sistema salva a música selecionada em "Minhas Músicas"
+
+3.2 Variante: Remover música
+3.2.1. O ator Ouvinte clica no ícone "x" da respectiva música que deseja remover
+3.2.2. O sistema mostra uma mensagem de confirmação de remoção da música
+3.2.3. O ator Ouvinte clica no botão de confirmação
+3.2.4. O sistema remove a música 
+
+------------------------
+Caso de uso: <<CRUD>> Gerenciar playlist privada
+1. O ator Ouvinte seleciona "Playlists" no canto esquerdo da tela
+2. O sistema mostra todas as playlists do Ouvinte
+3. O ator Ouvinte seleciona uma das variantes:
+	3.1 Variante: Criar nova playlist
+	3.2 Variante: Remover playlist
+
+3.1 Variante: Criar nova playlist 
+3.1.1. O ator Ouvinte clica em "Nova playlist"
+3.1.2. O sistema mostra o campo para o ator Ouvinte preencher o campo com o nome da playlist
+3.1.3. O ator Ouvinte preenche o campo e confima a criação da nova playlist
+3.1.4. O sistema cria e salva a nova playlist 
+------------------------
+Caso de uso: Seguir playlist pública
+1. O ator Ouvinte faz a pesquisa pela playlist que deseja seguir
+2. O sistema mostra a playlist que o Ouvinte pesquisou
+3. O ator Ouvinte clica em "Seguir"
+4. O sistema salva a playlist que o ator Ouvinte selecionou
+------------------------
+Caso de uso: <<CRUD>> Gerenciar playlist pública

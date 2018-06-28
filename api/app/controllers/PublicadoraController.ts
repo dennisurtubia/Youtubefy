@@ -96,11 +96,50 @@ export default class PublicadoraController {
     *
     */
     @Get("/:id/info")
-    async get(
+    async getById(
         @Param("id") id: number
     ) {
 
         const publicadora = await this.publicadoraRepository.getById(id);
+        if (publicadora === null)
+            return { "erro": "PUBLICADORA_INVALIDA" };
+
+        return {
+            "id": publicadora.id,
+            "nome": publicadora.nome,
+            "email": publicadora.email,
+            "cnpj": publicadora.cnpj,
+            "tipoUser": 2
+        };
+    }
+
+
+    /**
+    * 
+    * @api {get} /publicadora/info Informações da publicadora
+    * @apiName InfoPublicadora2
+    * @apiGroup Publicadora
+    * 
+    * @apiParam  {string} token Token
+    *   {
+    *       "id": "1",
+    *       "nome": "Doravante",
+    *       "email": "a@a.com",
+    *       "cnpj": "11111111111",
+            "tipoUser": 2
+    *   }
+    * @apiErrorExample {json} Publicadora inválida:
+    *   {
+    *        "erro": "PUBLICADORA_INVALIDA"
+    *   } 
+    *
+    */
+    @Authorized("PUBLICADORA")
+    @Get("/info")
+    async get(
+        @CurrentUser({ required: true }) email: string,
+    ) {
+        const publicadora = await this.publicadoraRepository.getByEmail(email);
         if (publicadora === null)
             return { "erro": "PUBLICADORA_INVALIDA" };
 
