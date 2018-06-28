@@ -35,6 +35,12 @@ export default class AlbumRepository implements IRepository<Entity> {
         const query = `
             SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
             FROM Album a
+            WHERE EXISTS (
+                SELECT m.id
+                FROM MusicaAprovada ma
+                INNER JOIN Musica m ON m.id = ma.id
+                WHERE m.idAlbum = a.id
+            )
         `;
 
         return await this.database.queryAll<Entity>(query, [])
