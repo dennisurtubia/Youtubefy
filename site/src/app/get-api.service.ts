@@ -188,7 +188,7 @@ export class GetApiService {
   }
   getPublicadora(token: string, id:number) {
     this.http
-      .get(this.apiUrl + "publicadora/3/info?token=" + token)
+      .get(this.apiUrl + "publicadora/" + id + "/info?token=" + token)
       .subscribe(data => {
         this.localSt.store("data", data);
       });
