@@ -1,5 +1,7 @@
 .main-content {
   padding: 0;
+  margin-top: -30px;
+  margin-bottom: 70px;
 }
 .homePage {
   padding: 15px 15px;
@@ -12,4 +14,10 @@ h4 {
 }
 .buttonplayer {
   text-align: center;
+}
+.playButton {
+  cursor: pointer;
+}
+.listAlbum {
+  margin-top: 20px !important;
 }

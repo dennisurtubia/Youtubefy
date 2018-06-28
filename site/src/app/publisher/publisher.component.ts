@@ -97,11 +97,18 @@ export class PublisherComponent implements OnInit {
       url: ['', Validators.required],
     });
   }
-
+  quit(){
+    this.localSt.clear('token');
+    this.localSt.clear('usertype');
+    this.localSt.clear('currplaying');
+    this.localSt.clear('albuns');
+    this.localSt.clear('data');
+    this.router.navigate(['/login']);
+  }
   ngOnInit() {
-    this.getApi.getPublicadora(this.localSt.retrieve('token').token);
-    this.getApi.getListAlbumPublicadora(this.localSt.retrieve('data').id).then(data => {
-      this.albuns = data;
+    this.getApi.getPublicadora(this.localSt.retrieve('token').token, this.localSt.retrieve('data')['id']);
+    this.getApi.getListAlbumPublicadora(3).then(data => {
+      this.albuns = data['albuns'];
       console.log(data);
     });
     if(this.localSt.retrieve('token') === null) {

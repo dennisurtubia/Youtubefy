@@ -186,9 +186,9 @@ export class GetApiService {
       this.localSt.store("data", data);
     });
   }
-  getPublicadora(token: string) {
+  getPublicadora(token: string, id:number) {
     this.http
-      .get(this.apiUrl + "publicadora/info?token=" + token)
+      .get(this.apiUrl + "publicadora/" + id + "/info?token=" + token)
       .subscribe(data => {
         this.localSt.store("data", data);
       });
@@ -334,6 +334,7 @@ export class GetApiService {
       )
       .subscribe(data => {
         this.localSt.store("musicasAprovadas", data);
+        console.log(data);
       });
   }
   getNaoAvaliadas() {

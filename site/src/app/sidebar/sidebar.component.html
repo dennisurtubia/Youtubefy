@@ -19,14 +19,13 @@
             <li class="innerLi " *ngFor="let playlist of playlists" (click)="currPlaylist(playlist);">{{playlist.name}}</li>
 
 
-            <li (click)="changePage(2);" [class.active]="localSt.retrieve('page') === 2">
+            <li (click)="changePage(5);" [class.active]="localSt.retrieve('page') === 5">
                 <i class="fas fa-compact-disc "></i> Albums
             </li>
-            
+            <li class="innerLi"  (click)="changePage(2);" [class.active]="localSt.retrieve('page') === 2">{{this.localSt.retrieve('currAlbum')['nome']}}</li>
 
-                
             <li (click)="changePage(4);" [class.active]="localSt.retrieve('page') === 4">
-                <i class="fas fa-music "></i> Minhas Musicas
+                <i class="fas fa-music "></i> Musicas
             </li>
             <li (click)=this.home.quit()>
                 <i class="fas fa-sign-out-alt"></i> Sair
