@@ -1,6 +1,8 @@
-import { Authorized, CurrentUser, JsonController, Body, Put } from "routing-controllers";
-import PlaylistPrivadaRepository from "../repositories/PlaylistPublicaRepository"
+import { Authorized, CurrentUser, JsonController, Body, Put, BodyParam, Param } from "routing-controllers";
+import PlaylistPublicaRepository from "../repositories/PlaylistPublicaRepository"
+import PlaylistPrivadaRepository from "../repositories/PlaylistPrivadaRepository"
 import { IsNotEmpty, IsString } from "class-validator";
+import { isNumber } from "util";
 
 class InsertRequest {
 
@@ -12,14 +14,23 @@ class InsertRequest {
 @JsonController("/playlist")
 export default class PlaylistController {
     PlaylistPrivadaRepository: any;
+    adminRepository: any;
+    OuvinteRepository: any;
+    PlaylistPublicaRepository: any;
 
     @Authorized("OUVINTE")
     @Put("/")
     async update1(
         @CurrentUser({ required: true }) email: string,
+        @Param("id") id: number,
         @Body({ validate: true }) req: InsertRequest
     ) {
-        const playlistPrivada = await this.PlaylistPrivadaRepository.getByEmail(email);
+
+        const ouvinte = await this.OuvinteRepository.getByEmail(email);
+        if(ouvinte === null)
+            return;
+
+        const playlistPrivada = await this.PlaylistPrivadaRepository.getById(id);
         if (playlistPrivada === null)
             return;
 
@@ -29,12 +40,15 @@ export default class PlaylistController {
     @Authorized("ADMIN")
     @Put("/")
     async update2(
-        @CurrentUseur({ required: true }) email: string,
+        @CurrentUser({required: true}) email: string,
+        @Param("id") id: number,
         @Body({ validate: true }) req: InsertRequest
     ) {
-        const playlistPrivada = await this.PlaylistPrivadaRepository.getByEmail(email);
-        if (playlistPrivada === null)
+        const admin = await this.adminRepository.getByEmail(email);
+        if (admin === null)
             return;
+
+        const playlistPrivada = await this.PlaylistPublicaRepository.getById(id); 
 
         playlistPrivada.nome = req.nome;
         return { "sucesso": true };
@@ -69,7 +83,7 @@ export default class PlaylistController {
             return { "erro": "ID_INVALIDO" };
 
         const ouvinte = await this.OuvinteRepository.getByEmail(email);
-        if (admin === null)
+        if (ouvinte === null)
             return { "erro": "OUVINTE_INVALIDO" };
 
         const playlistpublica = await this.PlaylistPublicaRepository.getById(id);
