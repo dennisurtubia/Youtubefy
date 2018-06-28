@@ -34,6 +34,9 @@ export default class AlbumRepository implements IRepository<Entity> {
     async getAll(): Promise<Entity[]> {
         const query = `
             SELECT a.id, a.capa, a.nome, a.nomeArtista, a.descricao, a.idPublicadora
+            INNER JOIN Musica m ON m.idAlbum = a.id
+            INNER JOIN MusicaAprovada ma ON ma.id = m.id
+            HAVING COUNT(ma.id) > 0
             FROM Album a
         `;
 
