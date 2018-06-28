@@ -68,8 +68,8 @@ body {
 }
 .sidebar ul li {
   list-style: none;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 
   transition: all ease-in-out 0.1s;
   -moz-transition: alle ease-in-out 0.1s;
@@ -375,7 +375,7 @@ input[type="range"]:focus::-ms-fill-upper {
   TOPCOVER
 */
 .topCover {
-  height: 150px;
+  height: 250px;
   overflow: hidden;
 }
 .topCover h1 {
@@ -388,7 +388,7 @@ input[type="range"]:focus::-ms-fill-upper {
   background-position: center !important;
   filter: blur(5px);
   transform: scale(1.1);
-  height: 150px;
+  height: 250px !important;
   position: relative;
 }
 .titleTopCover {

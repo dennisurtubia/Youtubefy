@@ -4,7 +4,7 @@ import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import {HomeComponent} from '../home/home.component';
 
 @Component({
-  providers: [HomeComponent];
+  providers: [HomeComponent],
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
@@ -18,12 +18,7 @@ export class PlayerComponent implements OnInit {
     private getApi: GetApiService,
     private home: HomeComponent
   ) { }
-  pause() {
-    this.home.pause();
-  }
-  resume() {
-    this.home.resume();
-  }
+
   savePlayer(player) {
     this.player = player;
     console.log("player instance", player);

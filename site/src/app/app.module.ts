@@ -21,6 +21,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
+import { MinuteSecondsPipe } from './minute.pipe';
 
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
@@ -47,6 +48,7 @@ const appRoutes: Routes = [
     CardMusicComponent,
     MyMusicComponent,
     GlobalsComponent,
+    MinuteSecondsPipe
   ],
   imports: [
     BrowserModule,

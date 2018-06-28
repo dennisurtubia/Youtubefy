@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import {HomeComponent} from "../home/home.component";
 @Component({
+  providers: [HomeComponent],
   selector: "app-sidebar",
   templateUrl: "./sidebar.component.html",
   styleUrls: ["./sidebar.component.css"]

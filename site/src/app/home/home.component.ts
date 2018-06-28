@@ -19,6 +19,10 @@ export class HomeComponent implements OnInit {
   current: any[];
   page: number;
   currentMusic: number;
+  duration: number;
+  currentTime: number;
+  dataRefresher: any;
+  savedAlbuns: any[];
   constructor(
     private localSt: LocalStorageService,
     private sessionSt: SessionStorageService,
@@ -43,7 +47,7 @@ export class HomeComponent implements OnInit {
     console.log("player state", event.data);
   }
 
-  play(musica:Object){
+  play(musica:Object, index:number){
     this.getApi.getAlbum(musica['idAlbum']).then(data=>{
       this.localSt.store('currPlaying', {
         nome: musica['nome'],
@@ -54,6 +58,7 @@ export class HomeComponent implements OnInit {
       this.player.cueVideoById(this.localSt.retrieve('currPlaying')['url']);
       this.player.playVideo();
       this.currentMusic = musica['id'];
+      
     });
   }
   toggle() {
@@ -63,15 +68,13 @@ export class HomeComponent implements OnInit {
       this.player.pauseVideo();
     }
   }
-  resume(){
-    
-  }
-
   
   changePage(pageNumber: number) {
     this.page = pageNumber;
-    if(pageNumber!==2){
+    if(pageNumber !== 2){
       this.localSt.clear('currAlbum');
+    } else if( pageNumber = 4){
+      this.getApi.getMusicaAprovada();
     }
   }
   quit() {
@@ -88,6 +91,21 @@ export class HomeComponent implements OnInit {
     this.localSt.store('page', 2);
     this.localSt.store('currAlbum', id);
   }
+  refreshData(){
+    this.dataRefresher =
+      setInterval(() => {
+        this.currentTime = this.player.getCurrentTime();
+        this.duration = this.player.getDuration();
+      }, 1000);  
+  }
+  setTime(time:number){
+    this.player.seekTo(time, true);
+  }
+  cancelPageRefresh(){
+    if(this.dataRefresher){
+      clearInterval(this.dataRefresher);
+    }    
+  }
   ngOnInit() {
     if(this.localSt.retrieve('token') && this.localSt.retrieve('usertype') === 3) {
       this.router.navigate(['/admin']);
@@ -99,10 +117,12 @@ export class HomeComponent implements OnInit {
       this.quit();
       this.router.navigate(['login']);
     }
+    this.refreshData();
     this.getApi.getListAlbum();
     this.getApi.getUser(this.localSt.retrieve('token').token);
   }
   ngOnDestroy() {
+    this.cancelPageRefresh();
     this.localSt.clear('data');
     this.localSt.clear('page');
   }

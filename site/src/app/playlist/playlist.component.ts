@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { LocalStorageService, SessionStorageService } from "ngx-webstorage";
 import { componentRefresh } from "@angular/core/src/render3/instructions";
+import { GetApiService } from "../get-api.service";
 
 @Component({
   selector: "app-playlist",
@@ -12,7 +13,8 @@ export class PlaylistComponent implements OnInit {
   image: string;
   constructor(
     private localSt: LocalStorageService,
-    private sessionSt: SessionStorageService
+    private sessionSt: SessionStorageService,
+    private getApi: GetApiService
   ) {
     this.image =
       "https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg";

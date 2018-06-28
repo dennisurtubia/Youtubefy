@@ -6,7 +6,12 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" (link)="quit();">Sair
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
   <div class="col-md-6 offset-md-3 formSearch">
@@ -99,7 +104,9 @@
                 <td>{{musica.nome}}</td>
                 <td>{{musica.duracao}}</td>
                 <td>
-                  <a (click)="remove(i);"><i class="far fa-trash-alt"></i></a>
+                  <a (click)="remove(i);">
+                    <i class="far fa-trash-alt"></i>
+                  </a>
                 </td>
               </tr>
             </tbody>
@@ -121,11 +128,11 @@
       <div class="col-md-8">
         <button class="btn btn-light bold float-right" data-toggle="modal" data-target="#addAlbum" (click)="this.getApi.getGender(this.localSt.retrieve('token').token)">Submeter Novo Álbum</button>
       </div>
-      <div class="cardMusic col-md-2" *ngFor="let album of albuns">
+      <div class="cardMusic col-md-2" *ngFor="let album of this.albuns">
         <div class="itemsContainer">
           <div class="image">
             <a href="#">
-              <img src="https://lh5.googleusercontent.com/-444l_KCN5iA/TXFDWWJyuwI/AAAAAAAABNY/PLNJLdqMyg4/s320/Pink_Floyd_-_Dark_Side_of_the_Moon.jpg"
+              <img [src]="album.capa"
               /> </a>
           </div>
           <div class="play">
@@ -133,8 +140,7 @@
           </div>
         </div>
         <p class="bold"></p>
-        <p>Nome do Artista</p>
-        <span class="badge badge-secondary">Aguardando</span>
+        <p>{{album.nome}}</p>
       </div>
 
     </div>
