@@ -106,7 +106,7 @@ export class PublisherComponent implements OnInit {
     this.router.navigate(['/login']);
   }
   ngOnInit() {
-    this.getApi.getPublicadora(this.localSt.retrieve('token').token, this.localSt.retrieve('data')['id']);
+    this.getApi.getPublicadora(this.localSt.retrieve('token').token);
     this.getApi.getListAlbumPublicadora(3).then(data => {
       this.albuns = data['albuns'];
       console.log(data);
